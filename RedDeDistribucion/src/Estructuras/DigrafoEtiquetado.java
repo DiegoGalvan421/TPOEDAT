@@ -32,7 +32,7 @@ public class DigrafoEtiquetado {
     public Object ubicarTuberia(String nomenclatura) {
         NodoVert aux = this.inicio;
         Object tuberia;
-        while (aux != null && !aux.getElem().getNom().equals(nomenclatura)) {
+        while (aux != null && !aux.getElem().getNomenclatura().equals(nomenclatura)) {//falta modificar NodoVert para que guarde Ciudad
             aux = aux.getSigVertice();
         }
         if(aux==null){
@@ -250,7 +250,7 @@ public class DigrafoEtiquetado {
     }
 
     private void listarEnAnchuraAux(NodoVert n, Lista vis) {
-        lineales.dinamica.Cola cola = new lineales.dinamica.Cola();
+        Cola cola = new Cola();//falta agregar la estructura de Cola a EstructurasAuxiliares
         cola.poner(n);
         vis.insertar(n.getElem(), vis.longitud() + 1);
 
