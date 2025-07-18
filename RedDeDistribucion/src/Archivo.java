@@ -1,4 +1,4 @@
-package src;
+
 
 // Permite leer texto de un archivo de manera eficiente, línea por línea.
 import java.io.BufferedReader;
@@ -29,6 +29,7 @@ import java.util.Date;
 
 
 import EstructurasAuxiliares.Lista;
+import Objetos.*;
 
 public class Archivo {
     /**
