@@ -286,12 +286,12 @@ public class DigrafoEtiquetado {
         NodoVert vertDestino = this.ubicarVertice(destino);
         if (vertOrigen != null && vertDestino != null) {
             // Verificar si existe un camino desde origen a destino
-            exito = existeCaminoAux(vertOrigen, destino, new Lista());
+            exito = existeCaminoAux(vertOrigen, vertDestino, new Lista());
         }
         return exito;
     }
 
-    private boolean existeCaminoAux(NodoVert n, Object destino, Lista vis) {
+    private boolean existeCaminoAux(NodoVert n, NodoVert destino, Lista vis) {
         boolean exito = false;
         if (n != null) {
             // si vertice n es el destino: no hay camino
@@ -319,7 +319,7 @@ public class DigrafoEtiquetado {
         NodoVert vertDestino = this.ubicarVertice(destino);
         if (vertOrigen != null && vertDestino != null) {
             // Verificar si existe un camino desde origen a destino
-            caminoMasCortoAux(vertOrigen, destino, new Lista(), camino);
+            caminoMasCortoAux(vertOrigen, vertDestino, new Lista(), camino);
         }
         return camino;
     }
@@ -329,12 +329,12 @@ public class DigrafoEtiquetado {
      * de vértices) entre n y destino. Utiliza backtracking para explorar todos
      * los caminos posibles y guarda el más corto en caminoActual.
      */
-    private void caminoMasCortoAux(NodoVert n, Object destino, Lista vis, Lista caminoActual) {
+    private void caminoMasCortoAux(NodoVert n, NodoVert destino, Lista vis, Lista caminoActual) {
         if (n != null) {
             // Marca el vértice como visitado
             vis.insertar(n.getElem(), vis.longitud() + 1);
             // Si llegamos al destino, actualizamos el camino si es más corto
-            if (n.getElem().equals(destino)) {
+            if (n.equals(destino)) {
                 if (caminoActual.esVacia() || vis.longitud() < caminoActual.longitud()) {
                     caminoActual.vaciar();
                     for (int i = 1; i <= vis.longitud(); i++) {

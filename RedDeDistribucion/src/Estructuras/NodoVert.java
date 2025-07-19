@@ -28,4 +28,7 @@ public class NodoVert {
     public void setPrimerAdy(NodoAdy primerAdy) {
         this.primerAdy = primerAdy;
     }   
+    public boolean equals(NodoVert nuevo){
+        return this.elem.equals(nuevo.elem);
+    }
 }

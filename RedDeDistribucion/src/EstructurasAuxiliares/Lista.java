@@ -104,6 +104,7 @@ public class Lista {
 
     public void vaciar() {
         cabecera = null;
+        longitud=0;
     }
 
     /*
