@@ -13,8 +13,10 @@ public class DigrafoEtiquetado {
 
     public boolean insertarVertice(Object nuevoVertice) {
         boolean exito = false;
+        //verifica que no exista ya el vertice.
         NodoVert aux = this.ubicarVertice(nuevoVertice);
         if (aux == null) {
+            //si el vertice no existe, inserta al inicio(el orden de insercion da igual)
             this.inicio = new NodoVert(nuevoVertice, this.inicio, null);
             exito = true;
         }
@@ -22,6 +24,7 @@ public class DigrafoEtiquetado {
     }
 
     private NodoVert ubicarVertice(Object nuevoVertice) {
+        //metodo para ubicar el vertice
         NodoVert aux = this.inicio;
         while (aux != null && !aux.getElem().equals(nuevoVertice)) {
             aux = aux.getSigVertice();
@@ -29,21 +32,7 @@ public class DigrafoEtiquetado {
         return aux;
     }
 
-    public Object ubicarTuberia(String nomenclatura) {
-        NodoVert aux = this.inicio;
-        Object tuberia;
-        while (aux != null && !aux.getElem().getNomenclatura().equals(nomenclatura)) {//falta modificar NodoVert para que guarde Ciudad
-            aux = aux.getSigVertice();
-        }
-        if(aux==null){
-            tuberia=null;
-        }else{
-            tuberia=aux.getElem();
-        }
-        return tuberia;
-    }
-//verificar cuanndo hago los saltos al otro vertice una vez eliminado el arco
-//modificar a la hora de ingresar y eliminar las nomenclaturas.
+
     public boolean eliminarVertice(Object vertice) {
         boolean exito = false;
         if (this.inicio != null) {
@@ -53,9 +42,14 @@ public class DigrafoEtiquetado {
                 eliminarAdy(this.inicio, vertice);
                 exito = true;
             } else {
+                //elimina el vertice y devuelve T o F, si se logro o no
+                /*tener en cuenta que por como funciona el garbage collector de java
+                 * a la hora de eliminar el vertice, todos los arcos que salen de el 
+                 * se eliminan, ya que no los esta apuntando nadie.
+                */
                 exito = eliminarVerticeAux(this.inicio, vertice);
                 if (exito) {
-                    // si se eliminó el vertice, eliminar sus adyacentes
+                    // si se eliminó el vertice, elimina los adyacentes que lo apunten
                     eliminarAdy(this.inicio, vertice);
                 }
             }
@@ -67,9 +61,11 @@ public class DigrafoEtiquetado {
         boolean exito = false;
         if (actual != null && actual.getSigVertice() != null) {
             if (actual.getSigVertice().getElem().equals(vertice)) {
+                //si el que sigue es el buscado, enlaza el actual con el que esta despues del siguiente
                 actual.setSigVertice(actual.getSigVertice().getSigVertice());
                 exito = true;
             } else {
+                //si no es el buscado avanza
                 exito = eliminarVerticeAux(actual.getSigVertice(), vertice);
             }
         }
@@ -78,6 +74,7 @@ public class DigrafoEtiquetado {
 
     private void eliminarAdy(NodoVert actual, Object vertice) {
         if (actual != null) {
+            //si el primer adyacente es el que se debe eliminar, lo elimina
             if (actual.getPrimerAdy() != null && actual.getPrimerAdy().getVertice().getElem().equals(vertice)) {
                 actual.setPrimerAdy(actual.getPrimerAdy().getSigAdyacente());
             } else {
@@ -89,12 +86,14 @@ public class DigrafoEtiquetado {
                 while (ady != null && !exito) {
                     anterior = ady;
                     ady = ady.getSigAdyacente();
+                    //recorre la lista de adyacentes hasta eliminar el correcto o llegar al final
                     if (ady != null && ady.getVertice().getElem().equals(vertice)) {
                         anterior.setSigAdyacente(ady.getSigAdyacente());
                         exito = true;
                     }
                 }
             }
+            //y esto se repite con todos los vertices
             eliminarAdy(actual.getSigVertice(), vertice);
         }
     }
@@ -124,6 +123,7 @@ public class DigrafoEtiquetado {
                 }
                 ady = ady.getSigAdyacente();
             }
+            //si no existe el arco lo inserta
             if (!existe) {
                 NodoAdy nuevoAdy = new NodoAdy(vertDestino, null, etiqueta);
                 if (vertOrigen.getPrimerAdy() == null) {
@@ -146,10 +146,10 @@ public class DigrafoEtiquetado {
     // suponiendo que no es un multiDigrafo.
     public boolean eliminarArco(Object origen, Object destino) {
         boolean exito = false;
-        // se puede usar el ubicar vertice asi? es como el encontrar nodo de otras
-        // estructuras
+        //verifica que existan los dos vertices antes de buscar el arco a eliminar
         NodoVert vertOrigen = this.ubicarVertice(origen);
         NodoVert vertDestino = this.ubicarVertice(destino);
+        //si existen procede con la eliminacion
         if (vertOrigen != null && vertDestino != null) {
             exito = eliminarArcoAux(vertOrigen, destino);
         }
@@ -172,6 +172,7 @@ public class DigrafoEtiquetado {
                 while (ady != null && !exito) {
                     anterior = ady;
                     ady = ady.getSigAdyacente();
+                    //usamos anterior y ady(como actual) para movernos en la lista
                     if (ady != null && ady.getVertice().getElem().equals(destino)) {
                         anterior.setSigAdyacente(ady.getSigAdyacente());
                         exito = true;
@@ -186,9 +187,12 @@ public class DigrafoEtiquetado {
         boolean exito = false;
         NodoVert vertOrigen = this.ubicarVertice(origen);
         NodoVert vertDestino = this.ubicarVertice(destino);
+        //verifica que existan los vertices
         if (vertOrigen != null && vertDestino != null) {
             NodoAdy ady = vertOrigen.getPrimerAdy();
+            //luego recorre la lista de adyacentes del origen
             while (ady != null && !exito) {
+                //si lo encuentra corta, sino sigue hasta terminar
                 if (ady.getVertice().getElem().equals(destino)) {
                     exito = true;
                 }
@@ -205,7 +209,7 @@ public class DigrafoEtiquetado {
     public void vaciar() {
         this.inicio = null;
     }
-
+    //visita cada rama hasta que termine y luego retrocede
     public Lista listarEnProfundidad() {
         Lista visitados = new Lista();
         // define un vertice donde comenzar a recorrer
@@ -235,7 +239,7 @@ public class DigrafoEtiquetado {
             }
         }
     }
-
+    //en anchura va por niveles, primero visita todos los vecinos y asi.
     public Lista listarEnAnchura() {
         Lista visitados = new Lista();
         NodoVert aux = this.inicio;
@@ -250,19 +254,23 @@ public class DigrafoEtiquetado {
     }
 
     private void listarEnAnchuraAux(NodoVert n, Lista vis) {
-        Cola cola = new Cola();//falta agregar la estructura de Cola a EstructurasAuxiliares
+        Cola cola = new Cola();
         cola.poner(n);
         vis.insertar(n.getElem(), vis.longitud() + 1);
-
+        //inserta el primer nodo
         while (!cola.esVacia()) {
             NodoVert actual = (NodoVert) cola.obtenerFrente();
+            //saca de la cola el que esta usando para ver los vecinos
             cola.sacar();
-
+            //luego visita todos los vecinos.
             NodoAdy ady = actual.getPrimerAdy();
             while (ady != null) {
                 NodoVert vecino = ady.getVertice();
+                //hay que ver si se puede hacer con otra cosa en vez de localizar
                 if (vis.localizar(vecino.getElem()) < 0) {
                     vis.insertar(vecino.getElem(), vis.longitud() + 1);
+                    //agrega en visitados los vecinos ya vistos y los agrega a la cola
+                    //para poder ver sus vecinos
                     cola.poner(vecino);
                 }
                 ady = ady.getSigAdyacente();
@@ -314,12 +322,15 @@ public class DigrafoEtiquetado {
         }
         return camino;
     }
-
-    // se le debe agregar que tome en cuenta la ponderacion de los nodos visitados,
-    // ya que la etiqueta tiene peso
+/**
+ * Método auxiliar recursivo para encontrar el camino más corto (en cantidad de vértices) entre n y destino.
+ * Utiliza backtracking para explorar todos los caminos posibles y guarda el más corto en caminoActual.
+ */
     private void caminoMasCortoAux(NodoVert n, Object destino, Lista vis, Lista caminoActual) {
         if (n != null) {
+        // Marca el vértice como visitado
             vis.insertar(n.getElem(), vis.longitud() + 1);
+        // Si llegamos al destino, actualizamos el camino si es más corto
             if (n.getElem().equals(destino)) {
                 if (caminoActual.esVacia() || vis.longitud() < caminoActual.longitud()) {
                     caminoActual.vaciar();
@@ -328,6 +339,8 @@ public class DigrafoEtiquetado {
                     }
                 }
             } else {
+                            // Recorremos los adyacentes no visitados
+
                 NodoAdy ady = n.getPrimerAdy();
                 while (ady != null) {
                     if (vis.localizar(ady.getVertice().getElem()) < 0) {
@@ -339,6 +352,10 @@ public class DigrafoEtiquetado {
             vis.eliminar(vis.longitud()); // backtrack
         }
     }
+    /**
+ * Busca el camino de menor peso (suma de etiquetas) entre origen y destino.
+ * Utiliza un método auxiliar recursivo que explora todos los caminos posibles y guarda el de menor peso.
+ */
 
     public Lista caminoMasChico(Object origen, Object destino) {//esta vez busca el camino de menor peso de etiquetas
     Lista camino = new Lista();
@@ -350,6 +367,10 @@ public class DigrafoEtiquetado {
     }
     return camino;
     }
+    /**
+ * Método auxiliar recursivo para encontrar el camino de menor peso entre n y destino.
+ * Acumula el peso de las etiquetas y actualiza el camino si encuentra uno con menor peso.
+ */
 
     private void caminoMasChicoAux(NodoVert n, Object destino, Lista vis, Lista caminoActual, int pesoActual, int[] pesoMin) {
     if (n != null) {
@@ -400,6 +421,8 @@ private void caminoMenorCaudalPlenoAux(NodoVert n, Object destino, Lista vis, Li
 
         vis.insertar(n.getElem(), vis.longitud() + 1);
         if (n.getElem().equals(destino)) {
+                        // Si llegamos al destino, actualizamos el camino si el caudal pleno es menor
+
             if (caudalMin[0] == -1 || caudalActual < caudalMin[0]) {//llegamos al destino y actualizamos si tenemos un caudal pleno menor (si quedó en -1 es porque el origen y destino  era el mismo)
                 caudalMin[0] = caudalActual;
 
@@ -443,8 +466,7 @@ private void caminoMenorCaudalPlenoAux(NodoVert n, Object destino, Lista vis, Li
         return camino;
     }
 
-    // se le debe agregar que tome en cuenta la ponderacion de los nodos visitados,
-    // ya que la etiqueta tiene peso
+//funciona igual que el camino mas corto, pero tomando en cuenta el camino mas largo encontrado
     private void caminoMasLargoAux(NodoVert n, Object destino, Lista vis, Lista caminoActual) {
         if (n != null) {
             vis.insertar(n.getElem(), vis.longitud() + 1);
@@ -467,7 +489,7 @@ private void caminoMenorCaudalPlenoAux(NodoVert n, Object destino, Lista vis, Li
             vis.eliminar(vis.longitud()); // backtrack
         }
     }
-    //chusmear el clonar, esta medio sus
+
     public DigrafoEtiquetado clonar() {
         DigrafoEtiquetado clon = new DigrafoEtiquetado();
         clon.inicio = clonarVertices(this.inicio); // Paso 1

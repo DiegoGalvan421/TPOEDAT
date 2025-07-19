@@ -64,17 +64,21 @@ public class TablaAVL {
     }
 
     private NodoAVLDicc insertarAux(NodoAVLDicc r, NodoAVLDicc nuevoNodo, boolean[] exito) {
+        //inserta solo si no esta en la tabla
         if (r == null) {
             r = nuevoNodo;
             exito[0] = true;
-            r.recalcularAltura();
-            balancear(r);
+            //si llego al final y no se encontro, se inserta
         } else if (nuevoNodo.getClave().compareTo(r.getClave()) < 0) {
+            //se mueve a izquierda
             r.setIzquierdo(insertarAux(r.getIzquierdo(), nuevoNodo, exito));
         } else if (nuevoNodo.getClave().compareTo(r.getClave()) > 0) {
+            //se mueve a derecha
             r.setDerecho(insertarAux(r.getDerecho(), nuevoNodo, exito));
-        }
-        return r;
+        } 
+        //balancea y recalcula altura despues de que finaliza cada llamado recursivo
+        r.recalcularAltura();
+        return balancear(r);
     }
 
     public boolean eliminar(Comparable elem) {
@@ -101,7 +105,7 @@ public class TablaAVL {
                 } else if (nodo.getDerecho() == null) {
                     nodo = nodo.getIzquierdo();
                 } else {
-                    // Nodo con dos hijos que busca el sucesos
+                    // Nodo con dos hijos que busca el sucesor
                     nodo = reemplazarMenorDerecho(nodo);
 
                 }
