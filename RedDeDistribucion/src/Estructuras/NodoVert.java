@@ -29,6 +29,6 @@ public class NodoVert {
         this.primerAdy = primerAdy;
     }   
     public boolean equals(NodoVert nuevo){
-        return this.elem.equals(nuevo.elem);
+        return (this.elem.equals(nuevo.elem));
     }
 }

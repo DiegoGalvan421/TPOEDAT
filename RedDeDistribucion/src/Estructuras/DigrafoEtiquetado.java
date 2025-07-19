@@ -150,7 +150,7 @@ public class DigrafoEtiquetado {
         NodoVert vertDestino = this.ubicarVertice(destino);
         //si existen procede con la eliminacion
         if (vertOrigen != null && vertDestino != null) {
-            exito = eliminarArcoAux(vertOrigen, vertDestino);
+            exito = eliminarArcoAux(vertOrigen, destino);
         }
         return exito;
     }
@@ -159,7 +159,7 @@ public class DigrafoEtiquetado {
     private boolean eliminarArcoAux(NodoVert actual, Object destino) {
         boolean exito = false;
         if (actual.getPrimerAdy() != null) {
-            if (actual.getPrimerAdy().getVertice().getElem().equals(destino)) {
+            if (actual.getPrimerAdy().getVertice().equals(destino)) {
                 // si es el primero
                 actual.setPrimerAdy(actual.getPrimerAdy().getSigAdyacente());
                 exito = true;
@@ -295,7 +295,7 @@ public class DigrafoEtiquetado {
         boolean exito = false;
         if (n != null) {
             // si vertice n es el destino: no hay camino
-            if (n.getElem().equals(destino)) {
+            if (n.equals(destino)) {
                 exito = true;
             } else {
                 // si no es el destino verifica si hay un camino entre n y destino
@@ -319,7 +319,7 @@ public class DigrafoEtiquetado {
         NodoVert vertDestino = this.ubicarVertice(destino);
         if (vertOrigen != null && vertDestino != null) {
             // Verificar si existe un camino desde origen a destino
-            caminoMasCortoAux(vertOrigen, vertDestino, new Lista(), camino);
+            caminoMasCortoAux(vertOrigen, destino, new Lista(), camino);
         }
         return camino;
     }
@@ -329,12 +329,12 @@ public class DigrafoEtiquetado {
      * de vértices) entre n y destino. Utiliza backtracking para explorar todos
      * los caminos posibles y guarda el más corto en caminoActual.
      */
-    private void caminoMasCortoAux(NodoVert n, NodoVert destino, Lista vis, Lista caminoActual) {
+    private void caminoMasCortoAux(NodoVert n, Object destino, Lista vis, Lista caminoActual) {
         if (n != null) {
             // Marca el vértice como visitado
             vis.insertar(n.getElem(), vis.longitud() + 1);
             // Si llegamos al destino, actualizamos el camino si es más corto
-            if (n.equals(destino)) {
+            if (n.getElem().equals(destino)) {
                 if (caminoActual.esVacia() || vis.longitud() < caminoActual.longitud()) {
                     caminoActual.vaciar();
                     for (int i = 1; i <= vis.longitud(); i++) {

@@ -1,5 +1,5 @@
 package Testdeestructuras;
-import Estructuras.DigrafoEtiquetado;
+import Estructuras.*;
 import EstructurasAuxiliares.Lista;
 import Objetos.Ciudad;
 
@@ -27,7 +27,14 @@ public class testGeneral {
         grafo.insertarArco(c3, c4, 200);  // RS → MDZ
         grafo.insertarArco(c4, c5, 150);  // MDZ → LP
         grafo.insertarArco(c2, c5, 480);  // CBA → LP
-
+        grafo.toString();
+        System.out.println("Prueba eliminacion");
+        grafo.eliminarVertice(c4);
+        System.out.println(grafo.toString());
+        grafo.eliminarArco(c1, c3);
+        System.out.println("eliminar arco");
+        System.out.println(grafo.toString());
+       
         // Pruebas de recorrido
         System.out.println("Recorrido en profundidad:");
         System.out.println(grafo.listarEnProfundidad());
