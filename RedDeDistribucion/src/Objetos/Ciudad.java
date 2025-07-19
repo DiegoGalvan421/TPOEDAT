@@ -94,6 +94,8 @@ public class Ciudad {
         return "\nCiudad: " + nombre + "\nNomenclatura: " + nomenclatura + "\nSuperficie: "
                 + superficie + "\nConsumo Promedio: " + consumoPromedio + "\n";
     }
+    public boolean equals(Ciudad otra){
+        return (this.nomenclatura.equals(otra.nomenclatura));
 
-
+    }
 }
