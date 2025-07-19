@@ -240,6 +240,29 @@ public class TablaAVL {
     public void vaciar(){
         this.raiz=null;
     }
+    public Lista listarRango(Comparable min, Comparable max) {
+        Lista lis = new Lista();
+        if (this.raiz != null) {
+            listarRangoAux(this.raiz, min, max, lis);
+        }
+        return lis;
+    }
+
+    public void listarRangoAux(NodoAVLDicc n, Comparable min, Comparable max, Lista lis) {
+        if (n != null) {
+            if (n.getClave().compareTo(min) > 0) {
+                // recorro el sub arbol izquierdo
+                listarRangoAux(n.getIzquierdo(), min, max, lis);
+            }
+            if (n.getClave().compareTo(min) >= 0 && n.getClave().compareTo(max) <= 0) {
+                lis.insertar(n.getClave(), lis.longitud() + 1);
+            }
+            // recorro el sub arbol derecho
+            if (n.getClave().compareTo(max) < 0) {
+                listarRangoAux(n.getDerecho(), min, max, lis);
+            }
+        }
+    }
     //estructuras auxiliares para balancear el avl
     private NodoAVLDicc balancear(NodoAVLDicc nodo) {
         int balance = obtenerBalance(nodo);
