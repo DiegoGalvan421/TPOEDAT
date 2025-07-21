@@ -1,12 +1,16 @@
 package Testdeestructuras;
 import Estructuras.*;
-import EstructurasAuxiliares.Lista;
-import Objetos.Ciudad;
+import EstructurasAuxiliares.*;
+import Objetos.*;
 
 public class testGeneral {
     public static void main(String[] args) {
         DigrafoEtiquetado grafo = new DigrafoEtiquetado();
-
+        //aca hice una prueba de que funciona el hashcode para el objeto clavetuberia
+        ClaveTuberia pruebahash = new ClaveTuberia("ab","cd");
+        int hash= pruebahash.hashCode();
+        System.out.println(hash);
+        
         Ciudad c1 = new Ciudad("Buenos Aires", "BA", 203.5, 140.0);
         Ciudad c2 = new Ciudad("Córdoba", "CBA", 576.2, 160.5);
         Ciudad c3 = new Ciudad("Rosario", "RS", 310.3, 180.9);
@@ -49,7 +53,7 @@ public class testGeneral {
 
         Lista caminoMin = grafo.caminoMasChico(c1, c5);
         System.out.println("Camino mínimo de BA a LP (con peso):");
-        System.out.println(caminoMin);
+        System.out.println(caminoMin); 
     }
 }
 
