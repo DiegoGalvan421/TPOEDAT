@@ -101,7 +101,7 @@ public class Ciudad {
     public double consumoAnual (int anio){
         double consumoAnual = 0; 
         int [] arregloAnual = habitantesHistoricos.get(anio);//validacion del año en el main!!!
-        for (int i = 0; i < 12; i++){//asumo que no hay año en el que no se haya registrado la cantidad de habitantes en algún més
+        for (int i = 0; i < 12; i++){//asumo que no hay año en el que no se haya registrado la cantidad de habitantes en algún mes
             consumoAnual += arregloAnual[i] * consumoPromedio;
         }
         return consumoAnual;
