@@ -3,6 +3,7 @@ package Objetos;
 import java.util.HashMap;
 
 public class Ciudad {
+
     private String nombre;
     private HashMap<Integer, int[]> habitantesHistoricos;
     private String nomenclatura;
@@ -11,7 +12,7 @@ public class Ciudad {
 
     /**
      * Constructor.
-     * 
+     *
      * @param unNombre
      * @param unaNom
      * @param unaSup
@@ -26,7 +27,6 @@ public class Ciudad {
     }
 
     /* OBSERVADORAS */
-
     public String getNombre() {
         return nombre;
     }
@@ -36,8 +36,9 @@ public class Ciudad {
      * <p>
      * NOTA: Las valiadciones de mes y anio se hacen en el main.
      * <p>
-     * ACLARACION: El casteo de String a Int se hace al momento de bootear desde el txt.
-     * 
+     * ACLARACION: El casteo de String a Int se hace al momento de bootear desde
+     * el txt.
+     *
      * @param anio
      * @param mes
      * @return cantHabitantes
@@ -59,12 +60,11 @@ public class Ciudad {
     }
 
     /* MODIFICADORAS */
-
     /**
      * Agrega o Modifica la cantidad de habitantes del mes y el año dado.
      * <p>
      * NOTA: Las validaciones de mes y anio se hacen en el main.
-     * 
+     *
      * @param anio
      * @param mes
      * @param cantidad
@@ -94,14 +94,27 @@ public class Ciudad {
         return "\nCiudad: " + nombre + "\nNomenclatura: " + nomenclatura + "\nSuperficie: "
                 + superficie + "\nConsumo Promedio: " + consumoPromedio + "\n";
     }
-    public boolean equals(Ciudad otra){
+
+    public boolean equals(Ciudad otra) {
         return (this.nomenclatura.equals(otra.nomenclatura));
 
     }
-    public double consumoAnual (int anio){
-        double consumoAnual = 0; 
-        int [] arregloAnual = habitantesHistoricos.get(anio);//validacion del año en el main!!!
-        for (int i = 0; i < 12; i++){//asumo que no hay año en el que no se haya registrado la cantidad de habitantes en algún mes
+    //este metodo nos sera de utilidad para el punto 4.
+    public double consumoMensual(int anio, int mes) {
+        //teniendo en cuenta que la cantidad de habitantes es en 1 mes
+        //y que las profes dijeron que podemos usar una cantidad de dias estandar para todos los meses
+        //tomo en cuenta en este caso eso y uso 30.
+        double consumoMensual;
+        int habAux = habitantesHistoricos.get(anio)[mes - 1];
+        consumoMensual = habAux * consumoPromedio;
+        consumoMensual = consumoMensual * 30;
+        return consumoMensual;
+    }
+
+    public double consumoAnual(int anio) {
+        double consumoAnual = 0;
+        int[] arregloAnual = habitantesHistoricos.get(anio);//validacion del año en el main!!!
+        for (int i = 0; i < 12; i++) {//asumo que no hay año en el que no se haya registrado la cantidad de habitantes en algún mes
             consumoAnual += arregloAnual[i] * consumoPromedio;
         }
         return consumoAnual;

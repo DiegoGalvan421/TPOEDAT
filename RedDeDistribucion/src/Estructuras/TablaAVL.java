@@ -1,4 +1,5 @@
 package Estructuras;
+
 import EstructurasAuxiliares.*;
 import Objetos.Ciudad;
 
@@ -76,7 +77,7 @@ public class TablaAVL {
         } else if (nuevoNodo.getClave().compareTo(r.getClave()) > 0) {
             //se mueve a derecha
             r.setDerecho(insertarAux(r.getDerecho(), nuevoNodo, exito));
-        } 
+        }
         //balancea y recalcula altura despues de que finaliza cada llamado recursivo
         r.recalcularAltura();
         return balancear(r);
@@ -151,20 +152,20 @@ public class TablaAVL {
     public Lista listarClaves() {
         Lista lis = new Lista();
         if (this.raiz != null) {
-            listarAux(this.raiz, lis);
+            listarClaveAux(this.raiz, lis);
         }
         return lis;
     }
 
-    private void listarAux(NodoAVLDicc n, Lista lis) {
-        // supongo que ordenada de menor a mayor
+    private void listarClaveAux(NodoAVLDicc n, Lista lis) {
+        // supongo que ordenada de mayor a menor
         if (n != null) {
-            if (n.getIzquierdo() != null) {
-                listarAux(n.getIzquierdo(), lis);
+            if (n.getDerecho() != null) {
+                listarClaveAux(n.getDerecho(), lis);
             }
             lis.insertar(n.getClave(), lis.longitud() + 1);
-            if (n.getDerecho() != null) {
-                listarAux(n.getDerecho(), lis);
+            if (n.getIzquierdo() != null) {
+                listarClaveAux(n.getIzquierdo(), lis);
             }
         }
     }
@@ -180,12 +181,12 @@ public class TablaAVL {
     private void listarDatosAux(NodoAVLDicc n, Lista lis) {
         // supongo que ordenada de menor a mayor
         if (n != null) {
-            if (n.getIzquierdo() != null) {
-                listarDatosAux(n.getIzquierdo(), lis);
+             if (n.getDerecho() != null) {
+                listarDatosAux(n.getDerecho(), lis);
             }
             lis.insertar(n.getDato(), lis.longitud() + 1);
-            if (n.getDerecho() != null) {
-                listarDatosAux(n.getDerecho(), lis);
+            if (n.getIzquierdo() != null) {
+                listarDatosAux(n.getIzquierdo(), lis);
             }
         }
     }
@@ -214,6 +215,7 @@ public class TablaAVL {
 
         return nuevo;
     }
+
     public String toString() {
         String res;
         if (this.raiz == null) {
@@ -228,19 +230,24 @@ public class TablaAVL {
     private String toStringRec(NodoAVLDicc n) {
         String s = "";
         if (n != null) {
-            s += "Clave:"+n.getClave().toString()+" Dato:"+n.getDato();
+            s += "Clave:" + n.getClave().toString() + " \n"
+                    + //
+                    "Dato:" + n.getDato();
             s += "\n";
             s += toStringRec(n.getIzquierdo());
             s += toStringRec(n.getDerecho());
         }
         return s;
     }
+
     public boolean esVacia() {
         return this.raiz == null;
     }
-    public void vaciar(){
-        this.raiz=null;
+
+    public void vaciar() {
+        this.raiz = null;
     }
+
     public Lista listarRango(Comparable min, Comparable max) {
         Lista lis = new Lista();
         if (this.raiz != null) {
@@ -256,7 +263,7 @@ public class TablaAVL {
                 listarRangoAux(n.getIzquierdo(), min, max, lis);
             }
             if (n.getClave().compareTo(min) >= 0 && n.getClave().compareTo(max) <= 0) {
-                lis.insertar(n.getClave(), lis.longitud() + 1);
+                lis.insertar(n.getDato(), lis.longitud() + 1);
             }
             // recorro el sub arbol derecho
             if (n.getClave().compareTo(max) < 0) {
@@ -264,6 +271,7 @@ public class TablaAVL {
             }
         }
     }
+
     //estructuras auxiliares para balancear el avl
     private NodoAVLDicc balancear(NodoAVLDicc nodo) {
         int balance = obtenerBalance(nodo);
@@ -324,21 +332,21 @@ public class TablaAVL {
     }
 
 //para el punto 7, listado de ciudades  ordenadas por consumo de agua anual
-    public String consumoAnual(int anio){
+    public String consumoAnual(int anio) {
         TablaAVL nuevaTabla = new TablaAVL();
         Lista ciudades = this.listarDatos(); // Listo las ciudades originales para ir calculando el consumo anual
         for (int i = 1; i <= ciudades.longitud(); i++) {
             Ciudad ciudad = (Ciudad) ciudades.recuperar(i);
             double consumo = ciudad.consumoAnual(anio); //el año se controla en el main
             nuevaTabla.insertar(consumo, ciudad); // usa como clave el consumo y se ordena comparando este
-            }
+        }
         String listado = nuevaTabla.toStringDeMayorAMenor();
         return listado;
     }
 
     private String toStringDeMayorAMenor() {
         String retorno = "[]"; //si no hay ciudades se imprime [ ] (?)
-        if (raiz != null){
+        if (raiz != null) {
             StringBuilder sb = new StringBuilder(); //aparentemente es mas eficiente que concatenar strings (?)
             toStringDeMayorAMenorAux(raiz, sb);
             if (sb.length() >= 4) { //si hay contenido
@@ -351,7 +359,7 @@ public class TablaAVL {
 
     private void toStringDeMayorAMenorAux(NodoAVLDicc nodo, StringBuilder sb) { //inOrder inverso (derecha medio izquierda)
         if (nodo != null) {
-        
+
             toStringDeMayorAMenorAux(nodo.getDerecho(), sb);// Primero valores mayores
             sb.append(nodo.getDato().toString()).append(" -> "); //no muestra el consumo anual, se podría agregar
             toStringDeMayorAMenorAux(nodo.getIzquierdo(), sb); // Ultimo los menores

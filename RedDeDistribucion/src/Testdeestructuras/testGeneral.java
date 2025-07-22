@@ -1,11 +1,13 @@
 package Testdeestructuras;
 import Estructuras.*;
-import EstructurasAuxiliares.*;
+import EstructurasAuxiliares.Lista;
 import Objetos.*;
 
 public class testGeneral {
     public static void main(String[] args) {
         DigrafoEtiquetado grafo = new DigrafoEtiquetado();
+        TablaAVL tabla= new TablaAVL();
+
         //aca hice una prueba de que funciona el hashcode para el objeto clavetuberia
         ClaveTuberia pruebahash = new ClaveTuberia("ab","cd");
         int hash= pruebahash.hashCode();
@@ -17,6 +19,19 @@ public class testGeneral {
         Ciudad c4 = new Ciudad("Mendoza", "MDZ", 240.0, 150.0);
         Ciudad c5 = new Ciudad("La Plata", "LP", 190.6, 135.3);
 
+        tabla.insertar("Buenos Aires", c1);
+        tabla.insertar("Córdoba", c2);
+        tabla.insertar("Rosario", c3);
+        tabla.insertar("Mendoza", c4);
+        tabla.insertar("La Plata", c5);
+        System.out.println("mostamos tabla");
+        System.out.println(tabla.toString());
+        System.out.println("mostramos lista de datos");
+        System.out.println(tabla.listarDatos().toString());
+        System.out.println("mostramos lista de claves");
+        System.out.println(tabla.listarClaves().toString());
+        
+        /* 
         // Insertar vértices
         grafo.insertarVertice(c1);
         grafo.insertarVertice(c2);
@@ -53,7 +68,21 @@ public class testGeneral {
 
         Lista caminoMin = grafo.caminoMasChico(c1, c5);
         System.out.println("Camino mínimo de BA a LP (con peso):");
-        System.out.println(caminoMin); 
+        System.out.println(caminoMin); */
+    }
+    public Lista consumoDeAguaMesYAño(Lista lis, int minVol, int maxVol, int anio, int mes){
+        Lista cumplen = new Lista();
+        int longLis=lis.longitud();
+        Ciudad aux;
+        double consumoAux;
+        for(int i=1; i < longLis; i++){
+            aux= (Ciudad) lis.recuperar(i);
+            consumoAux=aux.consumoMensual(anio, mes);
+            if(consumoAux>minVol && consumoAux<maxVol){
+                cumplen.insertar(aux,1);
+            }
+        }
+        return cumplen;
     }
 }
 
