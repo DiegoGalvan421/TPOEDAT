@@ -6,7 +6,8 @@ public class DigrafoEtiquetado {
 
     private NodoVert inicio;
 
-    // esto es un digrafo etiquetado
+    //el digrafo etiquetado guardara, solo como vertice las nomenclaturas de las ciudades
+    //y solo el caudal de las tuberias.
     public DigrafoEtiquetado() {
         this.inicio = null;
     }
@@ -312,7 +313,7 @@ public class DigrafoEtiquetado {
         }
         return exito;
     }
-
+    //este es para el punto de camino con con la menor cantidad de ciudades, de A a B
     public Lista caminoMasCorto(Object origen, Object destino) {
         Lista camino = new Lista();
         NodoVert vertOrigen = this.ubicarVertice(origen);
