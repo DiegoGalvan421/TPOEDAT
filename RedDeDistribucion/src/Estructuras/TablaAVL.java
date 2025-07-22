@@ -1,5 +1,6 @@
 package Estructuras;
 import EstructurasAuxiliares.*;
+import Objetos.Ciudad;
 
 public class TablaAVL {
 
@@ -320,6 +321,42 @@ public class TablaAVL {
     private NodoAVLDicc rotacionDobleIzquierda(NodoAVLDicc nodo) {
         nodo.setDerecho(rotacionSimpleDerecha(nodo.getDerecho()));
         return rotacionSimpleIzquierda(nodo);
+    }
+
+//para el punto 7, listado de ciudades  ordenadas por consumo de agua anual
+    public String consumoAnual(int anio){
+        TablaAVL nuevaTabla = new TablaAVL();
+        Lista ciudades = this.listarDatos(); // Listo las ciudades originales para ir calculando el consumo anual
+        for (int i = 1; i <= ciudades.longitud(); i++) {
+            Ciudad ciudad = (Ciudad) ciudades.recuperar(i);
+            double consumo = ciudad.consumoAnual(anio); //el año se controla en el main
+            nuevaTabla.insertar(consumo, ciudad); // usa como clave el consumo y se ordena comparando este
+            }
+        String listado = nuevaTabla.toStringDeMayorAMenor();
+        return listado;
+    }
+
+    private String toStringDeMayorAMenor() {
+        String retorno = "[]"; //si no hay ciudades se imprime [ ] (?)
+        if (raiz != null){
+            StringBuilder sb = new StringBuilder(); //aparentemente es mas eficiente que concatenar strings (?)
+            toStringDeMayorAMenorAux(raiz, sb);
+            if (sb.length() >= 4) { //si hay contenido
+                sb.setLength(sb.length() - 4); // Elimina el último " -> " (los ultimos 4 caracteres)
+            }
+            retorno = sb.toString();
+        }
+        return retorno;
+    }
+
+    private void toStringDeMayorAMenorAux(NodoAVLDicc nodo, StringBuilder sb) { //inOrder inverso (derecha medio izquierda)
+        if (nodo != null) {
+        
+            toStringDeMayorAMenorAux(nodo.getDerecho(), sb);// Primero valores mayores
+            sb.append(nodo.getDato().toString()).append(" -> "); //no muestra el consumo anual, se podría agregar
+            toStringDeMayorAMenorAux(nodo.getIzquierdo(), sb); // Ultimo los menores
+
+        }
     }
 
 }
