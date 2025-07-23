@@ -344,7 +344,7 @@ public class TablaAVL {
         return listado;
     }
 
-    private String toStringDeMayorAMenor() {
+    public String toStringDeMayorAMenor() {
         String retorno = "[]"; //si no hay ciudades se imprime [ ] (?)
         if (raiz != null) {
             StringBuilder sb = new StringBuilder(); //aparentemente es mas eficiente que concatenar strings (?)

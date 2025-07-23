@@ -1,88 +1,186 @@
 package Testdeestructuras;
+
 import Estructuras.*;
 import EstructurasAuxiliares.Lista;
 import Objetos.*;
+import Archivo;
+import java.util.HashMap;
+import java.util.Scanner;
 
 public class testGeneral {
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
         DigrafoEtiquetado grafo = new DigrafoEtiquetado();
-        TablaAVL tabla= new TablaAVL();
+        TablaAVL ciudades = new TablaAVL();
+        HashMap<ClaveTuberia, Tuberia> Tuberias = new HashMap<>();
+        int opcion;
+        Character sigue='s';
 
-        //aca hice una prueba de que funciona el hashcode para el objeto clavetuberia
-        ClaveTuberia pruebahash = new ClaveTuberia("ab","cd");
-        int hash= pruebahash.hashCode();
-        System.out.println(hash);
-        
-        Ciudad c1 = new Ciudad("Buenos Aires", "BA", 203.5, 140.0);
-        Ciudad c2 = new Ciudad("Córdoba", "CBA", 576.2, 160.5);
-        Ciudad c3 = new Ciudad("Rosario", "RS", 310.3, 180.9);
-        Ciudad c4 = new Ciudad("Mendoza", "MDZ", 240.0, 150.0);
-        Ciudad c5 = new Ciudad("La Plata", "LP", 190.6, 135.3);
+        do {
+            System.out.println("---------------------Menu---------------------");
+            System.out.println("1) Altas, bajas y modificaciones de ciudades");
+            System.out.println("2) Atlas, bajas y modificaciones de tuberias");
+            System.out.println("3) Alta de información de la cantidad de habitantes para año dado y ciudad dada");
+            System.out.println("4) Consultas sobre ciudades");
+            System.out.println("5) Consultas sobre transporte de agua");
+            System.out.println("6) Listado de ciudades ordenadas por consumo");
+            System.out.println("7) Mostrar Sistema");
+            System.out.println("8) Detener Programa");
+            System.out.println("Elija una opcion");
+            opcion = sc.nextInt();
+            sc.nextLine();
+            switch (opcion) {
+                case 1:
+                    System.out.println("Altas, bajas y modificaciones de ciudades");
+                    System.out.println("1) Altas");
+                    System.out.println("2) Bajas");
+                    System.out.println("3) Modificaciones");
+                    System.out.println("Elija una opcion");
+                    opcion= sc.nextInt();
+                    sc.nextLine();
+                    switch (opcion) {
+                        case 1:
+                        System.out.println(":p");    
+                            break;
+                        case 2:
+                        System.out.println(":p");    
+                            break;
+                        case 3:
+                         System.out.println(":p");   
+                            break;
+                    
+                        default:
+                            System.out.println("Opción inválida");
+                            break;
+                    }
+                    break;
+                case 2:
+                    System.out.println("Altas, bajas y modificaciones de Tuberias");
+                    System.out.println("1) Altas");
+                    System.out.println("2) Bajas");
+                    System.out.println("3) Modificaciones");
+                    System.out.println("Elija una opcion");
+                    opcion= sc.nextInt();
+                    sc.nextLine(); //limpia el escaner
+                    switch (opcion) {
+                        case 1:
+                        System.out.println(":p");    
+                            break;
+                        case 2:
+                        System.out.println(":p");    
+                            break;
+                        case 3:
+                        System.out.println(":p");   
+                            break;
+                    
+                        default:
+                            System.out.println("Opción inválida");
+                            break;
+                    }
+                    break;
+                case 3:
+                    System.out.println("Alta de información de la cantidad de habitantes para año dado y ciudad dada");
+                    //llamado al modulo
+                    break;
+                case 4:
+                    System.out.println("Consultas sobre ciudades");
+                    System.out.println("1) Cantidad de habitantes y volumen de agua distribuído");
+                    System.out.println("2) Rango de ciudades con un consumo de agua en rango");
+                    System.out.println("Elija una opcion");
+                    opcion = sc.nextInt();
+                    sc.nextLine();
+                    switch (opcion) {
+                        case 1:
+                            //llamado al modulo
+                            System.out.println(":p");
+                            break;
+                        case 2:
+                            //llamado al modulo
+                            System.out.println(":p");
+                            break;
+                        default:
+                            System.out.println("Opción inválida");
+                            break;
+                    }
+                    break;
+                case 5:
+                    System.out.println("Consultas sobre transporte de agua");
+                    System.out.println("1) Camino minimo con caudal pleno");
+                    System.out.println("2) Camino con la cantidad minima de ciudades");
+                    System.out.println("Elija una opcion");
+                    opcion=sc.nextInt();
+                     sc.nextLine(); //limpia el escaner
+                    switch (opcion) {
+                        case 1:
+                            //llamada al módulo
+                            System.out.println(":p");
+                            break;
 
-        tabla.insertar("Buenos Aires", c1);
-        tabla.insertar("Córdoba", c2);
-        tabla.insertar("Rosario", c3);
-        tabla.insertar("Mendoza", c4);
-        tabla.insertar("La Plata", c5);
-        System.out.println("mostamos tabla");
-        System.out.println(tabla.toString());
-        System.out.println("mostramos lista de datos");
-        System.out.println(tabla.listarDatos().toString());
-        System.out.println("mostramos lista de claves");
-        System.out.println(tabla.listarClaves().toString());
-        
-        /* 
-        // Insertar vértices
-        grafo.insertarVertice(c1);
-        grafo.insertarVertice(c2);
-        grafo.insertarVertice(c3);
-        grafo.insertarVertice(c4);
-        grafo.insertarVertice(c5);
+                        case 2:
+                            //llamada al módulo
+                            System.out.println(":p");
+                            break;
+                    
+                        default:
+                            System.out.println("Opcion invalida");
+                            break;
+                    }
+                    break;
+                case 6:
+                    System.out.println("Listado de ciudades ordenadas por consumo");
+                    //llamada al modulo
+                    break;
+                case 7:
+                    System.out.println("Mostrar Todas las estructuras");
+                    //llamada al modulo
+                    break;
 
-        // Insertar arcos con etiquetas (pesos)
-        grafo.insertarArco(c1, c2, 120);  // BA → CBA
-        grafo.insertarArco(c1, c3, 180);  // BA → RS
-        grafo.insertarArco(c2, c4, 300);  // CBA → MDZ
-        grafo.insertarArco(c3, c4, 200);  // RS → MDZ
-        grafo.insertarArco(c4, c5, 150);  // MDZ → LP
-        grafo.insertarArco(c2, c5, 480);  // CBA → LP
-        grafo.toString();
-        System.out.println("Prueba eliminacion");
-        grafo.eliminarVertice(c4);
-        System.out.println(grafo.toString());
-        grafo.eliminarArco(c1, c3);
-        System.out.println("eliminar arco");
-        System.out.println(grafo.toString());
-       
-        // Pruebas de recorrido
-        System.out.println("Recorrido en profundidad:");
-        System.out.println(grafo.listarEnProfundidad());
+                case 8:
+                
+                    System.out.println("Hasta luego ;)");
+                    System.out.println();
+                    //deja de compilar/detiene el programa
+                    System.exit(0);
+                    break;
 
-        System.out.println("Recorrido en anchura:");
-        System.out.println(grafo.listarEnAnchura());
+                default:
+                    System.out.println("Opción inválida");
+                    break;
+            }
+            System.out.println("¿Desea continuar? S/N");
+            sigue = sc.nextLine().charAt(0);
+            
+    
+        } while (sigue =='s' || sigue == 'S');
 
-        // Probar camino más corto
-        Lista camino = grafo.caminoMasCorto(c1, c5);
-        System.out.println("Camino más corto de BA a LP (ignorando peso):");
-        System.out.println(camino);
-
-        Lista caminoMin = grafo.caminoMasChico(c1, c5);
-        System.out.println("Camino mínimo de BA a LP (con peso):");
-        System.out.println(caminoMin); */
     }
-    public Lista consumoDeAguaMesYAño(Lista lis, int minVol, int maxVol, int anio, int mes){
+
+    public static Lista consumoDeAguaMesYAño(Lista lis, int minVol, int maxVol, int anio, int mes) {
         Lista cumplen = new Lista();
-        int longLis=lis.longitud();
+        int longLis = lis.longitud();
         Ciudad aux;
         double consumoAux;
-        for(int i=1; i < longLis; i++){
-            aux= (Ciudad) lis.recuperar(i);
-            consumoAux=aux.consumoMensual(anio, mes);
-            if(consumoAux>minVol && consumoAux<maxVol){
-                cumplen.insertar(aux,1);
+        for (int i = 1; i < longLis; i++) {
+            aux = (Ciudad) lis.recuperar(i);
+            consumoAux = aux.consumoMensual(anio, mes);
+            if (consumoAux > minVol && consumoAux < maxVol) {
+                cumplen.insertar(aux, 1);
             }
         }
         return cumplen;
     }
-}
 
+    // para el punto 7, listado de ciudades ordenadas por consumo de agua anual
+    
+    public static String consumoAnual(int anio, TablaAVL ciudades) {
+        TablaAVL nuevaTabla = new TablaAVL();
+        Lista listaC = ciudades.listarDatos(); // Listo las ciudades originales para ir calculando el consumo anual
+        for (int i = 1; i <= listaC.longitud(); i++) {
+            Ciudad ciudad = (Ciudad) listaC.recuperar(i);
+            double consumo = ciudad.consumoAnual(anio); // el año se controla en el main
+            nuevaTabla.insertar(consumo, ciudad); // usa como clave el consumo y se ordena comparando este
+        }
+        String listado = nuevaTabla.toStringDeMayorAMenor();
+        return listado;
+    } 
+}
