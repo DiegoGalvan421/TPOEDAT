@@ -3,7 +3,6 @@ package Testdeestructuras;
 import Estructuras.*;
 import EstructurasAuxiliares.Lista;
 import Objetos.*;
-import Archivo;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -91,12 +90,10 @@ public class testGeneral {
                     sc.nextLine();
                     switch (opcion) {
                         case 1:
-                            //llamado al modulo
-                            System.out.println(":p");
+                            habYVolDeUnaCiudad(ciudades);
                             break;
                         case 2:
-                            //llamado al modulo
-                            System.out.println(":p");
+                            ciudadesSegunVolyHab(ciudades);
                             break;
                         default:
                             System.out.println("Opción inválida");
@@ -132,11 +129,9 @@ public class testGeneral {
                     break;
                 case 7:
                     System.out.println("Mostrar Todas las estructuras");
-                    //llamada al modulo
+                    mostrarEstructuras(Tuberias, grafo, ciudades);
                     break;
-
                 case 8:
-                
                     System.out.println("Hasta luego ;)");
                     System.out.println();
                     //deja de compilar/detiene el programa
@@ -154,7 +149,53 @@ public class testGeneral {
         } while (sigue =='s' || sigue == 'S');
 
     }
+    //punto 7
+    public static void mostrarEstructuras(HashMap tuberias, DigrafoEtiquetado grafo, TablaAVL ciudades){
+        System.out.println("Estructura del grafo:");
+        System.out.println(grafo.toString());
+        System.out.println(" \n");
+        System.out.println("Estructura de la tablaAVL:");
+        System.out.println(ciudades.toString());
+        System.out.println(" \n");
+        System.out.println("Estructura del hashMap:");
+        System.out.println(tuberias.toString());
 
+    }
+    //ejercicio 4a
+    public static void habYVolDeUnaCiudad(TablaAVL ciudades){
+        Scanner sc = new Scanner(System.in);
+        String nombre;
+        Ciudad aux;
+        int anio, mes;
+        System.out.println("ingrese el nombre de la ciudad");
+        nombre=sc.nextLine();
+        System.out.println("ingrese el mes");
+        mes=sc.nextInt();
+        System.out.println("ingrese el año");
+        anio=sc.nextInt();
+        aux=(Ciudad) ciudades.obtenerInformacion(nombre);
+        System.out.println("Cantidad de habitantes:"+aux.getHabitantesMes(anio, mes));
+        System.out.println("Consumo de agua:"+aux.consumoMensual(anio, mes));
+    }
+    //ejercicio 4b
+    public static void ciudadesSegunVolyHab(TablaAVL ciudades){
+        Scanner sc = new Scanner(System.in);
+        int minVol,maxVol,anio,mes;
+        String minNomb,maxNomb;
+        System.out.println("Ingrese el Nombre de la primer ciudad");
+        minNomb=sc.nextLine();
+        System.out.println("ingrese el nombre de la segunda ciudad");
+        maxNomb=sc.nextLine();
+        System.out.println("ingrese el volumen minimo");
+        minVol=sc.nextInt();
+        System.out.println("ingrese el volumen maximo");
+        maxVol=sc.nextInt();
+        System.out.println("ingrese el año");
+        anio=sc.nextInt();
+        System.out.println("ingrese el mes");
+        mes=sc.nextInt();
+        System.out.println(consumoDeAguaMesYAño(ciudades.listarRango(minNomb, maxNomb), minVol, maxVol, anio, mes));        
+    }
     public static Lista consumoDeAguaMesYAño(Lista lis, int minVol, int maxVol, int anio, int mes) {
         Lista cumplen = new Lista();
         int longLis = lis.longitud();

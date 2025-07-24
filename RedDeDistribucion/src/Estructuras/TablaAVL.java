@@ -219,7 +219,7 @@ public class TablaAVL {
     public String toString() {
         String res;
         if (this.raiz == null) {
-            res = "tabla vacia";
+            res = "Tabla vacia";
         } else {
             res = this.toStringRec(this.raiz);
         }

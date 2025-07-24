@@ -546,7 +546,8 @@ public class DigrafoEtiquetado {
     public String toString() {
         String resultado = "";
         NodoVert actual = this.inicio;
-        while (actual != null) {
+        if(this.inicio!=null){
+            while (actual != null) {
             resultado += "Vértice: " + actual.getElem() + "\n";
             NodoAdy ady = actual.getPrimerAdy();
             if (ady == null) {
@@ -564,6 +565,10 @@ public class DigrafoEtiquetado {
             }
             actual = actual.getSigVertice();
         }
+        }else{
+            resultado="Grafo vacio";
+        }
+        
         return resultado;
     }
 }
