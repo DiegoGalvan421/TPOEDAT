@@ -3,6 +3,10 @@ package Testdeestructuras;
 import Estructuras.*;
 import EstructurasAuxiliares.Lista;
 import Objetos.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -10,11 +14,17 @@ public class testGeneral {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         DigrafoEtiquetado grafo = new DigrafoEtiquetado();
-        TablaAVL ciudades = new TablaAVL();
-        HashMap<ClaveTuberia, Tuberia> Tuberias = new HashMap<>();
+        TablaAVL ciudades=Archivo.cargarCiudades("C:\\Users\\HOLA\\Desktop\\Ciudades.txt", grafo);
+        HashMap<ClaveTuberia, Tuberia> Tuberias=Archivo.cargarTuberias("C:\\Users\\HOLA\\Desktop\\Tuberias.txt", grafo);
+        System.out.println(ciudades.toString());
+        System.out.println(Tuberias.toString());
+        cargarHabCiudad("C:\\Users\\HOLA\\Desktop\\Habitantes historicos.txt",ciudades);
+        Ciudad aux= (Ciudad) ciudades.obtenerInformacion("Buenos Aires");
+        
+        System.out.println(aux.verHab(2021));
         int opcion;
         Character sigue='s';
-
+        
         do {
             System.out.println("---------------------Menu---------------------");
             System.out.println("1) Altas, bajas y modificaciones de ciudades");
@@ -149,6 +159,7 @@ public class testGeneral {
         } while (sigue =='s' || sigue == 'S');
 
     }
+    //separamos los ejercicios en modulos para que se entienda mejor, despues se modificaran si no se quieren asi.
     //punto 7
     public static void mostrarEstructuras(HashMap tuberias, DigrafoEtiquetado grafo, TablaAVL ciudades){
         System.out.println("Estructura del grafo:");
@@ -224,4 +235,42 @@ public class testGeneral {
         String listado = nuevaTabla.toStringDeMayorAMenor();
         return listado;
     } 
+    //carga de habitantes historicos por ciudad
+    public static void cargarHabCiudad(String rutaArchivo, TablaAVL ciudades){
+        FileReader archivo; // Para abrir el archivo.
+    BufferedReader lector; // Para leer el archivo línea por línea.
+    int i;//contador para los meses
+    int j = 0; // Índice base para acceder a los campos del arreglo `info`.
+    int mes=1; //contador meses
+    Ciudad aux;
+    try {
+        archivo = new FileReader(rutaArchivo); // Intenta abrir el archivo.
+        if (archivo.ready()) { // Verifica que esté listo para ser leído.
+            lector = new BufferedReader(archivo); // Crea el lector de líneas.
+            String cadena;
+
+            // Lee cada línea del archivo
+            while ((cadena = lector.readLine()) != null) {
+                // Divide la línea por el carácter ';' y obtiene los datos como arreglo.
+                String[] info = cadena.split(";");
+                aux= (Ciudad) ciudades.obtenerInformacion(info[j].trim());
+                for(i=3;i<info.length;i++){
+                    aux.setHabitantesMes(Integer.parseInt(info[1]),mes,Integer.parseInt(info[i]));
+                    mes++;
+                }
+                mes=1;
+
+            }
+        } else {
+            System.out.println("no se");
+        }
+
+    } catch (FileNotFoundException ex) {
+        System.out.println(ex.getMessage());
+    } catch (IOException ex) {
+        System.out.println("el archivo no esa listo");
+    }
+
+
+    }
 }

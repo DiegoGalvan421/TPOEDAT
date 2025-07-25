@@ -5,7 +5,7 @@ public class Tuberia {
     private double caudalMin;
     private double caudalMax;
     private double diametro;
-    private char estado; // "A(ctivo) R(eparación) D(iseño) I(nactivo)"
+    private String estado; // "A(ctivo) R(eparación) D(iseño) I(nactivo)"
 
     /**
      * Constructor.
@@ -16,7 +16,7 @@ public class Tuberia {
      * @param unDiametro
      * @param unEstado
      */
-    public Tuberia(String nom, double min, double max, double unDiametro, char unEstado) {
+    public Tuberia(String nom, double min, double max, double unDiametro, String unEstado) {
         nomenclatura = nom;
         caudalMin = min;
         caudalMax = max;
@@ -43,13 +43,13 @@ public class Tuberia {
         return diametro;
     }
 
-    public char getEstado() {
+    public String getEstado() {
         return estado;
     }
 
     /* MODIFICADORAS */
 
-    public void setEstado(char unEstado) {
+    public void setEstado(String unEstado) {
         estado = unEstado;
     }
 

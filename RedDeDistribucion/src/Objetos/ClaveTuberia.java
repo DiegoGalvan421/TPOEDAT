@@ -7,7 +7,9 @@ public class ClaveTuberia {
         this.origen=origen;
         this.destino=destino;
     }
-
+    public String toString(){
+        return origen+"-"+destino;
+    }
     public boolean equals(ClaveTuberia otra){
         return((this.origen.equals(otra.origen))&& (this.destino.equals(otra.destino)));
     }

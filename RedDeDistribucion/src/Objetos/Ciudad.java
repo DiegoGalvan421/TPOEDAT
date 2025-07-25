@@ -94,7 +94,17 @@ public class Ciudad {
         return "\nCiudad: " + nombre + "\nNomenclatura: " + nomenclatura + "\nSuperficie: "
                 + superficie + "\nConsumo Promedio: " + consumoPromedio + "\n";
     }
+    //metodo agregado para prueba de codigo
+    public String verHab(int anio){
+        String mostrar= "Anio:";
+        for(int i=0; i<12;i++){
+            mostrar+= "mes "+i+": ";
+            mostrar+=((habitantesHistoricos.get(anio)[i]));
+            mostrar+="\n";
+        }
 
+        return mostrar;
+    }
     public boolean equals(Ciudad otra) {
         return (this.nomenclatura.equals(otra.nomenclatura));
 
