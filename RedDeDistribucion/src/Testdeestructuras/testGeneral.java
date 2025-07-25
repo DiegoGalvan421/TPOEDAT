@@ -241,7 +241,6 @@ public class testGeneral {
     BufferedReader lector; // Para leer el archivo línea por línea.
     int i;//contador para los meses
     int j = 0; // Índice base para acceder a los campos del arreglo `info`.
-    int mes=1; //contador meses
     Ciudad aux;
     try {
         archivo = new FileReader(rutaArchivo); // Intenta abrir el archivo.
@@ -254,11 +253,11 @@ public class testGeneral {
                 // Divide la línea por el carácter ';' y obtiene los datos como arreglo.
                 String[] info = cadena.split(";");
                 aux= (Ciudad) ciudades.obtenerInformacion(info[j].trim());
-                for(i=3;i<info.length;i++){
+                int mes=1;
+                for(i=2;i<info.length;i++){
                     aux.setHabitantesMes(Integer.parseInt(info[1]),mes,Integer.parseInt(info[i]));
                     mes++;
                 }
-                mes=1;
 
             }
         } else {
