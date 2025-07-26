@@ -105,6 +105,9 @@ public class Ciudad {
 
         return mostrar;
     }
+    public boolean anioRegistrado(int anio){
+        return habitantesHistoricos.containsKey(anio); //verifica que haya una clave con este año (si se ha registrado información sobre este año)
+    }
     public boolean equals(Ciudad otra) {
         return (this.nomenclatura.equals(otra.nomenclatura));
 

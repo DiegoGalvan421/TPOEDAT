@@ -14,17 +14,18 @@ public class testGeneral {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         DigrafoEtiquetado grafo = new DigrafoEtiquetado();
-        TablaAVL ciudades=Archivo.cargarCiudades("C:\\Users\\HOLA\\Desktop\\Ciudades.txt", grafo);
-        HashMap<ClaveTuberia, Tuberia> Tuberias=Archivo.cargarTuberias("C:\\Users\\HOLA\\Desktop\\Tuberias.txt", grafo);
+        TablaAVL ciudades = Archivo.cargarCiudades("C:\\Users\\JG\\Desktop\\txtTp\\Ciudades.txt", grafo);
+        HashMap<ClaveTuberia, Tuberia> Tuberias = Archivo.cargarTuberias("C:\\Users\\JG\\Desktop\\txtTp\\Tuberias.txt",
+                grafo);
         System.out.println(ciudades.toString());
         System.out.println(Tuberias.toString());
-        cargarHabCiudad("C:\\Users\\HOLA\\Desktop\\Habitantes historicos.txt",ciudades);
-        Ciudad aux= (Ciudad) ciudades.obtenerInformacion("Buenos Aires");
-        
+        cargarHabCiudad("C:\\Users\\JG\\Desktop\\txtTp\\Habitantes historicos.txt", ciudades);
+        Ciudad aux = (Ciudad) ciudades.obtenerInformacion("Buenos Aires");
+
         System.out.println(aux.verHab(2021));
         int opcion;
-        Character sigue='s';
-        
+        Character sigue = 's';
+
         do {
             System.out.println("---------------------Menu---------------------");
             System.out.println("1) Altas, bajas y modificaciones de ciudades");
@@ -45,19 +46,19 @@ public class testGeneral {
                     System.out.println("2) Bajas");
                     System.out.println("3) Modificaciones");
                     System.out.println("Elija una opcion");
-                    opcion= sc.nextInt();
+                    opcion = sc.nextInt();
                     sc.nextLine();
                     switch (opcion) {
                         case 1:
-                        System.out.println(":p");    
+                            System.out.println(":p");
                             break;
                         case 2:
-                        System.out.println(":p");    
+                            System.out.println(":p");
                             break;
                         case 3:
-                         System.out.println(":p");   
+                            System.out.println(":p");
                             break;
-                    
+
                         default:
                             System.out.println("Opción inválida");
                             break;
@@ -69,19 +70,19 @@ public class testGeneral {
                     System.out.println("2) Bajas");
                     System.out.println("3) Modificaciones");
                     System.out.println("Elija una opcion");
-                    opcion= sc.nextInt();
-                    sc.nextLine(); //limpia el escaner
+                    opcion = sc.nextInt();
+                    sc.nextLine(); // limpia el escaner
                     switch (opcion) {
                         case 1:
-                        System.out.println(":p");    
+                            System.out.println(":p");
                             break;
                         case 2:
-                        System.out.println(":p");    
+                            System.out.println(":p");
                             break;
                         case 3:
-                        System.out.println(":p");   
+                            System.out.println(":p");
                             break;
-                    
+
                         default:
                             System.out.println("Opción inválida");
                             break;
@@ -89,7 +90,7 @@ public class testGeneral {
                     break;
                 case 3:
                     System.out.println("Alta de información de la cantidad de habitantes para año dado y ciudad dada");
-                    //llamado al modulo
+                    // llamado al modulo
                     break;
                 case 4:
                     System.out.println("Consultas sobre ciudades");
@@ -115,19 +116,19 @@ public class testGeneral {
                     System.out.println("1) Camino minimo con caudal pleno");
                     System.out.println("2) Camino con la cantidad minima de ciudades");
                     System.out.println("Elija una opcion");
-                    opcion=sc.nextInt();
-                     sc.nextLine(); //limpia el escaner
+                    opcion = sc.nextInt();
+                    sc.nextLine(); // limpia el escaner
                     switch (opcion) {
                         case 1:
-                            //llamada al módulo
+                            // llamada al módulo
                             System.out.println(":p");
                             break;
 
                         case 2:
-                            //llamada al módulo
+                            // llamada al módulo
                             System.out.println(":p");
                             break;
-                    
+
                         default:
                             System.out.println("Opcion invalida");
                             break;
@@ -135,7 +136,7 @@ public class testGeneral {
                     break;
                 case 6:
                     System.out.println("Listado de ciudades ordenadas por consumo");
-                    //llamada al modulo
+                    // llamada al modulo
                     break;
                 case 7:
                     System.out.println("Mostrar Todas las estructuras");
@@ -144,7 +145,7 @@ public class testGeneral {
                 case 8:
                     System.out.println("Hasta luego ;)");
                     System.out.println();
-                    //deja de compilar/detiene el programa
+                    // deja de compilar/detiene el programa
                     System.exit(0);
                     break;
 
@@ -154,14 +155,16 @@ public class testGeneral {
             }
             System.out.println("¿Desea continuar? S/N");
             sigue = sc.nextLine().charAt(0);
-            
-    
-        } while (sigue =='s' || sigue == 'S');
+
+        } while (sigue == 's' || sigue == 'S');
+        System.out.println("Hasta luego ;)");
 
     }
-    //separamos los ejercicios en modulos para que se entienda mejor, despues se modificaran si no se quieren asi.
-    //punto 7
-    public static void mostrarEstructuras(HashMap tuberias, DigrafoEtiquetado grafo, TablaAVL ciudades){
+
+    // separamos los ejercicios en modulos para que se entienda mejor, despues se
+    // modificaran si no se quieren asi.
+    // punto 7
+    public static void mostrarEstructuras(HashMap tuberias, DigrafoEtiquetado grafo, TablaAVL ciudades) {
         System.out.println("Estructura del grafo:");
         System.out.println(grafo.toString());
         System.out.println(" \n");
@@ -172,41 +175,57 @@ public class testGeneral {
         System.out.println(tuberias.toString());
 
     }
-    //ejercicio 4a
-    public static void habYVolDeUnaCiudad(TablaAVL ciudades){
+
+    // ejercicio 4a
+    public static void habYVolDeUnaCiudad(TablaAVL ciudades) {
         Scanner sc = new Scanner(System.in);
         String nombre;
         Ciudad aux;
         int anio, mes;
         System.out.println("ingrese el nombre de la ciudad");
-        nombre=sc.nextLine();
-        System.out.println("ingrese el mes");
-        mes=sc.nextInt();
+        nombre = sc.nextLine();
+        aux = (Ciudad) ciudades.obtenerInformacion(nombre);
         System.out.println("ingrese el año");
-        anio=sc.nextInt();
-        aux=(Ciudad) ciudades.obtenerInformacion(nombre);
-        System.out.println("Cantidad de habitantes:"+aux.getHabitantesMes(anio, mes));
-        System.out.println("Consumo de agua:"+aux.consumoMensual(anio, mes));
+        anio = sc.nextInt();
+        if (!aux.anioRegistrado(anio)) {
+            System.out.println("El año ingresado no tiene datos ingresados");
+        } else {
+            System.out.println("ingrese el mes");
+            mes = sc.nextInt();
+            if (!(mes > 0 && mes < 13)) { //si el mes no está entre 1 y 12
+                System.out.println("mes inválido");
+            } else { 
+                /* 
+                 *importante aclarar que no vuelve a pedir los datos 
+                 *solo se pregunta si se quiere volver a elegir otra opcion en el menú 
+                 *esta decisión es para no complicarnos tanto, se puede cambiar 
+                */
+                System.out.println("Cantidad de habitantes:" + aux.getHabitantesMes(anio, mes));
+                System.out.println("Consumo de agua:" + aux.consumoMensual(anio, mes));
+            }
+        }
     }
-    //ejercicio 4b
-    public static void ciudadesSegunVolyHab(TablaAVL ciudades){
+
+    // ejercicio 4b
+    public static void ciudadesSegunVolyHab(TablaAVL ciudades) {
         Scanner sc = new Scanner(System.in);
-        int minVol,maxVol,anio,mes;
-        String minNomb,maxNomb;
+        int minVol, maxVol, anio, mes;
+        String minNomb, maxNomb;
         System.out.println("Ingrese el Nombre de la primer ciudad");
-        minNomb=sc.nextLine();
+        minNomb = sc.nextLine();
         System.out.println("ingrese el nombre de la segunda ciudad");
-        maxNomb=sc.nextLine();
+        maxNomb = sc.nextLine();
         System.out.println("ingrese el volumen minimo");
-        minVol=sc.nextInt();
+        minVol = sc.nextInt();
         System.out.println("ingrese el volumen maximo");
-        maxVol=sc.nextInt();
+        maxVol = sc.nextInt();
         System.out.println("ingrese el año");
-        anio=sc.nextInt();
+        anio = sc.nextInt();
         System.out.println("ingrese el mes");
-        mes=sc.nextInt();
-        System.out.println(consumoDeAguaMesYAño(ciudades.listarRango(minNomb, maxNomb), minVol, maxVol, anio, mes));        
+        mes = sc.nextInt();
+        System.out.println(consumoDeAguaMesYAño(ciudades.listarRango(minNomb, maxNomb), minVol, maxVol, anio, mes));
     }
+
     public static Lista consumoDeAguaMesYAño(Lista lis, int minVol, int maxVol, int anio, int mes) {
         Lista cumplen = new Lista();
         int longLis = lis.longitud();
@@ -223,7 +242,7 @@ public class testGeneral {
     }
 
     // para el punto 7, listado de ciudades ordenadas por consumo de agua anual
-    
+
     public static String consumoAnual(int anio, TablaAVL ciudades) {
         TablaAVL nuevaTabla = new TablaAVL();
         Lista listaC = ciudades.listarDatos(); // Listo las ciudades originales para ir calculando el consumo anual
@@ -234,42 +253,42 @@ public class testGeneral {
         }
         String listado = nuevaTabla.toStringDeMayorAMenor();
         return listado;
-    } 
-    //carga de habitantes historicos por ciudad
-    public static void cargarHabCiudad(String rutaArchivo, TablaAVL ciudades){
-        FileReader archivo; // Para abrir el archivo.
-    BufferedReader lector; // Para leer el archivo línea por línea.
-    int i;//contador para los meses
-    int j = 0; // Índice base para acceder a los campos del arreglo `info`.
-    Ciudad aux;
-    try {
-        archivo = new FileReader(rutaArchivo); // Intenta abrir el archivo.
-        if (archivo.ready()) { // Verifica que esté listo para ser leído.
-            lector = new BufferedReader(archivo); // Crea el lector de líneas.
-            String cadena;
-
-            // Lee cada línea del archivo
-            while ((cadena = lector.readLine()) != null) {
-                // Divide la línea por el carácter ';' y obtiene los datos como arreglo.
-                String[] info = cadena.split(";");
-                aux= (Ciudad) ciudades.obtenerInformacion(info[j].trim());
-                int mes=1;
-                for(i=2;i<info.length;i++){
-                    aux.setHabitantesMes(Integer.parseInt(info[1]),mes,Integer.parseInt(info[i]));
-                    mes++;
-                }
-
-            }
-        } else {
-            System.out.println("no se");
-        }
-
-    } catch (FileNotFoundException ex) {
-        System.out.println(ex.getMessage());
-    } catch (IOException ex) {
-        System.out.println("el archivo no esa listo");
     }
 
+    // carga de habitantes historicos por ciudad
+    public static void cargarHabCiudad(String rutaArchivo, TablaAVL ciudades) {
+        FileReader archivo; // Para abrir el archivo.
+        BufferedReader lector; // Para leer el archivo línea por línea.
+        int i;// contador para los meses
+        int j = 0; // Índice base para acceder a los campos del arreglo `info`.
+        Ciudad aux;
+        try {
+            archivo = new FileReader(rutaArchivo); // Intenta abrir el archivo.
+            if (archivo.ready()) { // Verifica que esté listo para ser leído.
+                lector = new BufferedReader(archivo); // Crea el lector de líneas.
+                String cadena;
+
+                // Lee cada línea del archivo
+                while ((cadena = lector.readLine()) != null) {
+                    // Divide la línea por el carácter ';' y obtiene los datos como arreglo.
+                    String[] info = cadena.split(";");
+                    aux = (Ciudad) ciudades.obtenerInformacion(info[j].trim());
+                    int mes = 1;
+                    for (i = 2; i < info.length; i++) {
+                        aux.setHabitantesMes(Integer.parseInt(info[1]), mes, Integer.parseInt(info[i]));
+                        mes++;
+                    }
+
+                }
+            } else {
+                System.out.println("no se");
+            }
+
+        } catch (FileNotFoundException ex) {
+            System.out.println(ex.getMessage());
+        } catch (IOException ex) {
+            System.out.println("el archivo no esa listo");
+        }
 
     }
 }
