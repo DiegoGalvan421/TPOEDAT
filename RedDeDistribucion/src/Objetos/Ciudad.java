@@ -2,7 +2,7 @@ package Objetos;
 
 import java.util.HashMap;
 
-public class Ciudad {
+public class Ciudad implements Comparable<Ciudad> {
 
     private String nombre;
     private HashMap<Integer, int[]> habitantesHistoricos;
@@ -111,11 +111,6 @@ public class Ciudad {
         return habitantesHistoricos.containsKey(anio); //verifica que haya una clave con este año (si se ha registrado información sobre este año)
     }
 
-    public boolean equals(Ciudad otra) {
-        return (this.nomenclatura.equals(otra.nomenclatura));
-
-    }
-
     //este metodo nos sera de utilidad para el punto 4.
     public double consumoMensual(int anio, int mes) {
         //teniendo en cuenta que la cantidad de habitantes es en 1 mes
@@ -148,4 +143,13 @@ public class Ciudad {
         }
         return consumoAnual;
     }
+    @Override
+    public int compareTo(Ciudad otra) {
+    return this.nombre.compareTo(otra.nombre);
+    }
+    public boolean equals(Ciudad otra) {
+        return (this.nomenclatura.equals(otra.nomenclatura));
+
+    }
 }
+

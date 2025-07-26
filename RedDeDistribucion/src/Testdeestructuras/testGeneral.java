@@ -125,7 +125,7 @@ public class testGeneral {
                             break;
 
                         case 2:
-                            caminoMenosCiudades(grafo,Tuberias,ciudades);
+                            caminoMenosCiudades(grafo, Tuberias, ciudades);
                             break;
 
                         default:
@@ -162,7 +162,6 @@ public class testGeneral {
 
     // separamos los ejercicios en modulos para que se entienda mejor, despues se
     // modificaran si no se quieren asi.
-
     //punto 5a
     public static void caminoMenorCaudal(DigrafoEtiquetado grafo, HashMap tuberias, TablaAVL ciudades) {
         Scanner sc = new Scanner(System.in);
@@ -201,6 +200,7 @@ public class testGeneral {
             }
         }
     }
+
     //punto 5b
     public static void caminoMenosCiudades(DigrafoEtiquetado grafo, HashMap tuberias, TablaAVL ciudades) {
         Scanner sc = new Scanner(System.in);
@@ -239,6 +239,7 @@ public class testGeneral {
             }
         }
     }
+
     //ya se hizo el punto 5, faltaria que considere, cuando hay mas de un estado
     //es decir, diseño-reparacion,reparacion-inactivo y asi.
     public static String verEstadoCam(HashMap<ClaveTuberia, Tuberia> tuberias, Lista camino, TablaAVL ciudades) {
@@ -257,7 +258,7 @@ public class testGeneral {
                 estado = tuberia.getEstado();
             } else {
                 // Si no encuentra la tubería, retornar error
-                estado="ERROR: TUBERIA NO ENCONTRADA";
+                estado = "ERROR: TUBERIA NO ENCONTRADA";
             }
 
             i++;
@@ -333,8 +334,11 @@ public class testGeneral {
     //los volumenes son bastante altos, podriamos modificarlos para que sean un poco mas chicos
     public static Lista consumoDeAguaMesYAño(Lista lis, int minVol, int maxVol, int anio, int mes) {
         Lista cumplen = new Lista();
+        //verifica que la lista contenga algo
         if (lis != null && lis.longitud() > 0) {
+            //verifica que los volumenes ingresados sean correctos
             if (minVol < maxVol) {
+                //verifica los meses dentro del estandar
                 if (mes > 0 && mes < 13) {
                     int longLis = lis.longitud();
                     Ciudad aux;
@@ -417,7 +421,7 @@ public class testGeneral {
 
                 }
             } else {
-                System.out.println("no se");
+                System.out.println("El archivo no esta listo");
             }
 
         } catch (FileNotFoundException ex) {

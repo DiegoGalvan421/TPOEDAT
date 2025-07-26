@@ -230,9 +230,15 @@ public class TablaAVL {
     private String toStringRec(NodoAVLDicc n) {
         String s = "";
         if (n != null) {
-            s += "Clave:" + n.getClave().toString() + " \n"
-                    + //
-                    "Dato:" + n.getDato();
+            s += n.getClave().toString() + " -> ";
+            s += "HI:";
+            if(n.getIzquierdo() != null){
+            s += n.getIzquierdo().getClave().toString();
+            } 
+            s += " HD:";
+            if(n.getDerecho() != null){  
+            s += n.getDerecho().getClave().toString();
+            }
             s += "\n";
             s += toStringRec(n.getIzquierdo());
             s += toStringRec(n.getDerecho());
