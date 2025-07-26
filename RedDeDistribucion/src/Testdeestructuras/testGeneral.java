@@ -16,10 +16,10 @@ public class testGeneral {
         Scanner sc = new Scanner(System.in);
         DigrafoEtiquetado grafo = new DigrafoEtiquetado();
         TablaAVL ciudades = Archivo.cargarCiudades("C:\\Users\\HOLA\\Desktop\\Ciudades.txt", grafo);
-        HashMap<ClaveTuberia, Tuberia> Tuberias = Archivo.cargarTuberias("C:\\Users\\HOLA\\Desktop\\Tuberias.txt",
-                grafo);
+        HashMap<ClaveTuberia, Tuberia> Tuberias = Archivo.cargarTuberias("C:\\Users\\HOLA\\Desktop\\Tuberias.txt", grafo);
         System.out.println(ciudades.toString());
         System.out.println(Tuberias.toString());
+        System.out.println(grafo.toString());
         cargarHabCiudad("C:\\Users\\HOLA\\Desktop\\Habitantes historicos.txt", ciudades);
         Ciudad aux = (Ciudad) ciudades.obtenerInformacion("Buenos Aires");
 
@@ -121,13 +121,11 @@ public class testGeneral {
                     sc.nextLine(); // limpia el escaner
                     switch (opcion) {
                         case 1:
-                            // llamada al módulo
-                            System.out.println(":p");
+                            caminoMenorCaudal(grafo, Tuberias, ciudades);
                             break;
 
                         case 2:
-                            // llamada al módulo
-                            System.out.println(":p");
+                            caminoMenosCiudades(grafo,Tuberias,ciudades);
                             break;
 
                         default:
@@ -164,7 +162,112 @@ public class testGeneral {
 
     // separamos los ejercicios en modulos para que se entienda mejor, despues se
     // modificaran si no se quieren asi.
+
+    //punto 5a
+    public static void caminoMenorCaudal(DigrafoEtiquetado grafo, HashMap tuberias, TablaAVL ciudades) {
+        Scanner sc = new Scanner(System.in);
+        String origen, destino, estado;
+        Lista camino = new Lista();
+
+        System.out.println("ingrese el nombre de la primera ciudad");
+        origen = sc.nextLine().trim();
+
+        System.out.println("ingrese el nombre de la segunda ciudad");
+        destino = sc.nextLine().trim();
+
+        if (ciudades.obtenerInformacion(origen) != null && ciudades.obtenerInformacion(destino) != null && !origen.equals(destino)) {
+            camino = grafo.caminoMasChico(((Ciudad) ciudades.obtenerInformacion(origen)).getNomenclatura(), ((Ciudad) ciudades.obtenerInformacion(destino)).getNomenclatura());
+
+            if (!camino.esVacia() && camino.longitud() > 1) {
+                estado = verEstadoCam(tuberias, camino, ciudades);
+
+                if (estado != null) {
+                    System.out.println("El camino con menor caudal Pleno es:");
+                    System.out.println(camino.toString());
+                    System.out.println("su estado es: " + estado);
+                } else {
+                    System.out.println("Error al verificar el estado del camino");
+                }
+            } else {
+                System.out.println("ese camino no existe");
+            }
+        } else {
+            if (ciudades.obtenerInformacion(origen) == null) {
+                System.out.println("La ciudad origen '" + origen + "' no existe");
+            } else if (ciudades.obtenerInformacion(destino) == null) {
+                System.out.println("La ciudad destino '" + destino + "' no existe");
+            } else if (origen.equals(destino)) {
+                System.out.println("Las ciudades origen y destino son la misma");
+            }
+        }
+    }
+    //punto 5b
+    public static void caminoMenosCiudades(DigrafoEtiquetado grafo, HashMap tuberias, TablaAVL ciudades) {
+        Scanner sc = new Scanner(System.in);
+        String origen, destino, estado;
+        Lista camino = new Lista();
+
+        System.out.println("ingrese el nombre de la primera ciudad");
+        origen = sc.nextLine().trim();
+
+        System.out.println("ingrese el nombre de la segunda ciudad");
+        destino = sc.nextLine().trim();
+
+        if (ciudades.obtenerInformacion(origen) != null && ciudades.obtenerInformacion(destino) != null && !origen.equals(destino)) {
+            camino = grafo.caminoMasCorto(((Ciudad) ciudades.obtenerInformacion(origen)).getNomenclatura(), ((Ciudad) ciudades.obtenerInformacion(destino)).getNomenclatura());
+
+            if (!camino.esVacia() && camino.longitud() > 1) {
+                estado = verEstadoCam(tuberias, camino, ciudades);
+
+                if (estado != null) {
+                    System.out.println("El camino con menor cantidad de ciudades es:");
+                    System.out.println(camino.toString());
+                    System.out.println("su estado es: " + estado);
+                } else {
+                    System.out.println("Error al verificar el estado del camino");
+                }
+            } else {
+                System.out.println("ese camino no existe");
+            }
+        } else {
+            if (ciudades.obtenerInformacion(origen) == null) {
+                System.out.println("La ciudad origen '" + origen + "' no existe");
+            } else if (ciudades.obtenerInformacion(destino) == null) {
+                System.out.println("La ciudad destino '" + destino + "' no existe");
+            } else if (origen.equals(destino)) {
+                System.out.println("Las ciudades origen y destino son la misma");
+            }
+        }
+    }
+    //ya se hizo el punto 5, faltaria que considere, cuando hay mas de un estado
+    //es decir, diseño-reparacion,reparacion-inactivo y asi.
+    public static String verEstadoCam(HashMap<ClaveTuberia, Tuberia> tuberias, Lista camino, TablaAVL ciudades) {
+        String estado = "ACTIVO";
+        int i = 1, j = 2;
+
+        while (estado.equals("ACTIVO") && j <= camino.longitud()) {
+            String origen = (String) camino.recuperar(i);
+            String destino = (String) camino.recuperar(j);
+
+            // Buscar tubería
+            ClaveTuberia clave = new ClaveTuberia(origen, destino);
+            Tuberia tuberia = tuberias.get(clave);
+
+            if (tuberia != null) {
+                estado = tuberia.getEstado();
+            } else {
+                // Si no encuentra la tubería, retornar error
+                estado="ERROR: TUBERIA NO ENCONTRADA";
+            }
+
+            i++;
+            j++;
+        }
+
+        return estado;
+    }
     // punto 7
+
     public static void mostrarEstructuras(HashMap tuberias, DigrafoEtiquetado grafo, TablaAVL ciudades) {
         System.out.println("Estructura del grafo:");
         System.out.println(grafo.toString());
@@ -226,6 +329,7 @@ public class testGeneral {
         mes = sc.nextInt();
         System.out.println(consumoDeAguaMesYAño(ciudades.listarRango(minNomb, maxNomb), minVol, maxVol, anio, mes));
     }
+
     //los volumenes son bastante altos, podriamos modificarlos para que sean un poco mas chicos
     public static Lista consumoDeAguaMesYAño(Lista lis, int minVol, int maxVol, int anio, int mes) {
         Lista cumplen = new Lista();
@@ -240,7 +344,7 @@ public class testGeneral {
                             aux = (Ciudad) lis.recuperar(i);
                             if (aux != null) {
                                 // Solo procesar si la ciudad tiene datos para ese año
-                                
+
                                 if (aux.anioRegistrado(anio)) {
                                     /* 
                                     esto es solo una operacion para chequear algo

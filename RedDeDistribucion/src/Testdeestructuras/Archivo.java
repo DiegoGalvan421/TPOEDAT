@@ -52,7 +52,7 @@ public class Archivo {
                             Double.parseDouble(info[j + 2]), // superficie.
                             Double.parseDouble(info[j + 3])) // consumo.
                     );
-                    grafo.insertarVertice(info[j + 1]);
+                    grafo.insertarVertice(info[j+1]);
                      
                     log("U:\\Universidad\\LICENCIATURA EN CIENCIAS DE LA COMPUTACION\\SEGUNDO AÑO\\CURSADO-2025\\PRIMER CUATRIMESTRE\\11-ESTRUCTURA DE DATOS\\Estructura de Datos - 2025\\tpFinal\\log.txt",
                             i + ": " + "Ciudad Cargada");

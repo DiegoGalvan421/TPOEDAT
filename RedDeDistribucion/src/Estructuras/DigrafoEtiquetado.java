@@ -368,8 +368,8 @@ public class DigrafoEtiquetado {
         NodoVert vertOrigen = this.ubicarVertice(origen);
         NodoVert vertDestino = this.ubicarVertice(destino);
         if (vertOrigen != null && vertDestino != null) {
-            int[] pesoMin = {-1}; // suponiendo que la minima etiqueta es 0
-            caminoMasChicoAux(vertOrigen, destino, new Lista(), camino, 0, pesoMin);
+            Double[] pesoMin = {-1.0}; // suponiendo que la minima etiqueta es 0
+            caminoMasChicoAux(vertOrigen, destino, new Lista(), camino, 0.0, pesoMin);
         }
         return camino;
     }
@@ -380,7 +380,7 @@ public class DigrafoEtiquetado {
      * encuentra uno con menor peso.
      */
 
-    private void caminoMasChicoAux(NodoVert n, Object destino, Lista vis, Lista caminoActual, int pesoActual, int[] pesoMin) {
+    private void caminoMasChicoAux(NodoVert n, Object destino, Lista vis, Lista caminoActual, Double pesoActual, Double[] pesoMin) {
         if (n != null) {
 
             vis.insertar(n.getElem(), vis.longitud() + 1);
@@ -398,7 +398,7 @@ public class DigrafoEtiquetado {
                 NodoAdy ady = n.getPrimerAdy();
                 while (ady != null) {
                     if (vis.localizar(ady.getVertice().getElem()) < 0) { //seguimos si el vértice adyacente no fue visitado 
-                        int pesoEtiqueta = (int) ady.getEtiqueta();
+                        Double pesoEtiqueta = (Double) ady.getEtiqueta();
                         caminoMasChicoAux(ady.getVertice(), destino, vis, caminoActual, pesoActual + pesoEtiqueta, pesoMin); //recursivo y acumulamos el peso total
                     }
                     // Avanzamos al siguiente adyacente
