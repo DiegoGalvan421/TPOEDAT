@@ -91,7 +91,7 @@ public class testGeneral {
                     break;
                 case 3:
                     System.out.println("Alta de información de la cantidad de habitantes para año dado y ciudad dada");
-                    // llamado al modulo
+                    altaDeInformacionCanHab(ciudades);
                     break;
                 case 4:
                     System.out.println("Consultas sobre ciudades");
@@ -162,6 +162,37 @@ public class testGeneral {
 
     // separamos los ejercicios en modulos para que se entienda mejor, despues se
     // modificaran si no se quieren asi.
+    //punto 3
+    //funciona perfecto, habria que ver de limitar el año que se pueda poner
+    public static void altaDeInformacionCanHab(TablaAVL ciudad){
+        Scanner sc = new Scanner(System.in);
+        int mes, anio, cant;
+        String nombre;
+        System.out.println("ingrese la ciudad");
+        nombre=sc.nextLine();
+        System.out.println("ingrese el año");
+        anio=sc.nextInt();
+        Ciudad aux= (Ciudad) ciudad.obtenerInformacion(nombre);
+        if(aux!=null){
+            if(!aux.anioRegistrado(anio)){
+                for(mes=1;mes<=12;mes++){
+                System.out.println("ingrese la cantidad de habitante para el mes "+mes);
+                cant= sc.nextInt();
+                if(aux.setHabitantesMes(anio, mes, cant)){
+                    System.out.println("el mes se registro con exito");
+                }else{
+                    System.out.println("el mes no se pudo registrar");
+                }
+                }
+            }else{
+                System.out.println("el anio no es valido");
+            }
+            
+        }else{
+            System.out.println("la ciudad no existe");
+        }
+
+    }
     //punto 5a
     public static void caminoMenorCaudal(DigrafoEtiquetado grafo, HashMap tuberias, TablaAVL ciudades) {
         Scanner sc = new Scanner(System.in);
