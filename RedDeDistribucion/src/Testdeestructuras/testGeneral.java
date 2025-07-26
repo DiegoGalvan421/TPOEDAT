@@ -11,15 +11,16 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class testGeneral {
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         DigrafoEtiquetado grafo = new DigrafoEtiquetado();
-        TablaAVL ciudades = Archivo.cargarCiudades("C:\\Users\\JG\\Desktop\\txtTp\\Ciudades.txt", grafo);
-        HashMap<ClaveTuberia, Tuberia> Tuberias = Archivo.cargarTuberias("C:\\Users\\JG\\Desktop\\txtTp\\Tuberias.txt",
+        TablaAVL ciudades = Archivo.cargarCiudades("C:\\Users\\HOLA\\Desktop\\Ciudades.txt", grafo);
+        HashMap<ClaveTuberia, Tuberia> Tuberias = Archivo.cargarTuberias("C:\\Users\\HOLA\\Desktop\\Tuberias.txt",
                 grafo);
         System.out.println(ciudades.toString());
         System.out.println(Tuberias.toString());
-        cargarHabCiudad("C:\\Users\\JG\\Desktop\\txtTp\\Habitantes historicos.txt", ciudades);
+        cargarHabCiudad("C:\\Users\\HOLA\\Desktop\\Habitantes historicos.txt", ciudades);
         Ciudad aux = (Ciudad) ciudades.obtenerInformacion("Buenos Aires");
 
         System.out.println(aux.verHab(2021));
@@ -194,12 +195,12 @@ public class testGeneral {
             mes = sc.nextInt();
             if (!(mes > 0 && mes < 13)) { //si el mes no está entre 1 y 12
                 System.out.println("mes inválido");
-            } else { 
+            } else {
                 /* 
                  *importante aclarar que no vuelve a pedir los datos 
                  *solo se pregunta si se quiere volver a elegir otra opcion en el menú 
                  *esta decisión es para no complicarnos tanto, se puede cambiar 
-                */
+                 */
                 System.out.println("Cantidad de habitantes:" + aux.getHabitantesMes(anio, mes));
                 System.out.println("Consumo de agua:" + aux.consumoMensual(anio, mes));
             }
@@ -225,24 +226,55 @@ public class testGeneral {
         mes = sc.nextInt();
         System.out.println(consumoDeAguaMesYAño(ciudades.listarRango(minNomb, maxNomb), minVol, maxVol, anio, mes));
     }
-
+    //los volumenes son bastante altos, podriamos modificarlos para que sean un poco mas chicos
     public static Lista consumoDeAguaMesYAño(Lista lis, int minVol, int maxVol, int anio, int mes) {
         Lista cumplen = new Lista();
-        int longLis = lis.longitud();
-        Ciudad aux;
-        double consumoAux;
-        for (int i = 1; i < longLis; i++) {
-            aux = (Ciudad) lis.recuperar(i);
-            consumoAux = aux.consumoMensual(anio, mes);
-            if (consumoAux > minVol && consumoAux < maxVol) {
-                cumplen.insertar(aux, 1);
+        if (lis != null && lis.longitud() > 0) {
+            if (minVol < maxVol) {
+                if (mes > 0 && mes < 13) {
+                    int longLis = lis.longitud();
+                    Ciudad aux;
+                    double consumoAux;
+                    for (int i = 1; i <= longLis; i++) {
+                        try {
+                            aux = (Ciudad) lis.recuperar(i);
+                            if (aux != null) {
+                                // Solo procesar si la ciudad tiene datos para ese año
+                                
+                                if (aux.anioRegistrado(anio)) {
+                                    /* 
+                                    esto es solo una operacion para chequear algo
+                                    System.out.println("Ciudad: " + aux.getNombre());
+                                    System.out.println("Habitantes sept 2021: " + aux.getHabitantesMes(2021, 9));
+                                    System.out.println("Consumo promedio: " + aux.getConsumo());
+                                    double consumo = aux.consumoMensual(2021, 9);
+                                    System.out.println("Consumo calculado: " + consumo);
+                                    System.out.println("¿Entra en rango " + minVol + "-" + maxVol + "? " + (consumo > minVol && consumo < maxVol));
+                                    System.out.println("---"); */
+                                    consumoAux = aux.consumoMensual(anio, mes);
+
+                                    if (consumoAux > 0 && consumoAux > minVol && consumoAux < maxVol) {
+                                        cumplen.insertar(aux, cumplen.longitud() + 1);
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Error al acceder al elemento " + i);
+                        }
+                    }
+                } else {
+                    System.out.println("mes inválido");
+                }
+            } else {
+                System.out.println("Rango de volúmenes inválido: minVol debe ser menor que maxVol");
             }
+        } else {
+            System.out.println("Lista vacía o nula");
         }
         return cumplen;
     }
 
     // para el punto 7, listado de ciudades ordenadas por consumo de agua anual
-
     public static String consumoAnual(int anio, TablaAVL ciudades) {
         TablaAVL nuevaTabla = new TablaAVL();
         Lista listaC = ciudades.listarDatos(); // Listo las ciudades originales para ir calculando el consumo anual
