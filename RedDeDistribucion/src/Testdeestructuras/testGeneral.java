@@ -1,7 +1,7 @@
 package Testdeestructuras;
 
 import Estructuras.*;
-import EstructurasAuxiliares.Lista;
+import EstructurasAuxiliares.*;
 import Objetos.*;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -15,12 +15,12 @@ public class testGeneral {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         DigrafoEtiquetado grafo = new DigrafoEtiquetado();
-        TablaAVL ciudades = Archivo.cargarCiudades("C:\\Users\\HOLA\\Desktop\\Ciudades.txt", grafo);
-        HashMap<ClaveTuberia, Tuberia> Tuberias = Archivo.cargarTuberias("C:\\Users\\HOLA\\Desktop\\Tuberias.txt", grafo);
+        TablaAVL ciudades = Archivo.cargarCiudades("C:\\Users\\JG\\Desktop\\txtTp\\Ciudades.txt", grafo);
+        HashMap<ClaveTuberia, Tuberia> Tuberias = Archivo.cargarTuberias("C:\\Users\\JG\\Desktop\\txtTp\\Tuberias.txt", grafo);
         System.out.println(ciudades.toString());
         System.out.println(Tuberias.toString());
         System.out.println(grafo.toString());
-        cargarHabCiudad("C:\\Users\\HOLA\\Desktop\\Habitantes historicos.txt", ciudades);
+        cargarHabCiudad("C:\\Users\\JG\\Desktop\\txtTp\\Habitantes historicos.txt", ciudades);
         Ciudad aux = (Ciudad) ciudades.obtenerInformacion("Buenos Aires");
 
         System.out.println(aux.verHab(2021));
@@ -134,8 +134,11 @@ public class testGeneral {
                     }
                     break;
                 case 6:
-                    System.out.println("Listado de ciudades ordenadas por consumo");
-                    // llamada al modulo
+                    System.out.println("Listado de ciudades ordenadas por consumo anual");
+                    System.out.println("Ingrese el año");
+                    int anio = sc.nextInt(); //cómo controlo el año?
+                    sc.nextLine();
+                    System.out.println(consumoAnual(anio, ciudades));//si alguna ciudad no tiene datos guardados de algun año pero las otras si salta un error, correjir eso
                     break;
                 case 7:
                     System.out.println("Mostrar Todas las estructuras");
@@ -162,38 +165,38 @@ public class testGeneral {
 
     // separamos los ejercicios en modulos para que se entienda mejor, despues se
     // modificaran si no se quieren asi.
-    //punto 3
-    //funciona perfecto, habria que ver de limitar el año que se pueda poner
-    public static void altaDeInformacionCanHab(TablaAVL ciudad){
+    // punto 3
+    public static void altaDeInformacionCanHab(TablaAVL ciudad) {
         Scanner sc = new Scanner(System.in);
         int mes, anio, cant;
         String nombre;
         System.out.println("ingrese la ciudad");
-        nombre=sc.nextLine();
+        nombre = sc.nextLine();
         System.out.println("ingrese el año");
-        anio=sc.nextInt();
-        Ciudad aux= (Ciudad) ciudad.obtenerInformacion(nombre);
-        if(aux!=null){
-            if(!aux.anioRegistrado(anio)){
-                for(mes=1;mes<=12;mes++){
-                System.out.println("ingrese la cantidad de habitante para el mes "+mes);
-                cant= sc.nextInt();
-                if(aux.setHabitantesMes(anio, mes, cant)){
-                    System.out.println("el mes se registro con exito");
-                }else{
-                    System.out.println("el mes no se pudo registrar");
+        anio = sc.nextInt();
+        Ciudad aux = (Ciudad) ciudad.obtenerInformacion(nombre);
+        if (aux != null) {
+            if (!aux.anioRegistrado(anio)) {
+                for (mes = 1; mes <= 12; mes++) {
+                    System.out.println("ingrese la cantidad de habitante para el mes " + mes);
+                    cant = sc.nextInt();
+                    if (aux.setHabitantesMes(anio, mes, cant)) {
+                        System.out.println("el mes se registro con exito");
+                    } else {
+                        System.out.println("el mes no se pudo registrar");
+                    }
                 }
-                }
-            }else{
+            } else {
                 System.out.println("el anio no es valido");
             }
-            
-        }else{
+
+        } else {
             System.out.println("la ciudad no existe");
         }
 
     }
-    //punto 5a
+
+    // punto 5a
     public static void caminoMenorCaudal(DigrafoEtiquetado grafo, HashMap tuberias, TablaAVL ciudades) {
         Scanner sc = new Scanner(System.in);
         String origen, destino, estado;
@@ -205,8 +208,10 @@ public class testGeneral {
         System.out.println("ingrese el nombre de la segunda ciudad");
         destino = sc.nextLine().trim();
 
-        if (ciudades.obtenerInformacion(origen) != null && ciudades.obtenerInformacion(destino) != null && !origen.equals(destino)) {
-            camino = grafo.caminoMasChico(((Ciudad) ciudades.obtenerInformacion(origen)).getNomenclatura(), ((Ciudad) ciudades.obtenerInformacion(destino)).getNomenclatura());
+        if (ciudades.obtenerInformacion(origen) != null && ciudades.obtenerInformacion(destino) != null
+                && !origen.equals(destino)) {
+            camino = grafo.caminoMasChico(((Ciudad) ciudades.obtenerInformacion(origen)).getNomenclatura(),
+                    ((Ciudad) ciudades.obtenerInformacion(destino)).getNomenclatura());
 
             if (!camino.esVacia() && camino.longitud() > 1) {
                 estado = verEstadoCam(tuberias, camino, ciudades);
@@ -232,7 +237,7 @@ public class testGeneral {
         }
     }
 
-    //punto 5b
+    // punto 5b
     public static void caminoMenosCiudades(DigrafoEtiquetado grafo, HashMap tuberias, TablaAVL ciudades) {
         Scanner sc = new Scanner(System.in);
         String origen, destino, estado;
@@ -244,8 +249,10 @@ public class testGeneral {
         System.out.println("ingrese el nombre de la segunda ciudad");
         destino = sc.nextLine().trim();
 
-        if (ciudades.obtenerInformacion(origen) != null && ciudades.obtenerInformacion(destino) != null && !origen.equals(destino)) {
-            camino = grafo.caminoMasCorto(((Ciudad) ciudades.obtenerInformacion(origen)).getNomenclatura(), ((Ciudad) ciudades.obtenerInformacion(destino)).getNomenclatura());
+        if (ciudades.obtenerInformacion(origen) != null && ciudades.obtenerInformacion(destino) != null
+                && !origen.equals(destino)) {
+            camino = grafo.caminoMasCorto(((Ciudad) ciudades.obtenerInformacion(origen)).getNomenclatura(),
+                    ((Ciudad) ciudades.obtenerInformacion(destino)).getNomenclatura());
 
             if (!camino.esVacia() && camino.longitud() > 1) {
                 estado = verEstadoCam(tuberias, camino, ciudades);
@@ -271,8 +278,8 @@ public class testGeneral {
         }
     }
 
-    //ya se hizo el punto 5, faltaria que considere, cuando hay mas de un estado
-    //es decir, diseño-reparacion,reparacion-inactivo y asi.
+    // ya se hizo el punto 5, faltaria que considere, cuando hay mas de un estado
+    // es decir, diseño-reparacion,reparacion-inactivo y asi.
     public static String verEstadoCam(HashMap<ClaveTuberia, Tuberia> tuberias, Lista camino, TablaAVL ciudades) {
         String estado = "ACTIVO";
         int i = 1, j = 2;
@@ -328,13 +335,13 @@ public class testGeneral {
         } else {
             System.out.println("ingrese el mes");
             mes = sc.nextInt();
-            if (!(mes > 0 && mes < 13)) { //si el mes no está entre 1 y 12
+            if (!(mes > 0 && mes < 13)) { // si el mes no está entre 1 y 12
                 System.out.println("mes inválido");
             } else {
-                /* 
-                 *importante aclarar que no vuelve a pedir los datos 
-                 *solo se pregunta si se quiere volver a elegir otra opcion en el menú 
-                 *esta decisión es para no complicarnos tanto, se puede cambiar 
+                /*
+                 * importante aclarar que no vuelve a pedir los datos
+                 * solo se pregunta si se quiere volver a elegir otra opcion en el menú
+                 * esta decisión es para no complicarnos tanto, se puede cambiar
                  */
                 System.out.println("Cantidad de habitantes:" + aux.getHabitantesMes(anio, mes));
                 System.out.println("Consumo de agua:" + aux.consumoMensual(anio, mes));
@@ -362,14 +369,15 @@ public class testGeneral {
         System.out.println(consumoDeAguaMesYAño(ciudades.listarRango(minNomb, maxNomb), minVol, maxVol, anio, mes));
     }
 
-    //los volumenes son bastante altos, podriamos modificarlos para que sean un poco mas chicos
+    // los volumenes son bastante altos, podriamos modificarlos para que sean un
+    // poco mas chicos
     public static Lista consumoDeAguaMesYAño(Lista lis, int minVol, int maxVol, int anio, int mes) {
         Lista cumplen = new Lista();
-        //verifica que la lista contenga algo
+        // verifica que la lista contenga algo
         if (lis != null && lis.longitud() > 0) {
-            //verifica que los volumenes ingresados sean correctos
+            // verifica que los volumenes ingresados sean correctos
             if (minVol < maxVol) {
-                //verifica los meses dentro del estandar
+                // verifica los meses dentro del estandar
                 if (mes > 0 && mes < 13) {
                     int longLis = lis.longitud();
                     Ciudad aux;
@@ -381,15 +389,17 @@ public class testGeneral {
                                 // Solo procesar si la ciudad tiene datos para ese año
 
                                 if (aux.anioRegistrado(anio)) {
-                                    /* 
-                                    esto es solo una operacion para chequear algo
-                                    System.out.println("Ciudad: " + aux.getNombre());
-                                    System.out.println("Habitantes sept 2021: " + aux.getHabitantesMes(2021, 9));
-                                    System.out.println("Consumo promedio: " + aux.getConsumo());
-                                    double consumo = aux.consumoMensual(2021, 9);
-                                    System.out.println("Consumo calculado: " + consumo);
-                                    System.out.println("¿Entra en rango " + minVol + "-" + maxVol + "? " + (consumo > minVol && consumo < maxVol));
-                                    System.out.println("---"); */
+                                    /*
+                                     * esto es solo una operacion para chequear algo
+                                     * System.out.println("Ciudad: " + aux.getNombre());
+                                     * System.out.println("Habitantes sept 2021: " + aux.getHabitantesMes(2021, 9));
+                                     * System.out.println("Consumo promedio: " + aux.getConsumo());
+                                     * double consumo = aux.consumoMensual(2021, 9);
+                                     * System.out.println("Consumo calculado: " + consumo);
+                                     * System.out.println("¿Entra en rango " + minVol + "-" + maxVol + "? " +
+                                     * (consumo > minVol && consumo < maxVol));
+                                     * System.out.println("---");
+                                     */
                                     consumoAux = aux.consumoMensual(anio, mes);
 
                                     if (consumoAux > 0 && consumoAux > minVol && consumoAux < maxVol) {
@@ -413,16 +423,16 @@ public class testGeneral {
         return cumplen;
     }
 
-    // para el punto 7, listado de ciudades ordenadas por consumo de agua anual
+    // para el punto 6, listado de ciudades ordenadas por consumo de agua anual
     public static String consumoAnual(int anio, TablaAVL ciudades) {
-        TablaAVL nuevaTabla = new TablaAVL();
+        TablaHeapMax heap = new TablaHeapMax();
         Lista listaC = ciudades.listarDatos(); // Listo las ciudades originales para ir calculando el consumo anual
         for (int i = 1; i <= listaC.longitud(); i++) {
             Ciudad ciudad = (Ciudad) listaC.recuperar(i);
             double consumo = ciudad.consumoAnual(anio); // el año se controla en el main
-            nuevaTabla.insertar(consumo, ciudad); // usa como clave el consumo y se ordena comparando este
+            heap.insertar(consumo, ciudad); // usa como clave el consumo y se ordena comparando este
         }
-        String listado = nuevaTabla.toStringDeMayorAMenor();
+        String listado = heap.toStringOrdenado();
         return listado;
     }
 
