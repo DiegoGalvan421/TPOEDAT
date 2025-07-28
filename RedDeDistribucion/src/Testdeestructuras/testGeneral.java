@@ -16,7 +16,8 @@ public class testGeneral {
         Scanner sc = new Scanner(System.in);
         DigrafoEtiquetado grafo = new DigrafoEtiquetado();
         TablaAVL ciudades = Archivo.cargarCiudades("C:\\Users\\JG\\Desktop\\txtTp\\Ciudades.txt", grafo);
-        HashMap<ClaveTuberia, Tuberia> Tuberias = Archivo.cargarTuberias("C:\\Users\\JG\\Desktop\\txtTp\\Tuberias.txt", grafo);
+        HashMap<ClaveTuberia, Tuberia> Tuberias = Archivo.cargarTuberias("C:\\Users\\JG\\Desktop\\txtTp\\Tuberias.txt",
+                grafo);
         System.out.println(ciudades.toString());
         System.out.println(Tuberias.toString());
         System.out.println(grafo.toString());
@@ -136,9 +137,12 @@ public class testGeneral {
                 case 6:
                     System.out.println("Listado de ciudades ordenadas por consumo anual");
                     System.out.println("Ingrese el año");
-                    int anio = sc.nextInt(); //cómo controlo el año?
+                    int anio = sc.nextInt(); // cómo controlo el año?
                     sc.nextLine();
-                    System.out.println(consumoAnual(anio, ciudades));//si alguna ciudad no tiene datos guardados de algun año pero las otras si salta un error, correjir eso
+                    System.out.println(consumoAnual(anio, ciudades));// si alguna ciudad no tiene datos guardados de
+                                                                     // algun año pero las otras si salta un error,
+                                                                     // correjir eso
+                                                                     //CORRECCION: si alguna ciudad no tiene datos guardados en ese año directamente no se inserta en el heap
                     break;
                 case 7:
                     System.out.println("Mostrar Todas las estructuras");
@@ -425,12 +429,14 @@ public class testGeneral {
 
     // para el punto 6, listado de ciudades ordenadas por consumo de agua anual
     public static String consumoAnual(int anio, TablaAVL ciudades) {
-        TablaHeapMax heap = new TablaHeapMax();
+        TablaHeapMax heap = new TablaHeapMax();//heap para cubrir los casos en los que mas de 1 ciudad tenga el mismo consumo
         Lista listaC = ciudades.listarDatos(); // Listo las ciudades originales para ir calculando el consumo anual
         for (int i = 1; i <= listaC.longitud(); i++) {
             Ciudad ciudad = (Ciudad) listaC.recuperar(i);
-            double consumo = ciudad.consumoAnual(anio); // el año se controla en el main
-            heap.insertar(consumo, ciudad); // usa como clave el consumo y se ordena comparando este
+            if (ciudad.anioRegistrado(anio)) {//las ciudades que no tengan registrado datos en este año directamente no se insertan, está bien?
+                double consumo = ciudad.consumoAnual(anio);
+                heap.insertar(consumo, ciudad); // usa como clave el consumo y se ordena comparando este
+            }
         }
         String listado = heap.toStringOrdenado();
         return listado;
