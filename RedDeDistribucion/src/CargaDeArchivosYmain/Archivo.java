@@ -1,4 +1,4 @@
-package Testdeestructuras;
+package CargaDeArchivosYmain;
 // Permite leer texto de un archivo de manera eficiente, línea por línea.
 import Estructuras.*;
 import Objetos.*;

@@ -1,4 +1,4 @@
-package Testdeestructuras;
+package CargaDeArchivosYmain;
 
 import Estructuras.*;
 import EstructurasAuxiliares.*;
@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class testGeneral {
+public class General {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
