@@ -331,10 +331,13 @@ public class DigrafoEtiquetado {
      * los caminos posibles y guarda el más corto en caminoActual.
      */
     private void caminoMasCortoAux(NodoVert n, Object destino, Lista vis, Lista caminoActual) {
-        if (n != null) {
-            // Marca el vértice como visitado
+    boolean continuar = true;
+    if (n != null) {
+        if (!caminoActual.esVacia() && vis.longitud() >= caminoActual.longitud()) {
+            continuar = false;
+        }
+        if (continuar) {
             vis.insertar(n.getElem(), vis.longitud() + 1);
-            // Si llegamos al destino, actualizamos el camino si es más corto
             if (n.getElem().equals(destino)) {
                 if (caminoActual.esVacia() || vis.longitud() < caminoActual.longitud()) {
                     caminoActual.vaciar();
@@ -343,8 +346,6 @@ public class DigrafoEtiquetado {
                     }
                 }
             } else {
-                // Recorremos los adyacentes no visitados
-
                 NodoAdy ady = n.getPrimerAdy();
                 while (ady != null) {
                     if (vis.localizar(ady.getVertice().getElem()) < 0) {
@@ -353,9 +354,10 @@ public class DigrafoEtiquetado {
                     ady = ady.getSigAdyacente();
                 }
             }
-            vis.eliminar(vis.longitud()); // backtrack
+            vis.eliminar(vis.longitud());
         }
     }
+}
 
     /**
      * Busca el camino de menor peso (suma de etiquetas) entre origen y destino.

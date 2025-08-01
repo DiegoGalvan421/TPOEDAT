@@ -15,7 +15,7 @@ public class TablaAVL {
         return existeClaveAux(this.raiz, clave);
     }
 
-    //estructura auxiliar para ver si una clave pertenece a la tabla
+    // estructura auxiliar para ver si una clave pertenece a la tabla
     private boolean existeClaveAux(NodoAVLDicc n, Comparable clave) {
         boolean exito = false;
         if (n != null) {
@@ -59,38 +59,38 @@ public class TablaAVL {
     }
 
     public boolean insertar(Comparable clave, Object dato) {
-        boolean[] exito = new boolean[]{false};
-        NodoAVLDicc nuevoNodo = new NodoAVLDicc(clave, dato, null, null);
-        this.raiz = insertarAux(this.raiz, nuevoNodo, exito);
+        boolean[] exito = new boolean[] { false };
+        this.raiz = insertarAux(this.raiz, clave, dato, exito);
         return exito[0];
     }
 
-    private NodoAVLDicc insertarAux(NodoAVLDicc r, NodoAVLDicc nuevoNodo, boolean[] exito) {
-        //inserta solo si no esta en la tabla
+    private NodoAVLDicc insertarAux(NodoAVLDicc r, Comparable clave, Object dato, boolean[] exito) {
+        // inserta solo si no esta en la tabla
         if (r == null) {
-            r = nuevoNodo;
+            r = new NodoAVLDicc(clave, dato, null, null);
             exito[0] = true;
-            //si llego al final y no se encontro, se inserta
-        } else if (nuevoNodo.getClave().compareTo(r.getClave()) < 0) {
-            //se mueve a izquierda
-            r.setIzquierdo(insertarAux(r.getIzquierdo(), nuevoNodo, exito));
-        } else if (nuevoNodo.getClave().compareTo(r.getClave()) > 0) {
-            //se mueve a derecha
-            r.setDerecho(insertarAux(r.getDerecho(), nuevoNodo, exito));
+            // si llego al final y no se encontro, se inserta
+        } else if (clave.compareTo(r.getClave()) < 0) {
+            // se mueve a izquierda
+            r.setIzquierdo(insertarAux(r.getIzquierdo(), clave, dato, exito));
+        } else if (clave.compareTo(r.getClave()) > 0) {
+            // se mueve a derecha
+            r.setDerecho(insertarAux(r.getDerecho(), clave, dato, exito));
         }
-        //balancea y recalcula altura despues de que finaliza cada llamado recursivo
+        // balancea y recalcula altura despues de que finaliza cada llamado recursivo
         r.recalcularAltura();
         return balancear(r);
     }
 
     public boolean eliminar(Comparable elem) {
-        boolean[] exito = new boolean[]{false};
+        boolean[] exito = new boolean[] { false };
         if (this.raiz != null) {
             this.raiz = eliminarAux(this.raiz, elem, exito);
         }
         return exito[0];
     }
 
+     // Elimina recursivamente y balancea el árbol
     private NodoAVLDicc eliminarAux(NodoAVLDicc nodo, Comparable elem, boolean[] exito) {
         if (nodo != null) {
             if (elem.compareTo(nodo.getClave()) < 0) {
@@ -101,18 +101,17 @@ public class TablaAVL {
                 exito[0] = true;
                 // Nodo encontrado
                 if (nodo.getDerecho() == null && nodo.getIzquierdo() == null) {
-                    nodo = null;
+                    nodo = null; // Caso hoja
                 } else if (nodo.getIzquierdo() == null) {
-                    nodo = nodo.getDerecho();
+                    nodo = nodo.getDerecho(); // Solo hijo derecho
                 } else if (nodo.getDerecho() == null) {
-                    nodo = nodo.getIzquierdo();
+                    nodo = nodo.getIzquierdo(); // Solo hijo izquierdo
                 } else {
-                    // Nodo con dos hijos que busca el sucesor
+                    // Nodo con dos hijos, busca el sucesor y lo elimina
                     nodo = reemplazarMenorDerecho(nodo);
-
                 }
             }
-            // Verificar si el nodo no es null antes de recalcular altura y balancear
+            // Recalcula altura y balancea si el nodo no es null
             if (nodo != null) {
                 nodo.recalcularAltura();
                 nodo = balancear(nodo);
@@ -121,32 +120,38 @@ public class TablaAVL {
         return nodo;
     }
 
+    // Reemplaza el nodo por el menor del subárbol derecho (sucesor)
     private NodoAVLDicc reemplazarMenorDerecho(NodoAVLDicc nodo) {
-        NodoAVLDicc actual = nodo.getDerecho();
-
-        if (actual.getIzquierdo() == null) {
-            // Copia clave y dato del sucesor
-            nodo.setClave(actual.getClave());
-            nodo.setDato(actual.getDato());
-            nodo.setDerecho(actual.getDerecho());
+        NodoAVLDicc resultado = nodo;
+        NodoAVLDicc derecho = nodo.getDerecho();
+        if (derecho.getIzquierdo() == null) {
+            // El sucesor inmediato
+            nodo.setClave(derecho.getClave());
+            nodo.setDato(derecho.getDato());
+            nodo.setDerecho(derecho.getDerecho());
         } else {
-            // Busca el menor del subárbol derecho
-            NodoAVLDicc anterior = actual;
-            while (actual.getIzquierdo() != null) {
-                anterior = actual;
-                actual = actual.getIzquierdo();
-            }
-            nodo.setClave(actual.getClave());
-            nodo.setDato(actual.getDato());
-            anterior.setIzquierdo(actual.getDerecho());
-            // Recalcula altura y balancea desde anterior
-            anterior.recalcularAltura();
-            anterior = balancear(anterior);
+            // El sucesor está más abajo, lo elimina recursivamente
+            nodo.setDerecho(eliminarMenor(derecho, nodo));
         }
-        // Recalcula altura y balancea el nodo raíz de este subárbol
         nodo.recalcularAltura();
-        nodo = balancear(nodo);
-        return nodo;
+        resultado = balancear(nodo);
+        return resultado;
+    }
+
+    // Elimina el menor del subárbol y balancea toda la rama
+    private NodoAVLDicc eliminarMenor(NodoAVLDicc nodo, NodoAVLDicc reemplazado) {
+        NodoAVLDicc resultado = nodo;
+        if (nodo.getIzquierdo() == null) {
+            // Este es el menor, copia clave/dato al nodo a reemplazar
+            reemplazado.setClave(nodo.getClave());
+            reemplazado.setDato(nodo.getDato());
+            resultado = nodo.getDerecho();
+        } else {
+            nodo.setIzquierdo(eliminarMenor(nodo.getIzquierdo(), reemplazado));
+            nodo.recalcularAltura();
+            resultado = balancear(nodo);
+        }
+        return resultado;
     }
 
     public Lista listarClaves() {
@@ -181,7 +186,7 @@ public class TablaAVL {
     private void listarDatosAux(NodoAVLDicc n, Lista lis) {
         // supongo que ordenada de menor a mayor
         if (n != null) {
-             if (n.getDerecho() != null) {
+            if (n.getDerecho() != null) {
                 listarDatosAux(n.getDerecho(), lis);
             }
             lis.insertar(n.getDato(), lis.longitud() + 1);
@@ -230,14 +235,19 @@ public class TablaAVL {
     private String toStringRec(NodoAVLDicc n) {
         String s = "";
         if (n != null) {
-            s += n.getClave().toString() + " -> ";
-            s += "HI:";
-            if(n.getIzquierdo() != null){
-            s += n.getIzquierdo().getClave().toString();
-            } 
-            s += " HD:";
-            if(n.getDerecho() != null){  
-            s += n.getDerecho().getClave().toString();
+            s += "Clave: " + n.getClave().toString();
+            s += ", Altura: " + n.getAltura();
+            s += "\n HI: ";
+            if (n.getIzquierdo() != null) {
+                s += n.getIzquierdo().getClave().toString();
+            } else {
+                s += "null";
+            }
+            s += "\n HD: ";
+            if (n.getDerecho() != null) {
+                s += n.getDerecho().getClave().toString();
+            } else {
+                s += "null";
             }
             s += "\n";
             s += toStringRec(n.getIzquierdo());
@@ -278,7 +288,7 @@ public class TablaAVL {
         }
     }
 
-    //estructuras auxiliares para balancear el avl
+    // estructuras auxiliares para balancear el avl
     private NodoAVLDicc balancear(NodoAVLDicc nodo) {
         int balance = obtenerBalance(nodo);
         NodoAVLDicc aux = nodo;
@@ -312,8 +322,9 @@ public class TablaAVL {
         NodoAVLDicc temp = h.getDerecho();
         h.setDerecho(r);
         r.setIzquierdo(temp);
-        h.recalcularAltura();
         r.recalcularAltura();
+        h.recalcularAltura();
+
         return h;
     }
 
@@ -337,13 +348,13 @@ public class TablaAVL {
         return rotacionSimpleIzquierda(nodo);
     }
 
-//para el punto 7, listado de ciudades  ordenadas por consumo de agua anual
+    // para el punto 7, listado de ciudades ordenadas por consumo de agua anual
     public String consumoAnual(int anio) {
         TablaAVL nuevaTabla = new TablaAVL();
         Lista ciudades = this.listarDatos(); // Listo las ciudades originales para ir calculando el consumo anual
         for (int i = 1; i <= ciudades.longitud(); i++) {
             Ciudad ciudad = (Ciudad) ciudades.recuperar(i);
-            double consumo = ciudad.consumoAnual(anio); //el año se controla en el main
+            double consumo = ciudad.consumoAnual(anio); // el año se controla en el main
             nuevaTabla.insertar(consumo, ciudad); // usa como clave el consumo y se ordena comparando este
         }
         String listado = nuevaTabla.toStringDeMayorAMenor();
@@ -351,11 +362,11 @@ public class TablaAVL {
     }
 
     public String toStringDeMayorAMenor() {
-        String retorno = "[]"; //si no hay ciudades se imprime [ ] (?)
+        String retorno = "[]"; // si no hay ciudades se imprime [ ] (?)
         if (raiz != null) {
-            StringBuilder sb = new StringBuilder(); //aparentemente es mas eficiente que concatenar strings (?)
+            StringBuilder sb = new StringBuilder(); // aparentemente es mas eficiente que concatenar strings (?)
             toStringDeMayorAMenorAux(raiz, sb);
-            if (sb.length() >= 4) { //si hay contenido
+            if (sb.length() >= 4) { // si hay contenido
                 sb.setLength(sb.length() - 4); // Elimina el último " -> " (los ultimos 4 caracteres)
             }
             retorno = sb.toString();
@@ -363,11 +374,12 @@ public class TablaAVL {
         return retorno;
     }
 
-    private void toStringDeMayorAMenorAux(NodoAVLDicc nodo, StringBuilder sb) { //inOrder inverso (derecha medio izquierda)
+    private void toStringDeMayorAMenorAux(NodoAVLDicc nodo, StringBuilder sb) { // inOrder inverso (derecha medio
+                                                                                // izquierda)
         if (nodo != null) {
 
             toStringDeMayorAMenorAux(nodo.getDerecho(), sb);// Primero valores mayores
-            sb.append(nodo.getDato().toString()).append(" -> "); //no muestra el consumo anual, se podría agregar
+            sb.append(nodo.getDato().toString()).append(" -> "); // no muestra el consumo anual, se podría agregar
             toStringDeMayorAMenorAux(nodo.getIzquierdo(), sb); // Ultimo los menores
 
         }
