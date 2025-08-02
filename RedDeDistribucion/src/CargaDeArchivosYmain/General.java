@@ -138,14 +138,11 @@ public class General {
                 case 6:
                     System.out.println("Listado de ciudades ordenadas por consumo anual");
                     System.out.println("Ingrese el año");
-                    int anio = sc.nextInt(); // cómo controlo el año?
+                    int anio = sc.nextInt();
                     sc.nextLine();
-                    System.out.println(consumoAnual(anio, ciudades));// si alguna ciudad no tiene datos guardados de
-                                                                     // algun año pero las otras si salta un error,
-                                                                     // correjir eso
-                                                                     // CORRECCION: si alguna ciudad no tiene datos
+                    System.out.println(consumoAnual(anio, ciudades));// si alguna ciudad no tiene datos
                                                                      // guardados en ese año directamente no se inserta
-                                                                     // en el heap
+                                                                     // en el heap (supongo que está bien) J
                     break;
                 case 7:
                     System.out.println("Mostrar Todas las estructuras");
@@ -289,9 +286,12 @@ public class General {
     // es decir, diseño-reparacion,reparacion-inactivo y asi.
     public static String verEstadoCam(HashMap<ClaveTuberia, Tuberia> tuberias, Lista camino, TablaAVL ciudades) {
         String estado = "ACTIVO";
+        boolean error = false; // ?
         int i = 1, j = 2;
 
-        while (estado.equals("ACTIVO") && j <= camino.longitud()) {
+        while (!(estado.equals("DISEÑO")) && j <= camino.longitud() && !error) {// en el momento que hay una en diseño
+                                                                                // el camino está en diseño [DISEÑO >
+                                                                                // INACTIVO > REPARACIÓN > ACTIVO]
             String origen = (String) camino.recuperar(i);
             String destino = (String) camino.recuperar(j);
 
@@ -300,17 +300,61 @@ public class General {
             Tuberia tuberia = tuberias.get(clave);
 
             if (tuberia != null) {
-                estado = tuberia.getEstado();
+                String nuevoEstado = tuberia.getEstado();
+                /*
+                 * switch (estado){ //en vez de switch podría hacer otro modulo que les asigne
+                 * peso a los estados
+                 * case "ACTIVO": estado = tuberia.getEstado();
+                 * break;
+                 * case "REPARACION":
+                 * if (!nuevoEstado.equals("ACTIVO")){//REPARACION se reemplaza por cualquier
+                 * estado menos ACTIVO
+                 * estado = nuevoEstado;
+                 * }
+                 * break;
+                 * case "INACTIVO":
+                 * if (!nuevoEstado.equals("ACTIVO") ||
+                 * !nuevoEstado.equals("REPARACION")){//INACTIVO solo se reemplaza por DISEÑO
+                 * estado = nuevoEstado;
+                 * }
+                 * break;
+                 * }
+                 */
+                if (prioridad(estado) < prioridad(nuevoEstado)) {
+                    estado = nuevoEstado;
+                }
             } else {
                 // Si no encuentra la tubería, retornar error
-                estado = "ERROR: TUBERIA NO ENCONTRADA";
+                error = true;
             }
 
             i++;
             j++;
         }
+        if (error) {
+            estado = "ERROR: TUBERIA NO ENCONTRADA";
+        }
 
         return estado;
+    }
+
+    private static int prioridad(String estado) {
+        int peso = 0; // declaro 0 solo para poder retornar, se supone que siempre va a entrar un etado valido
+        switch (estado) { //IMPORTANTE ASEGURARSE QUE ESTOS SEAN LOS STRINGS QUE SE GUARDAN EN LAS TUBERIAS
+            case "ACTIVO":
+                peso = 1;
+                break;
+            case "REPARACION":
+                peso = 2;
+                break;
+            case "INACTIVO":
+                peso = 3;
+                break;
+            case "DISEÑO":
+                peso = 4;
+                break;
+        }
+        return peso;
     }
     // punto 7
 
@@ -432,11 +476,13 @@ public class General {
 
     // para el punto 6, listado de ciudades ordenadas por consumo de agua anual
     public static String consumoAnual(int anio, TablaAVL ciudades) {
-        TablaHeapMax heap = new TablaHeapMax();// heap para cubrir los casos en los que mas de 1 ciudad tenga el mismo consumo
+        TablaHeapMax heap = new TablaHeapMax();// heap para cubrir los casos en los que mas de 1 ciudad tenga el mismo
+                                               // consumo
         Lista listaC = ciudades.listarDatos(); // Listo las ciudades originales para ir calculando el consumo anual
         for (int i = 1; i <= listaC.longitud(); i++) {
             Ciudad ciudad = (Ciudad) listaC.recuperar(i);
-            if (ciudad.anioRegistrado(anio)) {// las ciudades que no tengan registrado datos en este año directamente no se insertan, está bien?
+            if (ciudad.anioRegistrado(anio)) {// las ciudades que no tengan registrado datos en este año directamente no
+                                              // se insertan, está bien?
                 double consumo = ciudad.consumoAnual(anio);
                 heap.insertar(consumo, ciudad); // usa como clave el consumo y se ordena comparando este
             }
