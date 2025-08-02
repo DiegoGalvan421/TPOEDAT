@@ -70,7 +70,7 @@ public class Archivo {
                     "Error leyendo o escribiendo en algún archivo.");
         }
 
-        // Devuelve la tabla con las ciudades cargadas
+        // Devuelve la tabla con las ciudades cargadas.
         return salida;
     }
 
