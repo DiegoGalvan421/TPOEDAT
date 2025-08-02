@@ -70,10 +70,9 @@ public class TablaHeapMax {
     }
 
     public String toStringOrdenado() {
-        StringBuilder sb = new StringBuilder("[");
-        TablaHeapMax copia = this.copiar();
-        while (!copia.esVacio()) {
-            sb.append(copia.eliminarCima().toString()).append(" -> ");
+        StringBuilder sb = new StringBuilder("[");//String builder trabaja más eficiente que las concatenaciones "+" que deben crear un nuevo objeto y copiar el anterior String caracter a caracter 
+        while (!this.esVacio()) {
+            sb.append(this.eliminarCima().toString()).append(" -> ");
         }
         if (sb.length() >= 4) {
             sb.setLength(sb.length() - 4); // elimina el último " -> "
@@ -81,7 +80,7 @@ public class TablaHeapMax {
         sb.append("]");
         return sb.toString();
     }
-
+/*  NO LO NECESITO
     private TablaHeapMax copiar() {
         TablaHeapMax nueva = new TablaHeapMax();
         for (int i = 1; i <= this.tamanio; i++) {
@@ -90,4 +89,5 @@ public class TablaHeapMax {
         nueva.tamanio = this.tamanio;
         return nueva;
     }
+*/
 }
