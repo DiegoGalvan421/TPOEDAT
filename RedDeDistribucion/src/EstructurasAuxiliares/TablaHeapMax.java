@@ -45,7 +45,8 @@ public class TablaHeapMax {
      * @param pos posición del nodo a subir.
      */
     private void hacerSubir(int pos) {
-        while (pos > 1) {
+        boolean hecho = false;
+        while (pos > 1 && !hecho) {
             int padre = pos / 2;
             if (heap[pos].clave.compareTo(heap[padre].clave) > 0) {
                 NodoHeap temp = heap[pos];
@@ -53,7 +54,7 @@ public class TablaHeapMax {
                 heap[padre] = temp;
                 pos = padre;
             } else {
-                break; // REVISAR ESTO.
+                hecho = true;
             }
         }
     }
@@ -81,7 +82,8 @@ public class TablaHeapMax {
      * @param pos posición del nodo a bajar.
      */
     private void hacerBajar(int pos) {
-        while (pos * 2 <= tamanio) {
+        boolean hecho = false;
+        while (pos * 2 <= tamanio && !hecho) {
             int hijoMayor = pos * 2;
             if (hijoMayor + 1 <= tamanio
                     && heap[hijoMayor + 1].clave.compareTo(heap[hijoMayor].clave) > 0) {
@@ -94,7 +96,7 @@ public class TablaHeapMax {
                 heap[hijoMayor] = temp;
                 pos = hijoMayor;
             } else {
-                break;
+                hecho = true;
             }
         }
     }
@@ -130,9 +132,4 @@ public class TablaHeapMax {
         sb.append("]");
         return sb.toString();
     }
-    /*
-     * NO LO NECESITO private TablaHeapMax copiar() { TablaHeapMax nueva = new TablaHeapMax(); for
-     * (int i = 1; i <= this.tamanio; i++) { nueva.heap[i] = new NodoHeap(this.heap[i].clave,
-     * this.heap[i].dato); } nueva.tamanio = this.tamanio; return nueva; }
-     */
 }
