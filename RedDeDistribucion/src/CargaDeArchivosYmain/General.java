@@ -55,15 +55,14 @@ public class General {
                     sc.nextLine();
                     switch (opcion) {
                         case 1:
-                            System.out.println(":p");
+                            altaDeCiudades(grafo, ciudades);
                             break;
                         case 2:
-                            System.out.println(":p");
+                            bajaDeCiudades(grafo, ciudades);
                             break;
                         case 3:
-                            System.out.println(":p");
+                            modificarCiudades(ciudades);
                             break;
-
                         default:
                             System.out.println("Opción inválida");
                             break;
@@ -79,13 +78,13 @@ public class General {
                     sc.nextLine(); // limpia el escaner
                     switch (opcion) {
                         case 1:
-                            System.out.println(":p");
+                            altaDeTuberia(grafo, Tuberias);
                             break;
                         case 2:
-                            System.out.println(":p");
+                            bajaDeTuberias(grafo, Tuberias);
                             break;
                         case 3:
-                            System.out.println(":p");
+                            modificarTuberias(grafo, Tuberias);
                             break;
 
                         default:
@@ -143,24 +142,21 @@ public class General {
                     System.out.println("Ingrese el año");
                     int anio = sc.nextInt();
                     sc.nextLine();
-                    System.out.println(consumoAnual(anio, ciudades));// si alguna ciudad no tiene
-                                                                     // datos
-                                                                     // guardados en ese año
-                                                                     // directamente no se inserta
-                                                                     // en el heap (supongo que está
-                                                                     // bien) J
-                    break;
+                    System.out.println(consumoAnual(anio, ciudades));
+
+                    /*
+                     * NOTA JUAN: Si una ciudad no tiene datos registrados en el año especificado,
+                     * no se inserta en el heap.
+                     */
+
                 case 7:
                     System.out.println("Mostrar Todas las estructuras");
                     mostrarEstructuras(Tuberias, grafo, ciudades);
                     break;
                 case 8:
                     System.out.println("Hasta luego ;)");
-                    System.out.println();
-                    // deja de compilar/detiene el programa
-                    System.exit(0);
+                    System.exit(0); // Termina el programa
                     break;
-
                 default:
                     System.out.println("Opción inválida");
                     break;
@@ -170,147 +166,468 @@ public class General {
 
         } while (sigue == 's' || sigue == 'S');
         System.out.println("Hasta luego ;)");
-
     }
 
-    // separamos los ejercicios en modulos para que se entienda mejor, despues se
-    // modificaran si no se quieren asi.
-    // punto 3
+    /*----------PUNTO 1----------*/
+
+    /**
+     * Crea y guarda los datos de una ciudad nueva.
+     * <p>
+     * La ciudad se guarda en la tabla avl, con el nombre como clave.
+     * <p>
+     * En el grafo se guarda su nomenclatura.
+     * 
+     * @param grafo
+     * @param ciudades
+     * @param nombre
+     * @param nomenclatura
+     * @param unaSup
+     * @param unConsumo
+     */
+    public static void altaDeCiudades(DigrafoEtiquetado grafo, TablaAVL ciudades) {
+        Scanner sc = new Scanner(System.in);
+        // Solicita al usuario los datos de la ciudad a agregar.
+        System.out.println("Agregar Ciudad");
+        System.out.println("Ingrese el nombre de la ciudad:");
+        String nombre = sc.nextLine().trim();
+        System.out.println("Ingrese la nomenclatura de la ciudad:");
+        String nomenclatura = sc.nextLine().trim();
+        System.out.println("Ingrese la superficie de la ciudad:");
+        double unaSup = sc.nextDouble();
+        System.out.println("Ingrese el consumo de la ciudad:");
+        double unConsumo = sc.nextDouble();
+
+        // Crea una nueva ciudad y la agrega a la tabla y al grafo.
+        Ciudad nuevaCiudad = new Ciudad(nombre, nomenclatura, unaSup, unConsumo);
+        ciudades.insertar(nombre, nuevaCiudad);
+        grafo.insertarVertice(nomenclatura);
+        System.out.println("Ciudad agregada correctamente.");
+        System.out.println(nuevaCiudad.toString());
+    }
+
+    /**
+     * Quita la ciudad de la tabla y del grafo.
+     * 
+     * @param grafo
+     * @param ciudades
+     */
+    public static void bajaDeCiudades(DigrafoEtiquetado grafo, TablaAVL ciudades) {
+        Scanner sc = new Scanner(System.in);
+        // Solicita al usuario el nombre de la ciudad a eliminar.
+        System.out.println("Eliminar Ciudad");
+        System.out.println("Ingrese el nombre de la ciudad a eliminar:");
+        String nombre = sc.nextLine().trim();
+
+        // Busca la ciudad en la tabla AVL.
+        Ciudad tempCiudad = (Ciudad) ciudades.obtenerInformacion(nombre);
+        if (tempCiudad != null) { // Verifica si la ciudad existe.
+            grafo.eliminarVertice(tempCiudad.getNomenclatura());
+            ciudades.eliminar(tempCiudad.getNombre());
+        } else {
+            System.out.println("Ciudad no encontrada.");
+        }
+    }
+
+    /**
+     * Modifica el consumo de una ciudad existente.
+     * 
+     * @param ciudades
+     */
+    public static void modificarCiudades(TablaAVL ciudades) {
+        Scanner sc = new Scanner(System.in);
+        // Solicita al usuario el nombre de la ciudad a modificar.
+        System.out.println("Modificar Ciudad");
+        System.out.println("Ingrese el nombre de la ciudad a modificar:");
+        String nombre = sc.nextLine().trim();
+
+        Ciudad tempCiudad = (Ciudad) ciudades.obtenerInformacion(nombre);
+        if (tempCiudad != null) { // Verifica si la ciudad existe.
+            System.out.println("Ingrese el nuevo consumo de la ciudad:");
+            double nuevoConsumo = sc.nextDouble();
+            tempCiudad.setConsumo(nuevoConsumo);
+        } else {
+            System.out.println("Ciudad no encontrada.");
+        }
+    }
+
+    /*----------PUNTO 2----------*/
+
+    /**
+     * Crea y agrega al grafo una tuberia nueva.
+     * <p>
+     * NOTA: El estado no se valida.
+     * <p>
+     * La ciudad de origen y la ciudad de destino deben existir en el grafo.
+     * 
+     * @param grafo
+     * @param tuberias
+     * @param ciudades
+     */
+    public static void altaDeTuberia(DigrafoEtiquetado grafo, HashMap tuberias) {
+
+        Scanner sc = new Scanner(System.in);
+        String origen, destino, estado;
+        double caudalMinimo, caudalMaximo, diametro;
+        // Solicita al usuario los datos de la tubería a agregar.
+        System.out.println("Agregar Tubería");
+        System.out.println("Ingrese el nombre de la ciudad origen");
+        origen = sc.nextLine().trim();
+        System.out.println("Ingrese el nombre de la ciudad destino");
+        destino = sc.nextLine().trim();
+        System.out.println("Ingrese el caudal mínimo");
+        caudalMinimo = sc.nextDouble();
+        System.out.println("Ingrese el caudal máximo");
+        caudalMaximo = sc.nextDouble();
+        System.out.println("Ingrese el diámetro");
+        diametro = sc.nextDouble();
+        System.out.println("Ingrese el estado");
+        estado = sc.nextLine().trim();
+
+        ClaveTuberia clave = new ClaveTuberia(origen, destino);
+        Tuberia tuberiaNueva = new Tuberia((origen + "-" + destino).trim(), caudalMinimo,
+                caudalMaximo, diametro, estado.trim());
+        tuberias.put(clave, tuberiaNueva);
+        grafo.insertarArco(origen, destino, caudalMaximo);
+        System.out.println("Tubería agregada correctamente.");
+        System.out.println(tuberiaNueva.toString());
+    }
+
+    /**
+     * Quita una tuberia del grafo y del hashMap.
+     * 
+     * @param grafo
+     * @param tuberias
+     */
+    public static void bajaDeTuberias(DigrafoEtiquetado grafo, HashMap tuberias) {
+        Scanner sc = new Scanner(System.in);
+        String origen, destino;
+        // Solicita al usuario los datos de la tubería a eliminar.
+        System.out.println("Eliminar Tubería");
+        System.out.println("Ingrese el nombre de la ciudad origen");
+        origen = sc.nextLine().trim();
+        System.out.println("Ingrese el nombre de la ciudad destino");
+        destino = sc.nextLine().trim();
+        ClaveTuberia clave = new ClaveTuberia(origen, destino);
+
+        if (tuberias.containsKey(clave)) { // Verifica si la tubería existe en el HashMap.
+            tuberias.remove(clave);
+            grafo.eliminarArco(origen, destino);
+            System.out.println("Tubería eliminada correctamente.");
+        } else {
+            System.out.println("No se encontró la tubería con la clave especificada.");
+        }
+    }
+
+    /**
+     * Modifica el estado de una tubería existente.
+     * <p>
+     * NOTA: El estado no se valida, se asume que es un estado válido.1
+     * 
+     * @param grafo
+     * @param tuberias
+     */
+    public static void modificarTuberias(DigrafoEtiquetado grafo, HashMap tuberias) {
+        Scanner sc = new Scanner(System.in);
+        String origen, destino, estado;
+
+        // Solicita al usuario los datos de la tubería a modificar.
+        System.out.println("Modificar Tubería");
+        System.out.println("Ingrese el nombre de la ciudad origen");
+        origen = sc.nextLine().trim();
+        System.out.println("Ingrese el nombre de la ciudad destino");
+        destino = sc.nextLine().trim();
+        ClaveTuberia clave = new ClaveTuberia(origen, destino);
+
+        if (tuberias.containsKey(clave)) { // Verifica si la tubería existe en el HashMap.
+            Tuberia tuberia = (Tuberia) tuberias.get(clave);
+            System.out.println("Estado actual: " + tuberia.getEstado());
+            System.out.println("Ingrese el nuevo estado:");
+            System.out.println("Estados posibles: A(ctivo), R(eparación), D(iseño), I(nactivo)");
+            estado = sc.nextLine().trim();
+            tuberia.setEstado(estado);
+            System.out.println("Tubería modificada correctamente.");
+        } else {
+            System.out.println("No se encontró la tubería con la clave especificada.");
+        }
+    }
+
+    /*----------PUNTO 3----------*/
+
+    /**
+     * Agrega la cantidad de habitantes a una ciudad para un mes y año dados.
+     * 
+     * @param ciudad
+     */
     public static void altaDeInformacionCanHab(TablaAVL ciudad) {
         Scanner sc = new Scanner(System.in);
         int mes, anio, cant;
         String nombre;
-        System.out.println("ingrese la ciudad");
+        System.out.println("Ingrese la ciudad");
         nombre = sc.nextLine();
-        System.out.println("ingrese el año");
+        System.out.println("Ingrese el año");
         anio = sc.nextInt();
+
         Ciudad aux = (Ciudad) ciudad.obtenerInformacion(nombre);
-        if (aux != null) {
-            if (!aux.anioRegistrado(anio)) {
+        if (aux != null) { // Si la ciudad existe
+            if (!aux.anioRegistrado(anio)) { // Si el año no está registrado, lo crea.
                 for (mes = 1; mes <= 12; mes++) {
-                    System.out.println("ingrese la cantidad de habitante para el mes " + mes);
+                    System.out.println("Ingrese la cantidad de habitantes para el mes " + mes);
                     cant = sc.nextInt();
-                    if (aux.setHabitantesMes(anio, mes, cant)) {
-                        System.out.println("el mes se registro con exito");
+
+                    if (aux.setHabitantesMes(anio, mes, cant)) { // Si se pudo registrar el mes
+                        System.out.println("El mes se registró con éxito");
                     } else {
-                        System.out.println("el mes no se pudo registrar");
+                        System.out.println("El mes no se pudo registrar");
                     }
                 }
             } else {
-                System.out.println("el anio no es valido");
+                System.out.println("El año no es válido");
             }
-
         } else {
-            System.out.println("la ciudad no existe");
+            System.out.println("La ciudad no existe");
         }
-
     }
 
-    // punto 5a
+    /*----------PUNTO 4 A----------*/
+
+    /**
+     * Muestra la cantidad de habitantes y el volumen de agua distribuido
+     * <p>
+     * NOTA: Las validaciones de mes y anio se hacen en el main.
+     * 
+     * @param ciudades
+     */
+    public static void habYVolDeUnaCiudad(TablaAVL ciudades) {
+        Scanner sc = new Scanner(System.in);
+        String nombre;
+        Ciudad aux;
+        int anio, mes;
+        System.out.println("ingrese el nombre de la ciudad");
+        nombre = sc.nextLine();
+        aux = (Ciudad) ciudades.obtenerInformacion(nombre);
+        System.out.println("ingrese el año");
+        anio = sc.nextInt();
+
+        if (!aux.anioRegistrado(anio)) { // Si el año no está registrado.
+            System.out.println("El año ingresado no tiene datos ingresados");
+        } else { // Si el año está registrado.
+            System.out.println("Ingrese el mes");
+            mes = sc.nextInt();
+            if (!(mes > 0 && mes < 13)) { // Si el mes no está entre 1 y 12.
+                System.out.println("Mes inválido");
+            } else {
+                /*
+                 * Importante aclarar que no vuelve a pedir los datos solo se pregunta si se quiere
+                 * volver a elegir otra opcion en el menú esta decisión es para no complicarnos
+                 * tanto, se puede cambiar.
+                 */
+                System.out.println("Cantidad de habitantes:" + aux.getHabitantesMes(anio, mes));
+                System.out.println("Consumo de agua:" + aux.consumoMensual(anio, mes));
+            }
+        }
+    }
+
+    /*----------PUNTO 4 B----------*/
+
+    public static void ciudadesSegunVolyHab(TablaAVL ciudades) {
+        Scanner sc = new Scanner(System.in);
+        int minVol, maxVol, anio, mes;
+        String minNomb, maxNomb;
+        System.out.println("Ingrese el Nombre de la primer ciudad");
+        minNomb = sc.nextLine();
+        System.out.println("ingrese el nombre de la segunda ciudad");
+        maxNomb = sc.nextLine();
+        System.out.println("ingrese el volumen minimo");
+        minVol = sc.nextInt();
+        System.out.println("ingrese el volumen maximo");
+        maxVol = sc.nextInt();
+        System.out.println("ingrese el año");
+        anio = sc.nextInt();
+        System.out.println("ingrese el mes");
+        mes = sc.nextInt();
+        System.out.println(consumoDeAguaMesYAño(ciudades.listarRango(minNomb, maxNomb), minVol,
+                maxVol, anio, mes));
+    }
+
+    /*----------PUNTO 5 A----------*/
+
+    /**
+     * Busca el camino con menor caudal pleno entre dos ciudades.
+     * <p>
+     * Si el camino existe, muestra el camino y su estado.
+     * 
+     * @param grafo
+     * @param tuberias
+     * @param ciudades
+     */
     public static void caminoMenorCaudal(DigrafoEtiquetado grafo, HashMap tuberias,
             TablaAVL ciudades) {
         Scanner sc = new Scanner(System.in);
         String origen, destino, estado;
         Lista camino = new Lista();
 
-        System.out.println("ingrese el nombre de la primera ciudad");
+        System.out.println("Ingrese el nombre de la primera ciudad");
         origen = sc.nextLine().trim();
 
-        System.out.println("ingrese el nombre de la segunda ciudad");
+        System.out.println("Ingrese el nombre de la segunda ciudad");
         destino = sc.nextLine().trim();
 
         if (ciudades.obtenerInformacion(origen) != null
                 && ciudades.obtenerInformacion(destino) != null && !origen.equals(destino)) {
+            // Busca el camino con menor caudal pleno entre dos ciudades.
             camino = grafo.caminoMasChico(
                     ((Ciudad) ciudades.obtenerInformacion(origen)).getNomenclatura(),
                     ((Ciudad) ciudades.obtenerInformacion(destino)).getNomenclatura());
 
             if (!camino.esVacia() && camino.longitud() > 1) {
+                // Verifica que el camino no esté vacío y tenga más de un nodo
                 estado = verEstadoCam(tuberias, camino, ciudades);
 
-                if (estado != null) {
+                if (estado != null) { // Si se pudo verificar el estado del camino
+                    // Muestra el camino y su estado.
                     System.out.println("El camino con menor caudal Pleno es:");
                     System.out.println(camino.toString());
-                    System.out.println("su estado es: " + estado);
-                } else {
+                    System.out.println("Su estado es: " + estado);
+                } else { // Si hubo un error al verificar el estado del camino.
                     System.out.println("Error al verificar el estado del camino");
                 }
-            } else {
-                System.out.println("ese camino no existe");
+            } else { // Si el camino no existe o es inválido.
+                System.out.println("Ese camino no existe");
             }
-        } else {
-            if (ciudades.obtenerInformacion(origen) == null) {
+        } else { // Si las ciudades origen o destino no existen o son iguales.
+            if (ciudades.obtenerInformacion(origen) == null) { // Si la ciudad origen no existe.
                 System.out.println("La ciudad origen '" + origen + "' no existe");
+                // Si la ciudad destino no existe.
             } else if (ciudades.obtenerInformacion(destino) == null) {
                 System.out.println("La ciudad destino '" + destino + "' no existe");
-            } else if (origen.equals(destino)) {
+            } else if (origen.equals(destino)) { // Si las ciudades origen y destino son iguales.
                 System.out.println("Las ciudades origen y destino son la misma");
             }
         }
     }
 
-    // punto 5b
+    /*----------PUNTO 5 B----------*/
+
+    /**
+     * Busca el camino con la menor cantidad de ciudades entre dos ciudades.
+     * <p>
+     * Si el camino existe, muestra el camino y su estado.
+     * 
+     * @param grafo
+     * @param tuberias
+     * @param ciudades
+     */
     public static void caminoMenosCiudades(DigrafoEtiquetado grafo, HashMap tuberias,
             TablaAVL ciudades) {
         Scanner sc = new Scanner(System.in);
         String origen, destino, estado;
         Lista camino = new Lista();
 
-        System.out.println("ingrese el nombre de la primera ciudad");
+        System.out.println("Ingrese el nombre de la primera ciudad");
         origen = sc.nextLine().trim();
 
-        System.out.println("ingrese el nombre de la segunda ciudad");
+        System.out.println("Ingrese el nombre de la segunda ciudad");
         destino = sc.nextLine().trim();
 
         if (ciudades.obtenerInformacion(origen) != null
                 && ciudades.obtenerInformacion(destino) != null && !origen.equals(destino)) {
+            // Verifica que las ciudades existan y no sean iguales.
+            // Busca el camino con la menor cantidad de ciudades entre dos ciudades.
+            // Utiliza el método caminoMasCorto del grafo.
             camino = grafo.caminoMasCorto(
                     ((Ciudad) ciudades.obtenerInformacion(origen)).getNomenclatura(),
                     ((Ciudad) ciudades.obtenerInformacion(destino)).getNomenclatura());
 
             if (!camino.esVacia() && camino.longitud() > 1) {
+                // Verifica que el camino no esté vacío y tenga más de un nodo.
                 estado = verEstadoCam(tuberias, camino, ciudades);
 
-                if (estado != null) {
+                if (estado != null) { // Si se pudo verificar el estado del camino.
                     System.out.println("El camino con menor cantidad de ciudades es:");
                     System.out.println(camino.toString());
-                    System.out.println("su estado es: " + estado);
+                    System.out.println("Su estado es: " + estado);
                 } else {
                     System.out.println("Error al verificar el estado del camino");
                 }
-            } else {
-                System.out.println("ese camino no existe");
+            } else { // Si el camino no existe o es inválido.
+                System.out.println("Ese camino no existe");
             }
-        } else {
-            if (ciudades.obtenerInformacion(origen) == null) {
+        } else { // Si las ciudades origen o destino no existen o son iguales.
+            if (ciudades.obtenerInformacion(origen) == null) { // Si la ciudad origen no existe.
                 System.out.println("La ciudad origen '" + origen + "' no existe");
+                // Si la ciudad destino no existe.
             } else if (ciudades.obtenerInformacion(destino) == null) {
                 System.out.println("La ciudad destino '" + destino + "' no existe");
-            } else if (origen.equals(destino)) {
+            } else if (origen.equals(destino)) { // Si las ciudades origen y destino son iguales.
                 System.out.println("Las ciudades origen y destino son la misma");
             }
         }
     }
 
-    // ya se hizo el punto 5, faltaria que considere, cuando hay mas de un estado
-    // es decir, diseño-reparacion,reparacion-inactivo y asi.
+    /*----------PUNTO 6----------*/
+
+    /**
+     * Genera un listado de ciudades ordenadas por consumo anual.
+     * <p>
+     * Utiliza un heap para ordenar las ciudades por su consumo anual.
+     * 
+     * @param anio
+     * @param ciudades
+     * @return Listado de ciudades ordenadas por consumo anual.
+     *         <p>
+     *         Si una ciudad no tiene datos registrados en el año especificado, no se incluye en el
+     *         listado.
+     */
+    public static String consumoAnual(int anio, TablaAVL ciudades) {
+        // Heap para cubrir los casos en los que mas de 1 ciudad tenga el mismo consumo.
+        TablaHeapMax heap = new TablaHeapMax();
+        // Lista las ciudades originales para ir calculando el consumo anual.
+        Lista listaC = ciudades.listarDatos();
+
+        // Recorre la lista de ciudades y calcula el consumo anual.
+        for (int i = 1; i <= listaC.longitud(); i++) {
+            Ciudad ciudad = (Ciudad) listaC.recuperar(i);
+            if (ciudad.anioRegistrado(anio)) {
+                /*
+                 * NOTA: Debatir si se debe considerar que las ciudades que no tengan registrado
+                 * datos en este año directamente no se insertan.
+                 */
+                double consumo = ciudad.consumoAnual(anio);
+                // Inserta la ciudad en el heap, ordenada por consumo anual.
+                heap.insertar(consumo, ciudad);
+            }
+        }
+        String listado = heap.toStringOrdenado();
+        return listado;
+    }
+
+    /*
+     * Ya se hizo el punto 5, faltaria que considere, cuando hay mas de un estado es decir,
+     * diseño-reparacion,reparacion-inactivo y asi.
+     */
+
+
+    /**
+     * Verifica el estado de un camino en función de las tuberías que lo componen.
+     * 
+     * @param tuberias
+     * @param camino
+     * @param ciudades
+     * @return Estado del camino según las tuberías.
+     */
     public static String verEstadoCam(HashMap<ClaveTuberia, Tuberia> tuberias, Lista camino,
             TablaAVL ciudades) {
         String estado = "ACTIVO";
         boolean error = false; // ?
         int i = 1, j = 2;
 
-        while (!(estado.equals("DISEÑO")) && j <= camino.longitud() && !error) {// en el momento que
-                                                                                // hay una en diseño
-                                                                                // el camino está en
-                                                                                // diseño [DISEÑO >
-                                                                                // INACTIVO >
-                                                                                // REPARACIÓN >
-                                                                                // ACTIVO]
+        while (!(estado.equals("DISEÑO")) && j <= camino.longitud() && !error) {
+            /* [DISEÑO > // INACTIVO > REPARACIÓN > // ACTIVO]. */
+
             String origen = (String) camino.recuperar(i);
             String destino = (String) camino.recuperar(j);
 
-            // Buscar tubería
+            // Buscar tubería.
             ClaveTuberia clave = new ClaveTuberia(origen, destino);
             Tuberia tuberia = tuberias.get(clave);
 
@@ -328,10 +645,9 @@ public class General {
                     estado = nuevoEstado;
                 }
             } else {
-                // Si no encuentra la tubería, retornar error
+                // Si no encuentra la tubería, retornar error.
                 error = true;
             }
-
             i++;
             j++;
         }
@@ -362,8 +678,19 @@ public class General {
         }
         return peso;
     }
-    // punto 7
 
+
+    /*----------PUNTO 7----------*/
+
+    /**
+     * Muestra las estructuras del sistema.
+     * <p>
+     * Muestra la estructura del grafo, la tabla AVL de ciudades y el HashMap de tuberías.
+     * 
+     * @param tuberias
+     * @param grafo
+     * @param ciudades
+     */
     public static void mostrarEstructuras(HashMap tuberias, DigrafoEtiquetado grafo,
             TablaAVL ciudades) {
         System.out.println("Estructura del grafo:");
@@ -377,66 +704,26 @@ public class General {
 
     }
 
-    // ejercicio 4a
-    public static void habYVolDeUnaCiudad(TablaAVL ciudades) {
-        Scanner sc = new Scanner(System.in);
-        String nombre;
-        Ciudad aux;
-        int anio, mes;
-        System.out.println("ingrese el nombre de la ciudad");
-        nombre = sc.nextLine();
-        aux = (Ciudad) ciudades.obtenerInformacion(nombre);
-        System.out.println("ingrese el año");
-        anio = sc.nextInt();
-        if (!aux.anioRegistrado(anio)) {
-            System.out.println("El año ingresado no tiene datos ingresados");
-        } else {
-            System.out.println("ingrese el mes");
-            mes = sc.nextInt();
-            if (!(mes > 0 && mes < 13)) { // si el mes no está entre 1 y 12
-                System.out.println("mes inválido");
-            } else {
-                /*
-                 * importante aclarar que no vuelve a pedir los datos solo se pregunta si se quiere
-                 * volver a elegir otra opcion en el menú esta decisión es para no complicarnos
-                 * tanto, se puede cambiar
-                 */
-                System.out.println("Cantidad de habitantes:" + aux.getHabitantesMes(anio, mes));
-                System.out.println("Consumo de agua:" + aux.consumoMensual(anio, mes));
-            }
-        }
-    }
-
-    // ejercicio 4b
-    public static void ciudadesSegunVolyHab(TablaAVL ciudades) {
-        Scanner sc = new Scanner(System.in);
-        int minVol, maxVol, anio, mes;
-        String minNomb, maxNomb;
-        System.out.println("Ingrese el Nombre de la primer ciudad");
-        minNomb = sc.nextLine();
-        System.out.println("ingrese el nombre de la segunda ciudad");
-        maxNomb = sc.nextLine();
-        System.out.println("ingrese el volumen minimo");
-        minVol = sc.nextInt();
-        System.out.println("ingrese el volumen maximo");
-        maxVol = sc.nextInt();
-        System.out.println("ingrese el año");
-        anio = sc.nextInt();
-        System.out.println("ingrese el mes");
-        mes = sc.nextInt();
-        System.out.println(consumoDeAguaMesYAño(ciudades.listarRango(minNomb, maxNomb), minVol,
-                maxVol, anio, mes));
-    }
-
-    // los volumenes son bastante altos, podriamos modificarlos para que sean un
-    // poco mas chicos
+    /**
+     * NOTA: Como los volumenes de agua son muy altos, se podria modificar para que sean un poco mas
+     * chicos.
+     * 
+     * @param lis
+     * @param minVol
+     * @param maxVol
+     * @param anio
+     * @param mes
+     * @return Lista de ciudades que cumplen con el rango de consumo de agua.
+     *         <p>
+     *         La lista se ordena por el consumo de agua mensual.
+     */
     public static Lista consumoDeAguaMesYAño(Lista lis, int minVol, int maxVol, int anio, int mes) {
         Lista cumplen = new Lista();
-        // verifica que la lista contenga algo
+        // Verifica que la lista contenga algo.
         if (lis != null && lis.longitud() > 0) {
-            // verifica que los volumenes ingresados sean correctos
+            // Verifica que los volumenes ingresados sean correctos.
             if (minVol < maxVol) {
-                // verifica los meses dentro del estandar
+                // Verifica los meses dentro del estandar.
                 if (mes > 0 && mes < 13) {
                     int longLis = lis.longitud();
                     Ciudad aux;
@@ -445,7 +732,7 @@ public class General {
                         try {
                             aux = (Ciudad) lis.recuperar(i);
                             if (aux != null) {
-                                // Solo procesar si la ciudad tiene datos para ese año
+                                // Solo procesar si la ciudad tiene datos para ese año.
 
                                 if (aux.anioRegistrado(anio)) {
                                     /*
@@ -473,7 +760,7 @@ public class General {
                         }
                     }
                 } else {
-                    System.out.println("mes inválido");
+                    System.out.println("Mes inválido");
                 }
             } else {
                 System.out.println("Rango de volúmenes inválido: minVol debe ser menor que maxVol");
@@ -484,28 +771,16 @@ public class General {
         return cumplen;
     }
 
-    // para el punto 6, listado de ciudades ordenadas por consumo de agua anual
-    public static String consumoAnual(int anio, TablaAVL ciudades) {
-        TablaHeapMax heap = new TablaHeapMax();// heap para cubrir los casos en los que mas de 1
-                                               // ciudad tenga el mismo
-                                               // consumo
-        Lista listaC = ciudades.listarDatos(); // Listo las ciudades originales para ir calculando
-                                               // el consumo anual
-        for (int i = 1; i <= listaC.longitud(); i++) {
-            Ciudad ciudad = (Ciudad) listaC.recuperar(i);
-            if (ciudad.anioRegistrado(anio)) {// las ciudades que no tengan registrado datos en este
-                                              // año directamente no
-                                              // se insertan, está bien?
-                double consumo = ciudad.consumoAnual(anio);
-                heap.insertar(consumo, ciudad); // usa como clave el consumo y se ordena comparando
-                                                // este
-            }
-        }
-        String listado = heap.toStringOrdenado();
-        return listado;
-    }
 
-    // carga de habitantes historicos por ciudad
+
+    /**
+     * Carga la cantidad de habitantes de cada ciudad desde un archivo.
+     * <p>
+     * El archivo debe tener el formato: "Ciudad;Año;Mes1;Mes2;...;Mes12".
+     * 
+     * @param rutaArchivo
+     * @param ciudades
+     */
     public static void cargarHabCiudad(String rutaArchivo, TablaAVL ciudades) {
         FileReader archivo; // Para abrir el archivo.
         BufferedReader lector; // Para leer el archivo línea por línea.
@@ -529,7 +804,6 @@ public class General {
                                 Integer.parseInt(info[i]));
                         mes++;
                     }
-
                 }
             } else {
                 System.out.println("El archivo no esta listo");
@@ -540,6 +814,5 @@ public class General {
         } catch (IOException ex) {
             System.out.println("el archivo no esa listo");
         }
-
     }
 }

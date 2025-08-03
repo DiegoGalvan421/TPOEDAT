@@ -30,7 +30,6 @@ public class Tuberia {
         return nomenclatura;
     }
 
-
     public double getCaudalMin() {
         return caudalMin;
     }

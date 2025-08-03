@@ -1,6 +1,8 @@
 package EstructurasAuxiliares;
 
+@SuppressWarnings("rawtypes")
 public class NodoHeap {
+
     Comparable clave;
     Object dato;
 
@@ -9,17 +11,20 @@ public class NodoHeap {
         this.dato = dato;
     }
 
-    public String toString() {//para no hacer un getDato().toString()
+    public String toString() {// para no hacer un getDato().toString()
         return dato.toString();
     }
-    public Comparable getClave(){
+
+    public Comparable getClave() {
         return clave;
     }
-    public Object getDato(){
+
+    public Object getDato() {
         return dato;
     }
-    public void setDato(Object dato){
-        this.dato=dato;
+
+    public void setDato(Object dato) {
+        this.dato = dato;
     }
-    
+
 }

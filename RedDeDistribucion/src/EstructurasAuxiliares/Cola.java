@@ -1,109 +1,149 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package EstructurasAuxiliares;
 
-/**
- *
- * @author Diego Galvan
- */
 public class Cola {
 
+    // Atributos
     private Nodo frente;
     private Nodo fin;
 
-    public Cola() {
-        frente = null;
-        fin = null;
+    // ----------Basicas----------
+    public Cola() { // Constructor
+        // Crea y devuelve la cola vacia.
+        this.frente = null;
+        this.fin = null;
     }
 
-    public boolean poner(Object elem) {
-        boolean puso = true;
-        Nodo nuevo = new Nodo(elem,null);
-        if (this.esVacia()) {
-            frente = nuevo;
-            fin = nuevo;
-        } else {
-            fin.setEnlace(nuevo);
-            fin = fin.getEnlace();
+    /**
+     * Pone nuevoElem en la cola.
+     * <p>
+     * Nunca hay error de cola llena, entonces devuelve true.
+     * 
+     * @param nuevoElem
+     * @return boolean
+     */
+    public boolean poner(Object nuevoElem) {
+        Nodo nuevoNodo = new Nodo(nuevoElem, null);
+
+        if (this.frente == null) { // Si esta vacia
+            this.frente = nuevoNodo;
+            this.fin = nuevoNodo;
+        } else { // Caso normal
+            this.fin.setEnlace(nuevoNodo); // Se pone primero el enlace al nuevo nodo.
+            this.fin = nuevoNodo; // Se setea el fin en el nuevo nodo agregado.
         }
-        return puso;
+        return true;
     }
 
+    /**
+     * Saca el elmento del frente de la cola.
+     * <p>
+     * Devuelve true si se pudo sacar un elemento, false si la cola estaba vacia.
+     * 
+     * @return boolean
+     */
     public boolean sacar() {
         boolean exito = true;
-        if (this.esVacia()) {
+
+        if (this.frente == null) { // Si esta vacia.
             exito = false;
-        } else {
+        } else { // Caso normal, saca el frente y lo actualiza.
             this.frente = this.frente.getEnlace();
-            if (this.frente == null) {
+            if (this.frente == null) { // En caso de ser vacia, actualiza el fin.
                 this.fin = null;
             }
         }
         return exito;
     }
 
+    /**
+     * Devuelve el elemento en el frente de la cola.
+     * <p>
+     * Si la cola esta vacia, devuelve null.
+     * 
+     * @return Object
+     */
     public Object obtenerFrente() {
-        Object aux;
-        if (this.esVacia()) {
-            aux = null;
-        } else {
-            aux = this.frente.getElem();
+        Object frente = null;
+        if (this.frente != null) {
+            frente = this.frente.getElem();
         }
-        return aux;
+        return frente;
     }
 
+    /**
+     * Verifica si la cola esta vacia.
+     * 
+     * @return boolean
+     */
     public boolean esVacia() {
-        boolean esVac=false;;
-        if((this.frente==null)&&(this.fin==null)){
-            esVac=true;
-        }
-        return esVac;
+        return this.frente == null;
     }
-    public void vaciar(){
-        frente=null;
-        fin=null;
+
+    /**
+     * Saca todos los elementos de la cola.
+     */
+    public void vaciar() {
+        this.frente = null;
+        this.fin = null;
     }
-    public Cola clone(){
-        Cola clon = new Cola();
-        if(!this.esVacia()){
-            Nodo aux1=this.frente;
-            clon.frente=new Nodo(aux1.getElem(),null);
-            aux1=aux1.getEnlace();
-            Nodo aux2 = clon.frente;
-            while(aux1!=null){
-                aux2.setEnlace(new Nodo(aux1.getElem(),null));
-                aux2=aux2.getEnlace();
-                aux1=aux1.getEnlace();
-                if(aux1==null){
-                    clon.fin=aux2;
-                }
+
+    @Override
+    /**
+     * Devuelve una copia exacta de los datos en la estructura original, y respetando el orden de
+     * los mismos, en otra estructura del mismo tipo.
+     * 
+     * @return Cola
+     */
+    public Cola clone() {
+        Cola colaClon = new Cola();
+
+        if (this.frente != null) { // Si NO esta vacia.
+            // Comienza desde el primer nodo de la cola original.
+            Nodo nodoActual = this.frente; // Con este recorro la original.
+            colaClon.frente = new Nodo(nodoActual.getElem(), null);
+            colaClon.fin = colaClon.frente;
+
+            // Avanza al siguiente nodo de la cola original.
+            while ((nodoActual = nodoActual.getEnlace()) != null) {
+                // Crea un nuevo nodo con el mismo elemento del nodo actual.
+                Nodo nuevoNodo = new Nodo(nodoActual.getElem(), null);
+                // Enlaza el nuevo nodo al final de la cola clonada.
+                colaClon.fin.setEnlace(nuevoNodo);
+                // Actualiza el fin de la cola clonada al nuevo nodo.
+                colaClon.fin = nuevoNodo;
             }
         }
-       
-        return clon;
+        return colaClon;
     }
-    public String toString(){
-         String cadena = "";
-        if (this.esVacia()) {
-            cadena = "[]";
+
+    @Override
+    /**
+     * Devuelve una representación en cadena de la cola, mostrando los elementos en el orden en que
+     * fueron agregados.
+     * 
+     * @return String
+     */
+    public String toString() {
+        String cadena = "";
+
+        if (esVacia()) {
+            cadena += "[]";
         } else {
-            //se ubica para recorrer la cola
-            Nodo aux = this.frente;
             cadena += "[";
-            while (aux != null) {
-                //agrega el texto del elem y avanza
-                cadena += aux.getElem().toString();
-                aux = aux.getEnlace();
-                if (aux != null) {
+
+            Nodo recorrido = this.frente;
+            while (recorrido != null) {
+                cadena += recorrido.getElem().toString();
+
+                recorrido = recorrido.getEnlace();
+                if (recorrido != null) {
                     cadena += ",";
                 }
             }
+
             cadena += "]";
         }
+
         return cadena;
     }
-
 }

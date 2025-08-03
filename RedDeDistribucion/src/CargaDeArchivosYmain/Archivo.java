@@ -78,8 +78,8 @@ public class Archivo {
             DigrafoEtiquetado grafo) {
         FileReader archivo; // Para abrir el archivo.
         BufferedReader lector; // Para leer el archivo línea por línea.
-        HashMap<ClaveTuberia, Tuberia> salida = new HashMap<>(); // Diccionario donde se guardarán
-                                                                 // las tuberías leídas.
+        HashMap<ClaveTuberia, Tuberia> salida = new HashMap<>();
+        // Diccionario donde se guardarán las tuberías leídas.
         int i = 1; // Contador de líneas para el log.
         int j = 0; // Índice base para acceder a los campos del arreglo `info`.
 

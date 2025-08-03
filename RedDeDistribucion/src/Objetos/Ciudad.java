@@ -34,10 +34,9 @@ public class Ciudad implements Comparable<Ciudad> {
     /**
      * Obtiene los habitantes segun un año y un mes.
      * <p>
-     * NOTA: Las valiadciones de mes y anio se hacen en el main.
+     * NOTA: Las validaciones de mes y anio se hacen en el main.
      * <p>
-     * ACLARACION: El casteo de String a Int se hace al momento de bootear desde
-     * el txt.
+     * ACLARACION: El casteo de String a Int se hace al momento de bootear desde el txt.
      *
      * @param anio
      * @param mes
@@ -95,7 +94,7 @@ public class Ciudad implements Comparable<Ciudad> {
                 + superficie + "\nConsumo Promedio: " + consumoPromedio + "\n";
     }
 
-    //metodo agregado para prueba de codigo
+    // metodo agregado para prueba de codigo
     public String verHab(int anio) {
         String mostrar = "Anio:";
         for (int i = 0; i < 12; i++) {
@@ -108,14 +107,17 @@ public class Ciudad implements Comparable<Ciudad> {
     }
 
     public boolean anioRegistrado(int anio) {
-        return habitantesHistoricos.containsKey(anio); //verifica que haya una clave con este año (si se ha registrado información sobre este año)
+        return habitantesHistoricos.containsKey(anio); // verifica que haya una clave con este año
+                                                       // (si se ha registrado información sobre
+                                                       // este año)
     }
 
-    //este metodo nos sera de utilidad para el punto 4.
+    // este metodo nos sera de utilidad para el punto 4.
     public double consumoMensual(int anio, int mes) {
-        //teniendo en cuenta que la cantidad de habitantes es en 1 mes
-        //y que las profes dijeron que podemos usar una cantidad de dias estandar para todos los meses
-        //tomo en cuenta en este caso eso y uso 30.
+        // teniendo en cuenta que la cantidad de habitantes es en 1 mes
+        // y que las profes dijeron que podemos usar una cantidad de dias estandar para todos los
+        // meses
+        // tomo en cuenta en este caso eso y uso 30.
         double consumoMensual = 0;
 
         // Verificar primero si el año está registrado
@@ -137,16 +139,19 @@ public class Ciudad implements Comparable<Ciudad> {
 
     public double consumoAnual(int anio) {
         double consumoAnual = 0;
-        int[] arregloAnual = habitantesHistoricos.get(anio);//validacion del año en el main!!!
-        for (int i = 0; i < 12; i++) {//asumo que no hay año en el que no se haya registrado la cantidad de habitantes en algún mes
+        int[] arregloAnual = habitantesHistoricos.get(anio);// validacion del año en el main!!!
+        for (int i = 0; i < 12; i++) {// asumo que no hay año en el que no se haya registrado la
+                                      // cantidad de habitantes en algún mes
             consumoAnual += arregloAnual[i] * consumoPromedio;
         }
         return consumoAnual;
     }
+
     @Override
     public int compareTo(Ciudad otra) {
-    return this.nombre.compareTo(otra.nombre);
+        return this.nombre.compareTo(otra.nombre);
     }
+
     public boolean equals(Ciudad otra) {
         return (this.nomenclatura.equals(otra.nomenclatura));
 
