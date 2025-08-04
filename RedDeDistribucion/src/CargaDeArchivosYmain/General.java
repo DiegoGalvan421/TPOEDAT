@@ -10,16 +10,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 
-@SuppressWarnings({"rawtypes", "unchecked", "resource"})
+@SuppressWarnings({ "rawtypes", "unchecked", "resource" })
 public class General {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         DigrafoEtiquetado grafo = new DigrafoEtiquetado();
-        TablaAVL ciudades =
-                Archivo.cargarCiudades("C:\\Users\\JG\\Desktop\\txtTp\\Ciudades.txt", grafo);
-        HashMap<ClaveTuberia, Tuberia> Tuberias =
-                Archivo.cargarTuberias("C:\\Users\\JG\\Desktop\\txtTp\\Tuberias.txt", grafo);
+        TablaAVL ciudades = Archivo.cargarCiudades("C:\\Users\\JG\\Desktop\\txtTp\\Ciudades.txt", grafo);
+        HashMap<ClaveTuberia, Tuberia> Tuberias = Archivo.cargarTuberias("C:\\Users\\JG\\Desktop\\txtTp\\Tuberias.txt",
+                grafo);
         System.out.println(ciudades.toString());
         System.out.println(Tuberias.toString());
         System.out.println(grafo.toString());
@@ -143,17 +142,19 @@ public class General {
                     sc.nextLine();
                     System.out.println(consumoAnual(anio, ciudades));
                     break;
-                    /*
-                     * NOTA JUAN: Si una ciudad no tiene datos registrados en el año especificado,
-                     * no se inserta en el heap.
-                     */
-                    
+                /*
+                 * NOTA JUAN: Si una ciudad no tiene datos registrados en el año especificado,
+                 * no se inserta en el heap.
+                 */
+
                 case 7:
                     System.out.println("Mostrar Todas las estructuras");
                     mostrarEstructuras(Tuberias, grafo, ciudades);
                     break;
                 case 8:
                     System.out.println("Hasta luego ;)");
+                    Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt", "Estado del Sistema:" + "\n"
+                            + grafo.toString() + "\n" + ciudades.toString() + "\n" + Tuberias.toString());
                     System.exit(0); // Termina el programa
                     break;
                 default:
@@ -165,6 +166,8 @@ public class General {
 
         } while (sigue == 's' || sigue == 'S');
         System.out.println("Hasta luego ;)");
+        Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt", "Estado del Sistema:" + "\n" + grafo.toString() + "\n"
+                + ciudades.toString() + "\n" + Tuberias.toString());
     }
 
     /*----------PUNTO 1----------*/
@@ -198,10 +201,15 @@ public class General {
 
         // Crea una nueva ciudad y la agrega a la tabla y al grafo.
         Ciudad nuevaCiudad = new Ciudad(nombre, nomenclatura, unaSup, unConsumo);
-        ciudades.insertar(nombre, nuevaCiudad);
-        grafo.insertarVertice(nomenclatura); //si ya está cargada la ciudad que devuelva un mensaje
-        System.out.println("Ciudad agregada correctamente.");
-        System.out.println(nuevaCiudad.toString());
+        if (ciudades.insertar(nombre, nuevaCiudad)) {
+            grafo.insertarVertice(nomenclatura); // si ya está cargada la ciudad que devuelva un mensaje
+            System.out.println("Ciudad agregada correctamente.");
+            System.out.println(nuevaCiudad.toString());
+            Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt", "Se insertó la ciudad " + nombre);
+        } else {
+            System.out.println("No se pudo dar de alta la ciudad");
+        }
+
     }
 
     /**
@@ -221,7 +229,8 @@ public class General {
         Ciudad tempCiudad = (Ciudad) ciudades.obtenerInformacion(nombre);
         if (tempCiudad != null) { // Verifica si la ciudad existe.
             grafo.eliminarVertice(tempCiudad.getNomenclatura());
-            System.out.println(ciudades.eliminar(tempCiudad.getNombre()));
+            ciudades.eliminar(tempCiudad.getNombre());
+            Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt", "Se eliminó la ciudad " + nombre);
         } else {
             System.out.println("Ciudad no encontrada.");
         }
@@ -244,6 +253,8 @@ public class General {
             System.out.println("Ingrese el nuevo consumo de la ciudad:");
             double nuevoConsumo = sc.nextDouble();
             tempCiudad.setConsumo(nuevoConsumo);
+            Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt",
+                    "Se modificó el consumo de la ciudad " + nombre + " (nuevo: " + nuevoConsumo + ")");
         } else {
             System.out.println("Ciudad no encontrada.");
         }
@@ -281,14 +292,20 @@ public class General {
         diametro = sc.nextDouble();
         System.out.println("Ingrese el estado");
         estado = sc.nextLine().trim();
-        //Debe verificar que ya no exista una tubería entre estas ciudades
+        // Debe verificar que ya no exista una tubería entre estas ciudades
         ClaveTuberia clave = new ClaveTuberia(origen, destino);
         Tuberia tuberiaNueva = new Tuberia((origen + "-" + destino).trim(), caudalMinimo,
                 caudalMaximo, diametro, estado.trim());
-        tuberias.put(clave, tuberiaNueva);
-        grafo.insertarArco(origen, destino, caudalMaximo);
-        System.out.println("Tubería agregada correctamente.");
-        System.out.println(tuberiaNueva.toString());
+        if (tuberias.containsKey(clave)) {
+            tuberias.put(clave, tuberiaNueva);
+            grafo.insertarArco(origen, destino, caudalMaximo);
+            System.out.println("Tubería agregada correctamente.");
+            System.out.println(tuberiaNueva.toString());
+            Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt", "Se insertó la tubería " + clave);
+        } else {
+            System.out.println("No se pudo dar de alta la tuberia");
+        }
+
     }
 
     /**
@@ -312,6 +329,7 @@ public class General {
             tuberias.remove(clave);
             grafo.eliminarArco(origen, destino);
             System.out.println("Tubería eliminada correctamente.");
+            Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt", "Se eliminó la tubería " + clave);
         } else {
             System.out.println("No se encontró la tubería con la clave especificada.");
         }
@@ -341,16 +359,20 @@ public class General {
             Tuberia tuberia = (Tuberia) tuberias.get(clave);
             System.out.println("Estado actual: " + tuberia.getEstado());
             System.out.println("Ingrese el nuevo estado:");
-            //despues aclaremos formato de estados
-            System.out.println("Estados posibles: A(ctivo), R(eparación), D(iseño), I(nactivo)");
-            estado = sc.nextLine().trim();
+
+            // despues aclaremos formato de estados*************************************
+
+            System.out.println("Estados posibles: (ACTIVO, REPARACION, DISENO, INACTIVO");
+            estado = sc.nextLine().trim().toUpperCase();
             tuberia.setEstado(estado);
             System.out.println("Tubería modificada correctamente.");
+            Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt",
+                    "Se modificó el estado de la tubería " + clave + " (ahora: " + estado + ")");
         } else {
             System.out.println("No se encontró la tubería con la clave especificada.");
         }
     }
-    //decidimos que el caudal no se cambia
+    // decidimos que el caudal no se cambia
     /*----------PUNTO 3----------*/
 
     /**
@@ -370,16 +392,21 @@ public class General {
         Ciudad aux = (Ciudad) ciudad.obtenerInformacion(nombre);
         if (aux != null) { // Si la ciudad existe
             if (!aux.anioRegistrado(anio)) { // Si el año no está registrado, lo crea.
-                for (mes = 1; mes <= 12; mes++) {
+                for (mes = 1; mes <= 12; mes++) {// modifica tODO el año, aunque está hecho para alta, no
+                                                 // modificaciones, así que está bien *****************
                     System.out.println("Ingrese la cantidad de habitantes para el mes " + mes);
                     cant = sc.nextInt();
 
                     if (aux.setHabitantesMes(anio, mes, cant)) { // Si se pudo registrar el mes
                         System.out.println("El mes se registró con éxito");
                     } else {
-                        System.out.println("El mes no se pudo registrar");
+                        System.out.println("El mes no se pudo registrar");// siempre va a poder registrarse, hay que
+                                                                          // quitarlo***************************
                     }
                 }
+                Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt",
+                        "Se cargaron los datos de la cantidad de habitantes del año " + anio + " en la ciudad "
+                                + nombre);
             } else {
                 System.out.println("El año no es válido");
             }
@@ -417,7 +444,8 @@ public class General {
                 System.out.println("Mes inválido");
             } else {
                 /*
-                 * Importante aclarar que no vuelve a pedir los datos solo se pregunta si se quiere
+                 * Importante aclarar que no vuelve a pedir los datos solo se pregunta si se
+                 * quiere
                  * volver a elegir otra opcion en el menú esta decisión es para no complicarnos
                  * tanto, se puede cambiar.
                  */
@@ -443,14 +471,15 @@ public class General {
         maxVol = sc.nextInt();
         System.out.println("ingrese el año");
         anio = sc.nextInt();
-        System.out.println("ingrese el mes");//falta validar mes
+        System.out.println("ingrese el mes");// falta validar mes
         mes = sc.nextInt();
         System.out.println(consumoDeAguaMesYAño(ciudades.listarRango(minNomb, maxNomb), minVol,
                 maxVol, anio, mes));
     }
 
     /**
-     * NOTA: Como los volumenes de agua son muy altos, se podria modificar para que sean un poco mas
+     * NOTA: Como los volumenes de agua son muy altos, se podria modificar para que
+     * sean un poco mas
      * chicos.
      * 
      * @param lis
@@ -469,7 +498,7 @@ public class General {
             // Verifica que los volumenes ingresados sean correctos.
             if (minVol < maxVol) {
                 // Verifica los meses dentro del estandar.
-                if (mes > 0 && mes < 13) {//después quitamos ****************
+                if (mes > 0 && mes < 13) {// después quitamos ****************
                     int longLis = lis.longitud();
                     Ciudad aux;
                     double consumoAux;
@@ -494,7 +523,7 @@ public class General {
                         }
                     }
                 } else {
-                    System.out.println("Mes inválido");//se puede verificar afuera************
+                    System.out.println("Mes inválido");// se puede verificar afuera************
                 }
             } else {
                 System.out.println("Rango de volúmenes inválido: minVol debe ser menor que maxVol");
@@ -531,7 +560,7 @@ public class General {
         if (ciudades.obtenerInformacion(origen) != null
                 && ciudades.obtenerInformacion(destino) != null && !origen.equals(destino)) {
             // Busca el camino con menor caudal pleno entre dos ciudades.
-            camino = grafo.caminoMenorCaudalPleno(//*********************** chequear
+            camino = grafo.caminoMenorCaudalPleno(// *********************** chequear
                     ((Ciudad) ciudades.obtenerInformacion(origen)).getNomenclatura(),
                     ((Ciudad) ciudades.obtenerInformacion(destino)).getNomenclatura());
 
@@ -634,7 +663,7 @@ public class General {
         boolean error = false; // ?
         int i = 1, j = 2;
 
-        while (!(estado.equals("DISEÑO")) && j <= camino.longitud() && !error) {
+        while (!(estado.equals("DISENO")) && j <= camino.longitud() && !error) {
             /* [DISEÑO > // INACTIVO > REPARACIÓN > // ACTIVO]. */
 
             String origen = (String) camino.recuperar(i);
@@ -677,7 +706,7 @@ public class General {
             case "INACTIVO":
                 peso = 3;
                 break;
-            case "DISEÑO":
+            case "DISENO":
                 peso = 4;
                 break;
         }
@@ -695,7 +724,8 @@ public class General {
      * @param ciudades
      * @return Listado de ciudades ordenadas por consumo anual.
      *         <p>
-     *         Si una ciudad no tiene datos registrados en el año especificado, no se incluye en el
+     *         Si una ciudad no tiene datos registrados en el año especificado, no
+     *         se incluye en el
      *         listado.
      */
     public static String consumoAnual(int anio, TablaAVL ciudades) {
@@ -715,7 +745,8 @@ public class General {
                 double consumo = ciudad.consumoAnual(anio);
                 // Inserta la ciudad en el heap, ordenada por consumo anual.
                 heap.insertar(consumo, ciudad);
-            }//tener en cuenta un else que muestre la ciudad sin año registrado que muestre 0
+            } // tener en cuenta un else que muestre la ciudad sin año registrado que muestre
+              // 0
         }
         String listado = heap.toStringOrdenado();
         return listado;
@@ -726,7 +757,8 @@ public class General {
     /**
      * Muestra las estructuras del sistema.
      * <p>
-     * Muestra la estructura del grafo, la tabla AVL de ciudades y el HashMap de tuberías.
+     * Muestra la estructura del grafo, la tabla AVL de ciudades y el HashMap de
+     * tuberías.
      * 
      * @param tuberias
      * @param grafo
@@ -745,7 +777,6 @@ public class General {
 
     }
     /*----------PUNTO 7 FIN----------*/
-
 
     /*----------CARGA DE ARCHIVOS----------*/
 

@@ -54,7 +54,7 @@ public class Archivo {
                     );
                     grafo.insertarVertice(info[j + 1]);
 
-                    log("U:\\Universidad\\LICENCIATURA EN CIENCIAS DE LA COMPUTACION\\SEGUNDO AÑO\\CURSADO-2025\\PRIMER CUATRIMESTRE\\11-ESTRUCTURA DE DATOS\\Estructura de Datos - 2025\\tpFinal\\log.txt",
+                    log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt",
                             i + ": " + "Ciudad Cargada");
                     i++; // Incrementa la posición para el siguiente elemento.
                 }
@@ -63,10 +63,10 @@ public class Archivo {
             }
 
         } catch (FileNotFoundException ex) {
-            log("U:\\Universidad\\LICENCIATURA EN CIENCIAS DE LA COMPUTACION\\SEGUNDO AÑO\\CURSADO-2025\\PRIMER CUATRIMESTRE\\11-ESTRUCTURA DE DATOS\\Estructura de Datos - 2025\\tpFinal\\log.txt",
+            log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt",
                     "El archivo no existe." + ex.getMessage());
         } catch (IOException ex) {
-            log("U:\\Universidad\\LICENCIATURA EN CIENCIAS DE LA COMPUTACION\\SEGUNDO AÑO\\CURSADO-2025\\PRIMER CUATRIMESTRE\\11-ESTRUCTURA DE DATOS\\Estructura de Datos - 2025\\tpFinal\\log.txt",
+            log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt",
                     "Error leyendo o escribiendo en algún archivo.");
         }
 
@@ -119,7 +119,7 @@ public class Archivo {
                     grafo.insertarArco(origen, destino, Double.parseDouble(info[j + 2]));
 
                     // Registra en el log que se cargó una tubería
-                    log("U:\\Universidad\\LICENCIATURA EN CIENCIAS DE LA COMPUTACION\\SEGUNDO AÑO\\CURSADO-2025\\PRIMER CUATRIMESTRE\\11-ESTRUCTURA DE DATOS\\Estructura de Datos - 2025\\tpFinal\\log.txt",
+                    log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt",
                             i + ": " + "Tubería cargada entre " + origen + " y " + destino);
                     i++; // Incrementa el contador de líneas para el siguiente elemento.
                 }
@@ -128,10 +128,10 @@ public class Archivo {
             }
 
         } catch (FileNotFoundException ex) {
-            log("U:\\Universidad\\LICENCIATURA EN CIENCIAS DE LA COMPUTACION\\SEGUNDO AÑO\\CURSADO-2025\\PRIMER CUATRIMESTRE\\11-ESTRUCTURA DE DATOS\\Estructura de Datos - 2025\\tpFinal\\log.txt",
+            log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt",
                     "El archivo no existe." + ex.getMessage());
         } catch (IOException ex) {
-            log("U:\\Universidad\\LICENCIATURA EN CIENCIAS DE LA COMPUTACION\\SEGUNDO AÑO\\CURSADO-2025\\PRIMER CUATRIMESTRE\\11-ESTRUCTURA DE DATOS\\Estructura de Datos - 2025\\tpFinal\\log.txt",
+            log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt",
                     "Error leyendo o escribiendo en algún archivo.");
         }
 
