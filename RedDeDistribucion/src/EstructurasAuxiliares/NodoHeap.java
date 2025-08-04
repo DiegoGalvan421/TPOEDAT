@@ -11,10 +11,12 @@ public class NodoHeap {
         this.dato = dato;
     }
 
-    public String toString() {// para no hacer un getDato().toString()
+    public String toStringDato() {// para no hacer un getDato().toString()
         return dato.toString();
     }
-
+     public String toStringClave() {// para no hacer un getClave().toString()
+        return clave.toString();
+    }
     public Comparable getClave() {
         return clave;
     }

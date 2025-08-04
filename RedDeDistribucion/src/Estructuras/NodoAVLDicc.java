@@ -20,7 +20,7 @@ public class NodoAVLDicc {
     }
         
     public void setClave(Comparable elem){
-        this.clave=clave;
+        this.clave=elem;
     }
     public Object getDato(){
         return dato;

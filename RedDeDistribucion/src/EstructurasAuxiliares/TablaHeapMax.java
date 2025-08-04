@@ -124,7 +124,7 @@ public class TablaHeapMax {
                                                   // objeto y copiar el anterior String caracter a
                                                   // caracter
         while (!this.esVacio()) {
-            sb.append(this.eliminarCima().toString()).append(" -> ");
+            sb.append("\nConsumo anual: ").append(heap[1].toStringClave()).append(this.eliminarCima().toString()).append(" -> ");
         }
         if (sb.length() >= 4) {
             sb.setLength(sb.length() - 4); // elimina el último " -> "

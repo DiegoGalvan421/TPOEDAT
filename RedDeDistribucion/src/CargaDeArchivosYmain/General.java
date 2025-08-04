@@ -34,8 +34,7 @@ public class General {
             System.out.println("---------------------Menu---------------------");
             System.out.println("1) Altas, bajas y modificaciones de ciudades");
             System.out.println("2) Atlas, bajas y modificaciones de tuberias");
-            System.out.println(
-                    "3) Alta de información de la cantidad de habitantes para año dado y ciudad dada");
+            System.out.println("3) Alta de información de la cantidad de habitantes para año dado y ciudad dada");
             System.out.println("4) Consultas sobre ciudades");
             System.out.println("5) Consultas sobre transporte de agua");
             System.out.println("6) Listado de ciudades ordenadas por consumo");
@@ -143,12 +142,12 @@ public class General {
                     int anio = sc.nextInt();
                     sc.nextLine();
                     System.out.println(consumoAnual(anio, ciudades));
-
+                    break;
                     /*
                      * NOTA JUAN: Si una ciudad no tiene datos registrados en el año especificado,
                      * no se inserta en el heap.
                      */
-
+                    
                 case 7:
                     System.out.println("Mostrar Todas las estructuras");
                     mostrarEstructuras(Tuberias, grafo, ciudades);
@@ -200,7 +199,7 @@ public class General {
         // Crea una nueva ciudad y la agrega a la tabla y al grafo.
         Ciudad nuevaCiudad = new Ciudad(nombre, nomenclatura, unaSup, unConsumo);
         ciudades.insertar(nombre, nuevaCiudad);
-        grafo.insertarVertice(nomenclatura);
+        grafo.insertarVertice(nomenclatura); //si ya está cargada la ciudad que devuelva un mensaje
         System.out.println("Ciudad agregada correctamente.");
         System.out.println(nuevaCiudad.toString());
     }
@@ -222,7 +221,7 @@ public class General {
         Ciudad tempCiudad = (Ciudad) ciudades.obtenerInformacion(nombre);
         if (tempCiudad != null) { // Verifica si la ciudad existe.
             grafo.eliminarVertice(tempCiudad.getNomenclatura());
-            ciudades.eliminar(tempCiudad.getNombre());
+            System.out.println(ciudades.eliminar(tempCiudad.getNombre()));
         } else {
             System.out.println("Ciudad no encontrada.");
         }
@@ -282,7 +281,7 @@ public class General {
         diametro = sc.nextDouble();
         System.out.println("Ingrese el estado");
         estado = sc.nextLine().trim();
-
+        //Debe verificar que ya no exista una tubería entre estas ciudades
         ClaveTuberia clave = new ClaveTuberia(origen, destino);
         Tuberia tuberiaNueva = new Tuberia((origen + "-" + destino).trim(), caudalMinimo,
                 caudalMaximo, diametro, estado.trim());
@@ -342,6 +341,7 @@ public class General {
             Tuberia tuberia = (Tuberia) tuberias.get(clave);
             System.out.println("Estado actual: " + tuberia.getEstado());
             System.out.println("Ingrese el nuevo estado:");
+            //despues aclaremos formato de estados
             System.out.println("Estados posibles: A(ctivo), R(eparación), D(iseño), I(nactivo)");
             estado = sc.nextLine().trim();
             tuberia.setEstado(estado);
@@ -350,7 +350,7 @@ public class General {
             System.out.println("No se encontró la tubería con la clave especificada.");
         }
     }
-
+    //decidimos que el caudal no se cambia
     /*----------PUNTO 3----------*/
 
     /**
@@ -363,7 +363,7 @@ public class General {
         int mes, anio, cant;
         String nombre;
         System.out.println("Ingrese la ciudad");
-        nombre = sc.nextLine();
+        nombre = sc.nextLine().trim();
         System.out.println("Ingrese el año");
         anio = sc.nextInt();
 
@@ -403,7 +403,7 @@ public class General {
         Ciudad aux;
         int anio, mes;
         System.out.println("ingrese el nombre de la ciudad");
-        nombre = sc.nextLine();
+        nombre = sc.nextLine().trim();
         aux = (Ciudad) ciudades.obtenerInformacion(nombre);
         System.out.println("ingrese el año");
         anio = sc.nextInt();
@@ -443,10 +443,66 @@ public class General {
         maxVol = sc.nextInt();
         System.out.println("ingrese el año");
         anio = sc.nextInt();
-        System.out.println("ingrese el mes");
+        System.out.println("ingrese el mes");//falta validar mes
         mes = sc.nextInt();
         System.out.println(consumoDeAguaMesYAño(ciudades.listarRango(minNomb, maxNomb), minVol,
                 maxVol, anio, mes));
+    }
+
+    /**
+     * NOTA: Como los volumenes de agua son muy altos, se podria modificar para que sean un poco mas
+     * chicos.
+     * 
+     * @param lis
+     * @param minVol
+     * @param maxVol
+     * @param anio
+     * @param mes
+     * @return Lista de ciudades que cumplen con el rango de consumo de agua.
+     *         <p>
+     *         La lista se ordena por el consumo de agua mensual.
+     */
+    public static Lista consumoDeAguaMesYAño(Lista lis, int minVol, int maxVol, int anio, int mes) {
+        Lista cumplen = new Lista();
+        // Verifica que la lista contenga algo.
+        if (lis != null && lis.longitud() > 0) {
+            // Verifica que los volumenes ingresados sean correctos.
+            if (minVol < maxVol) {
+                // Verifica los meses dentro del estandar.
+                if (mes > 0 && mes < 13) {//después quitamos ****************
+                    int longLis = lis.longitud();
+                    Ciudad aux;
+                    double consumoAux;
+                    for (int i = 1; i <= longLis; i++) {
+                        try {
+                            aux = (Ciudad) lis.recuperar(i);
+                            if (aux != null) {
+                                // Solo procesar si la ciudad tiene datos para ese año.
+
+                                if (aux.anioRegistrado(anio)) {
+
+                                    consumoAux = aux.consumoMensual(anio, mes);
+
+                                    if (consumoAux > 0 && consumoAux > minVol
+                                            && consumoAux < maxVol) {
+                                        cumplen.insertar(aux, cumplen.longitud() + 1);
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Error al acceder al elemento " + i);
+                        }
+                    }
+                } else {
+                    System.out.println("Mes inválido");//se puede verificar afuera************
+                }
+            } else {
+                System.out.println("Rango de volúmenes inválido: minVol debe ser menor que maxVol");
+            }
+        } else {
+            System.out.println("Lista vacía o nula");
+        }
+        return cumplen;
     }
 
     /*----------PUNTO 5 A----------*/
@@ -475,7 +531,7 @@ public class General {
         if (ciudades.obtenerInformacion(origen) != null
                 && ciudades.obtenerInformacion(destino) != null && !origen.equals(destino)) {
             // Busca el camino con menor caudal pleno entre dos ciudades.
-            camino = grafo.caminoMasChico(
+            camino = grafo.caminoMenorCaudalPleno(//*********************** chequear
                     ((Ciudad) ciudades.obtenerInformacion(origen)).getNomenclatura(),
                     ((Ciudad) ciudades.obtenerInformacion(destino)).getNomenclatura());
 
@@ -564,49 +620,6 @@ public class General {
         }
     }
 
-    /*----------PUNTO 6----------*/
-
-    /**
-     * Genera un listado de ciudades ordenadas por consumo anual.
-     * <p>
-     * Utiliza un heap para ordenar las ciudades por su consumo anual.
-     * 
-     * @param anio
-     * @param ciudades
-     * @return Listado de ciudades ordenadas por consumo anual.
-     *         <p>
-     *         Si una ciudad no tiene datos registrados en el año especificado, no se incluye en el
-     *         listado.
-     */
-    public static String consumoAnual(int anio, TablaAVL ciudades) {
-        // Heap para cubrir los casos en los que mas de 1 ciudad tenga el mismo consumo.
-        TablaHeapMax heap = new TablaHeapMax();
-        // Lista las ciudades originales para ir calculando el consumo anual.
-        Lista listaC = ciudades.listarDatos();
-
-        // Recorre la lista de ciudades y calcula el consumo anual.
-        for (int i = 1; i <= listaC.longitud(); i++) {
-            Ciudad ciudad = (Ciudad) listaC.recuperar(i);
-            if (ciudad.anioRegistrado(anio)) {
-                /*
-                 * NOTA: Debatir si se debe considerar que las ciudades que no tengan registrado
-                 * datos en este año directamente no se insertan.
-                 */
-                double consumo = ciudad.consumoAnual(anio);
-                // Inserta la ciudad en el heap, ordenada por consumo anual.
-                heap.insertar(consumo, ciudad);
-            }
-        }
-        String listado = heap.toStringOrdenado();
-        return listado;
-    }
-
-    /*
-     * Ya se hizo el punto 5, faltaria que considere, cuando hay mas de un estado es decir,
-     * diseño-reparacion,reparacion-inactivo y asi.
-     */
-
-
     /**
      * Verifica el estado de un camino en función de las tuberías que lo componen.
      * 
@@ -633,14 +646,6 @@ public class General {
 
             if (tuberia != null) {
                 String nuevoEstado = tuberia.getEstado();
-                /*
-                 * switch (estado){ //en vez de switch podría hacer otro modulo que les asigne peso
-                 * a los estados case "ACTIVO": estado = tuberia.getEstado(); break; case
-                 * "REPARACION": if (!nuevoEstado.equals("ACTIVO")){//REPARACION se reemplaza por
-                 * cualquier estado menos ACTIVO estado = nuevoEstado; } break; case "INACTIVO": if
-                 * (!nuevoEstado.equals("ACTIVO") || !nuevoEstado.equals("REPARACION")){//INACTIVO
-                 * solo se reemplaza por DISEÑO estado = nuevoEstado; } break; }
-                 */
                 if (prioridad(estado) < prioridad(nuevoEstado)) {
                     estado = nuevoEstado;
                 }
@@ -679,6 +684,42 @@ public class General {
         return peso;
     }
 
+    /*----------PUNTO 6----------*/
+
+    /**
+     * Genera un listado de ciudades ordenadas por consumo anual.
+     * <p>
+     * Utiliza un heap para ordenar las ciudades por su consumo anual.
+     * 
+     * @param anio
+     * @param ciudades
+     * @return Listado de ciudades ordenadas por consumo anual.
+     *         <p>
+     *         Si una ciudad no tiene datos registrados en el año especificado, no se incluye en el
+     *         listado.
+     */
+    public static String consumoAnual(int anio, TablaAVL ciudades) {
+        // Heap para cubrir los casos en los que mas de 1 ciudad tenga el mismo consumo.
+        TablaHeapMax heap = new TablaHeapMax();
+        // Lista las ciudades originales para ir calculando el consumo anual.
+        Lista listaC = ciudades.listarDatos();
+
+        // Recorre la lista de ciudades y calcula el consumo anual.
+        for (int i = 1; i <= listaC.longitud(); i++) {
+            Ciudad ciudad = (Ciudad) listaC.recuperar(i);
+            if (ciudad.anioRegistrado(anio)) {
+                /*
+                 * NOTA: Debatir si se debe considerar que las ciudades que no tengan registrado
+                 * datos en este año directamente no se insertan.
+                 */
+                double consumo = ciudad.consumoAnual(anio);
+                // Inserta la ciudad en el heap, ordenada por consumo anual.
+                heap.insertar(consumo, ciudad);
+            }//tener en cuenta un else que muestre la ciudad sin año registrado que muestre 0
+        }
+        String listado = heap.toStringOrdenado();
+        return listado;
+    }
 
     /*----------PUNTO 7----------*/
 
@@ -703,75 +744,10 @@ public class General {
         System.out.println(tuberias.toString());
 
     }
-
-    /**
-     * NOTA: Como los volumenes de agua son muy altos, se podria modificar para que sean un poco mas
-     * chicos.
-     * 
-     * @param lis
-     * @param minVol
-     * @param maxVol
-     * @param anio
-     * @param mes
-     * @return Lista de ciudades que cumplen con el rango de consumo de agua.
-     *         <p>
-     *         La lista se ordena por el consumo de agua mensual.
-     */
-    public static Lista consumoDeAguaMesYAño(Lista lis, int minVol, int maxVol, int anio, int mes) {
-        Lista cumplen = new Lista();
-        // Verifica que la lista contenga algo.
-        if (lis != null && lis.longitud() > 0) {
-            // Verifica que los volumenes ingresados sean correctos.
-            if (minVol < maxVol) {
-                // Verifica los meses dentro del estandar.
-                if (mes > 0 && mes < 13) {
-                    int longLis = lis.longitud();
-                    Ciudad aux;
-                    double consumoAux;
-                    for (int i = 1; i <= longLis; i++) {
-                        try {
-                            aux = (Ciudad) lis.recuperar(i);
-                            if (aux != null) {
-                                // Solo procesar si la ciudad tiene datos para ese año.
-
-                                if (aux.anioRegistrado(anio)) {
-                                    /*
-                                     * esto es solo una operacion para chequear algo
-                                     * System.out.println("Ciudad: " + aux.getNombre());
-                                     * System.out.println("Habitantes sept 2021: " +
-                                     * aux.getHabitantesMes(2021, 9));
-                                     * System.out.println("Consumo promedio: " + aux.getConsumo());
-                                     * double consumo = aux.consumoMensual(2021, 9);
-                                     * System.out.println("Consumo calculado: " + consumo);
-                                     * System.out.println("¿Entra en rango " + minVol + "-" + maxVol
-                                     * + "? " + (consumo > minVol && consumo < maxVol));
-                                     * System.out.println("---");
-                                     */
-                                    consumoAux = aux.consumoMensual(anio, mes);
-
-                                    if (consumoAux > 0 && consumoAux > minVol
-                                            && consumoAux < maxVol) {
-                                        cumplen.insertar(aux, cumplen.longitud() + 1);
-                                    }
-                                }
-                            }
-                        } catch (Exception e) {
-                            System.out.println("Error al acceder al elemento " + i);
-                        }
-                    }
-                } else {
-                    System.out.println("Mes inválido");
-                }
-            } else {
-                System.out.println("Rango de volúmenes inválido: minVol debe ser menor que maxVol");
-            }
-        } else {
-            System.out.println("Lista vacía o nula");
-        }
-        return cumplen;
-    }
+    /*----------PUNTO 7 FIN----------*/
 
 
+    /*----------CARGA DE ARCHIVOS----------*/
 
     /**
      * Carga la cantidad de habitantes de cada ciudad desde un archivo.

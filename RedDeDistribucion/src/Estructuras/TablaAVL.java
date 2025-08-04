@@ -90,7 +90,7 @@ public class TablaAVL {
         return exito[0];
     }
 
-     // Elimina recursivamente y balancea el árbol
+    // Elimina recursivamente y balancea el árbol
     private NodoAVLDicc eliminarAux(NodoAVLDicc nodo, Comparable elem, boolean[] exito) {
         if (nodo != null) {
             if (elem.compareTo(nodo.getClave()) < 0) {
@@ -108,7 +108,13 @@ public class TablaAVL {
                     nodo = nodo.getIzquierdo(); // Solo hijo izquierdo
                 } else {
                     // Nodo con dos hijos, busca el sucesor y lo elimina
-                    nodo = reemplazarMenorDerecho(nodo);
+                    NodoAVLDicc sucesor = obtenerMenor(nodo.getDerecho());
+
+                    nodo.setClave(sucesor.getClave());
+                    nodo.setDato(sucesor.getDato());
+
+                    nodo.setDerecho(eliminarMenorDirecto(nodo.getDerecho()));
+
                 }
             }
             // Recalcula altura y balancea si el nodo no es null
@@ -120,34 +126,19 @@ public class TablaAVL {
         return nodo;
     }
 
-    // Reemplaza el nodo por el menor del subárbol derecho (sucesor)
-    private NodoAVLDicc reemplazarMenorDerecho(NodoAVLDicc nodo) {
-        NodoAVLDicc resultado = nodo;
-        NodoAVLDicc derecho = nodo.getDerecho();
-        if (derecho.getIzquierdo() == null) {
-            // El sucesor inmediato
-            nodo.setClave(derecho.getClave());
-            nodo.setDato(derecho.getDato());
-            nodo.setDerecho(derecho.getDerecho());
-        } else {
-            // El sucesor está más abajo, lo elimina recursivamente
-            nodo.setDerecho(eliminarMenor(derecho, nodo));
+    private NodoAVLDicc obtenerMenor(NodoAVLDicc nodo) {
+        while (nodo.getIzquierdo() != null) {
+            nodo = nodo.getIzquierdo();
         }
-        nodo.recalcularAltura();
-        resultado = balancear(nodo);
-        return resultado;
+        return nodo;
     }
 
-    // Elimina el menor del subárbol y balancea toda la rama
-    private NodoAVLDicc eliminarMenor(NodoAVLDicc nodo, NodoAVLDicc reemplazado) {
-        NodoAVLDicc resultado = nodo;
+    private NodoAVLDicc eliminarMenorDirecto(NodoAVLDicc nodo) {
+        NodoAVLDicc resultado;
         if (nodo.getIzquierdo() == null) {
-            // Este es el menor, copia clave/dato al nodo a reemplazar
-            reemplazado.setClave(nodo.getClave());
-            reemplazado.setDato(nodo.getDato());
             resultado = nodo.getDerecho();
         } else {
-            nodo.setIzquierdo(eliminarMenor(nodo.getIzquierdo(), reemplazado));
+            nodo.setIzquierdo(eliminarMenorDirecto(nodo.getIzquierdo()));
             nodo.recalcularAltura();
             resultado = balancear(nodo);
         }
