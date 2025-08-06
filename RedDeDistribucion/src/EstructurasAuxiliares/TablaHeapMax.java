@@ -109,27 +109,4 @@ public class TablaHeapMax {
     public boolean esVacio() {
         return tamanio == 0;
     }
-
-    /**
-     * Devuelve una representación en cadena de los elementos del heap ordenados.
-     * 
-     * <p>
-     * Precondición: el heap no está vacío.
-     * 
-     * @return String con los elementos del heap ordenados de mayor a menor.
-     */
-    public String toStringOrdenado() {
-        StringBuilder sb = new StringBuilder("[");// String builder trabaja más eficiente que las
-                                                  // concatenaciones "+" que deben crear un nuevo
-                                                  // objeto y copiar el anterior String caracter a
-                                                  // caracter
-        while (!this.esVacio()) {
-            sb.append("\nConsumo anual: ").append(heap[1].toStringClave()).append(this.eliminarCima().toString()).append(" -> ");
-        }
-        if (sb.length() >= 4) {
-            sb.setLength(sb.length() - 4); // elimina el último " -> "
-        }
-        sb.append("]");
-        return sb.toString();
-    }
 }

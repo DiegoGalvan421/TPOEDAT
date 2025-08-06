@@ -725,8 +725,7 @@ public class General {
      * @return Listado de ciudades ordenadas por consumo anual.
      *         <p>
      *         Si una ciudad no tiene datos registrados en el año especificado, no
-     *         se incluye en el
-     *         listado.
+     *         se incluye en el listado.
      */
     public static String consumoAnual(int anio, TablaAVL ciudades) {
         // Heap para cubrir los casos en los que mas de 1 ciudad tenga el mismo consumo.
@@ -748,8 +747,19 @@ public class General {
             } // tener en cuenta un else que muestre la ciudad sin año registrado que muestre
               // 0
         }
-        String listado = heap.toStringOrdenado();
-        return listado;
+        StringBuilder sb = new StringBuilder("[");// String builder trabaja más eficiente que las
+                                                      // concatenaciones "+" que deben crear un nuevo
+                                                      // objeto y copiar el anterior String caracter a
+                                                      // caracter
+        while (!heap.esVacio()) {
+            sb.append(heap.eliminarCima().toString()).append(" -> ");//va pasando el string de la cima y la elimina
+        }
+        if (sb.length() >= 4) {
+            sb.setLength(sb.length() - 4); // elimina el último " -> ", si la lista está vacía se imprime "[]"
+        }
+        sb.append("]");
+
+        return sb.toString();
     }
 
     /*----------PUNTO 7----------*/
