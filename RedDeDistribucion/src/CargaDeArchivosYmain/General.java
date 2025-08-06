@@ -16,13 +16,13 @@ public class General {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         DigrafoEtiquetado grafo = new DigrafoEtiquetado();
-        TablaAVL ciudades = Archivo.cargarCiudades("C:\\Users\\JG\\Desktop\\txtTp\\Ciudades.txt", grafo);
-        HashMap<ClaveTuberia, Tuberia> Tuberias = Archivo.cargarTuberias("C:\\Users\\JG\\Desktop\\txtTp\\Tuberias.txt",
+        TablaAVL ciudades = Archivo.cargarCiudades("RedDeDistribucion/src/Datos/Ciudades.txt", grafo);
+        HashMap<ClaveTuberia, Tuberia> Tuberias = Archivo.cargarTuberias("RedDeDistribucion/src/Datos/Tuberias.txt",
                 grafo);
         System.out.println(ciudades.toString());
         System.out.println(Tuberias.toString());
         System.out.println(grafo.toString());
-        cargarHabCiudad("C:\\Users\\JG\\Desktop\\txtTp\\Habitantes historicos.txt", ciudades);
+        cargarHabCiudad("RedDeDistribucion/src/Datos/Habitantes historicos.txt", ciudades);
         Ciudad aux = (Ciudad) ciudades.obtenerInformacion("Buenos Aires");
 
         System.out.println(aux.verHab(2021));
