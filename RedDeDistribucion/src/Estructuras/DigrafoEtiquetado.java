@@ -422,8 +422,7 @@ public class DigrafoEtiquetado {
                         // Si caminoActual ESTA vacia O visitados es menor que caminoActual.
                         caminoActual.vaciar();
                         while (!exito) {
-                            caminoActual.insertar(visitados.recuperar(1),
-                                    caminoActual.longitud() + 1);
+                            caminoActual.insertar(visitados.recuperar(1), 1);
                             visitados.eliminar(1);
                             if (visitados.esVacia()) { // Si ya no quedan nodos, corta el bucle.
                                 exito = true;
