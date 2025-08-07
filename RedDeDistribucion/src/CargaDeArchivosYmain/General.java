@@ -84,7 +84,7 @@ public class General {
                             bajaDeTuberias(grafo, Tuberias, ciudades);
                             break;
                         case 3:
-                            modificarTuberias(grafo, Tuberias);
+                            modificarTuberias(grafo, Tuberias, ciudades);
                             break;
 
                         default:
@@ -295,7 +295,7 @@ public class General {
         sc.nextLine();
         System.out.println("Ingrese el estado");
         estado = sc.nextLine().trim();
-        // Debe verificar que ya no exista una tubería entre estas ciudades
+        //verificar que existan las ciudades de origen y destino
         Ciudad aux1 = (Ciudad) ciudades.obtenerInformacion(origen);
         Ciudad aux2 = (Ciudad) ciudades.obtenerInformacion(destino);
         if (aux1 != null && aux2 != null) {
@@ -304,6 +304,7 @@ public class General {
             ClaveTuberia clave = new ClaveTuberia(origen, destino);
             Tuberia tuberiaNueva = new Tuberia((origen + "-" + destino).trim(), caudalMinimo,
                     caudalMaximo, diametro, estado.trim());
+            //verifica que este la tuberia
             if (!tuberias.containsKey(clave)) {
                 tuberias.put(clave, tuberiaNueva);
                 grafo.insertarArco(origen, destino, caudalMaximo);
@@ -363,7 +364,7 @@ public class General {
      * @param grafo
      * @param tuberias
      */
-    public static void modificarTuberias(DigrafoEtiquetado grafo, HashMap tuberias) {
+    public static void modificarTuberias(DigrafoEtiquetado grafo, HashMap tuberias, TablaAVL ciudades) {
         Scanner sc = new Scanner(System.in);
         String origen, destino, estado;
 
@@ -373,23 +374,28 @@ public class General {
         origen = sc.nextLine().trim();
         System.out.println("Ingrese el nombre de la ciudad destino");
         destino = sc.nextLine().trim();
-        ClaveTuberia clave = new ClaveTuberia(origen, destino);
+        Ciudad aux1 = (Ciudad) ciudades.obtenerInformacion(origen);
+        Ciudad aux2 = (Ciudad) ciudades.obtenerInformacion(destino);
+        if (aux1 != null && aux2 != null) {
+            origen = aux1.getNomenclatura();
+            destino = aux2.getNomenclatura();
+            ClaveTuberia clave = new ClaveTuberia(origen, destino);
 
-        if (tuberias.containsKey(clave)) { // Verifica si la tubería existe en el HashMap.
-            Tuberia tuberia = (Tuberia) tuberias.get(clave);
-            System.out.println("Estado actual: " + tuberia.getEstado());
-            System.out.println("Ingrese el nuevo estado:");
-
-            // despues aclaremos formato de estados*************************************
-
-            System.out.println("Estados posibles: (ACTIVO, REPARACION, DISENO, INACTIVO");
-            estado = sc.nextLine().trim().toUpperCase();
-            tuberia.setEstado(estado);
-            System.out.println("Tubería modificada correctamente.");
-            Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt",
-                    "Se modificó el estado de la tubería " + clave + " (ahora: " + estado + ")");
+            if (tuberias.containsKey(clave)) { // Verifica si la tubería existe en el HashMap.
+                Tuberia tuberia = (Tuberia) tuberias.get(clave);
+                System.out.println("Estado actual: " + tuberia.getEstado());
+                System.out.println("Ingrese el nuevo estado:");
+                System.out.println("Estados posibles: (ACTIVO, REPARACION, DISENO, INACTIVO");
+                estado = sc.nextLine().trim().toUpperCase();
+                tuberia.setEstado(estado);
+                System.out.println("Tubería modificada correctamente.");
+                Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt",
+                        "Se modificó el estado de la tubería " + clave + " (ahora: " + estado + ")");
+            } else {
+                System.out.println("No se encontró la tubería con la clave especificada.");
+            }
         } else {
-            System.out.println("No se encontró la tubería con la clave especificada.");
+            System.out.println("la tuberia de origen o destino no es valida");
         }
     }
     // decidimos que el caudal no se cambia
@@ -491,9 +497,9 @@ public class General {
         mes = sc.nextInt();
         if (!(mes > 0 && mes < 13)) {
             System.out.println("Mes inválido");
-        } else {    
-                System.out.println(consumoDeAguaMesYAño(ciudades.listarRango(minNomb, maxNomb), minVol,
-                maxVol, anio, mes));
+        } else {
+            System.out.println(consumoDeAguaMesYAño(ciudades.listarRango(minNomb, maxNomb), minVol,
+                    maxVol, anio, mes));
         }
     }
 
@@ -690,7 +696,8 @@ public class General {
 
             if (tuberia != null) {
                 String nuevoEstado = tuberia.getEstado();
-                if (prioridad(estado) < prioridad(nuevoEstado)) {//se queda con el estado de mayor prioridad entre los 2
+                if (prioridad(estado) < prioridad(nuevoEstado)) {// se queda con el estado de mayor prioridad entre los
+                                                                 // 2
                     estado = nuevoEstado;
                 }
             } else {
@@ -710,7 +717,8 @@ public class General {
     private static int prioridad(String estado) {
         int peso = 0; // declaro 0 solo para poder retornar, se supone que siempre va a entrar un
                       // etado valido
-        switch (estado) { // IMPORTANTE ASEGURARSE QUE ESTOS SEAN LOS STRINGS QUE SE GUARDAN EN LAS TUBERIAS
+        switch (estado) { // IMPORTANTE ASEGURARSE QUE ESTOS SEAN LOS STRINGS QUE SE GUARDAN EN LAS
+                          // TUBERIAS
             case "ACTIVO":
                 peso = 1;
                 break;
