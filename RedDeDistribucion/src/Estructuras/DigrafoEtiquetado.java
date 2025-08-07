@@ -554,21 +554,14 @@ public class DigrafoEtiquetado {
      */
     private void caminoMenorCaudalPlenoAux(NodoVert vertOrigen, Object destino, Lista visitados,
             Lista caminoActual, double caudalActual, double[] caudalMin) {
-        boolean exito = false;
         if (vertOrigen != null) { // Si el vertice NO es nulo.
-            visitados.insertar(vertOrigen.getElem(), 1);
+            visitados.insertar(vertOrigen.getElem(), visitados.longitud());
             if (vertOrigen.getElem().equals(destino)) { // Si llegamos al destino.
                 if (caudalMin[0] == -1 || caudalActual < caudalMin[0]) {
                     // Preguntamos si el caudal actual es menor que el mínimo encontrado.
                     caudalMin[0] = caudalActual; // Actualizamos el mínimo.
                     caminoActual.vaciar(); // Vaciamos el camino actual.
-                    while (!exito) {
-                        caminoActual.insertar(visitados.recuperar(1), caminoActual.longitud() + 1);
-                        visitados.eliminar(1);
-                        if (visitados.esVacia()) { // Si ya no quedan nodos, corta el bucle.
-                            exito = true;
-                        }
-                    }
+                    caminoActual = visitados; // Guardamos la copia del camino actual como el menor.
                 }
             } else { // En caso de no ser el destino.
                 NodoAdy adyacente = vertOrigen.getPrimerAdy();
@@ -590,7 +583,8 @@ public class DigrafoEtiquetado {
                     adyacente = adyacente.getSigAdyacente(); // Avanzamos al siguiente adyacente.
                 }
             }
-            visitados.eliminar(1); // Backtracking: elimina el último vértice visitado.
+            visitados.eliminar(visitados.longitud()); // Backtracking: elimina el último vértice
+                                                      // visitado.
         }
     }
 
