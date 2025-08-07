@@ -493,13 +493,14 @@ public class DigrafoEtiquetado {
      */
     public Lista caminoMenorCaudalPleno(Object origen, Object destino) {
         Lista camino = new Lista();
+        Lista nodosVisitados = new Lista();
         NodoVert vertOrigen = this.ubicarVertice(origen);
         NodoVert vertDestino = this.ubicarVertice(destino);
 
         if (vertOrigen != null && vertDestino != null) {
             // Verificar si existe un camino desde origen a destino.
             double[] caudalMin = {-1};
-            caminoMenorCaudalPlenoAux(vertOrigen, destino, new Lista(), camino, -1, caudalMin);
+            caminoMenorCaudalPlenoAux(vertOrigen, destino, nodosVisitados, camino, -1, caudalMin);
         }
 
         return camino;
@@ -514,58 +515,50 @@ public class DigrafoEtiquetado {
      * 
      * @param vertOrigen
      * @param destino
-     * @param vistados
+     * @param visitados
      * @param caminoActual
      * @param caudalActual
      * @param caudalMin
      */
-    private void caminoMenorCaudalPlenoAux(NodoVert vertOrigen, Object destino, Lista vistados,
+    private void caminoMenorCaudalPlenoAux(NodoVert vertOrigen, Object destino, Lista visitados,
             Lista caminoActual, double caudalActual, double[] caudalMin) {
-        if (vertOrigen != null) {
-
-            vistados.insertar(vertOrigen.getElem(), vistados.longitud() + 1);
-            if (vertOrigen.getElem().equals(destino)) {
-                // Si llegamos al destino, actualizamos el camino si el caudal pleno es menor
-
-                if (caudalMin[0] == -1 || caudalActual < caudalMin[0]) {// llegamos al destino y
-                                                                        // actualizamos si tenemos
-                                                                        // un caudal pleno menor (si
-                                                                        // quedó en -1 es porque el
-                                                                        // origen y destino era el
-                                                                        // mismo)
-                    caudalMin[0] = caudalActual;
-
-                    caminoActual.vaciar();
-                    for (int i = 1; i <= vistados.longitud(); i++) {
-                        caminoActual.insertar(vistados.recuperar(i), i);// copiamos el mejor camino
-                    }
-                }
-
-            } else {
-                NodoAdy ady = vertOrigen.getPrimerAdy();
-                while (ady != null) {
-                    if (vistados.localizar(ady.getVertice().getElem()) < 0) {
-
-                        double caudalTuberia = (double) ady.getEtiqueta();
-
-                        // Si es el primer tramo, usamos el caudal de esta tuberia lLuego vamos
-                        // comparando para mantener el mínimo caudal
-                        double nuevoCaudal;
-                        if (caudalActual == -1) {
-                            nuevoCaudal = caudalTuberia; // Primer tramo del camino
-                        } else {
-                            nuevoCaudal = Math.min(caudalActual, caudalTuberia); // Tomo el menor
-                                                                                 // entre lo que ya
-                                                                                 // venía y el nuevo
+        boolean exito = false;
+        if (vertOrigen != null) { // Si el vertice NO es nulo.
+            visitados.insertar(vertOrigen.getElem(), 1);
+            if (vertOrigen.getElem().equals(destino)) { // Si llegamos al destino.
+                if (caudalMin[0] == -1 || caudalActual < caudalMin[0]) {
+                    // Preguntamos si el caudal actual es menor que el mínimo encontrado.
+                    caudalMin[0] = caudalActual; // Actualizamos el mínimo.
+                    caminoActual.vaciar(); // Vaciamos el camino actual.
+                    while (!exito) {
+                        caminoActual.insertar(visitados.recuperar(1), caminoActual.longitud());
+                        visitados.eliminar(1);
+                        if (visitados.esVacia()) { // Si ya no quedan nodos, corta el bucle.
+                            exito = true;
                         }
-                        caminoMenorCaudalPlenoAux(ady.getVertice(), destino, vistados, caminoActual,
-                                nuevoCaudal, caudalMin);
                     }
-                    ady = ady.getSigAdyacente();
                 }
-
+            } else { // En caso de no ser el destino.
+                NodoAdy adyacente = vertOrigen.getPrimerAdy();
+                while (adyacente != null) {
+                    if (visitados.localizar(adyacente.getVertice().getElem()) < 0) {
+                        // Si retorna -1 es porque el adyacente no fue visitado.
+                        double caudalTuberia = (double) adyacente.getEtiqueta();
+                        // Obtenemos el caudal de la tubería.
+                        double nuevoCaudal;
+                        if (caudalActual == -1) { // Si es el primer tramo del camino.
+                            nuevoCaudal = caudalTuberia; // Primer tramo del camino.
+                        } else { // En caso de que NO sea el primer tramo.
+                            // Tomamos el mínimo entre el caudal actual y el de la tubería.
+                            nuevoCaudal = Math.min(caudalActual, caudalTuberia);
+                        }
+                        caminoMenorCaudalPlenoAux(adyacente.getVertice(), destino, visitados,
+                                caminoActual, nuevoCaudal, caudalMin);
+                    }
+                    adyacente = adyacente.getSigAdyacente(); // Avanzamos al siguiente adyacente.
+                }
             }
-            vistados.eliminar(vistados.longitud());// backtraking
+            visitados.eliminar(1);// backtraking
         }
     }
 

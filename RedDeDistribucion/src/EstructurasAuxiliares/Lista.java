@@ -1,4 +1,5 @@
 package EstructurasAuxiliares;
+
 public class Lista {
     private Nodo cabecera;
     private int longitud;
@@ -52,26 +53,25 @@ public class Lista {
         return elimino;
     }
 
-    public Object recuperar(int unaPosicion) { // la precond es que la posicion sea valida (en la impleentacion?)
-        Object elemento = null;
-        if ((1 <= unaPosicion) && (unaPosicion <= longitud)) {
-            if ((unaPosicion == 1) && (cabecera != null)) {
-                elemento = cabecera.getElem();
-            } else {
-                Nodo aux = cabecera;
-                int contador = 1;
-                while (contador < unaPosicion) {
-                    if (aux.getEnlace() != null) {
-                        aux = aux.getEnlace();
-                        contador++;
-                    }
-                }
-                if (aux != null) {
-                    elemento = aux.getElem();
-                }
+    /**
+     * Retorna el elemento de una posicion.
+     * 
+     * @param pos
+     * @return Object
+     */
+    public Object recuperar(int pos) {
+        Object elementoRecuperado = null; // Si la posicion no es valida, retorna elemento null.
+
+        if (pos > 0 && pos < this.longitud() + 1) { // Verifica que sea una posicion valida.
+            Nodo nodoAux = this.cabecera;
+            int i = 1;
+            while (i < pos) {
+                nodoAux = nodoAux.getEnlace();
+                i++;
             }
+            elementoRecuperado = nodoAux.getElem();
         }
-        return elemento;
+        return elementoRecuperado;
     }
 
     public int localizar(Object unElemento) {
@@ -104,26 +104,16 @@ public class Lista {
 
     public void vaciar() {
         cabecera = null;
-        longitud=0;
+        longitud = 0;
     }
 
     /*
-     * public Lista clon(){//repetitiva, no recursiva
-     * Lista clonLista = new Lista();
-     * clonLista.longitud = this.longitud;
-     * if (this.cabecera != null){
-     * Nodo auxClon = new Nodo(cabecera.getElem(), null);
-     * clonLista.cabecera = auxClon;
-     * Nodo auxOriginal = cabecera.getEnlace();
-     * while (auxOriginal.getEnlace()!= null){
-     * Nodo aux = new Nodo (auxOriginal.getEnlace(), null);
-     * auxClon.setEnlace(aux);
-     * auxClon = aux;
-     * auxOriginal.setEnlace(auxOriginal.getEnlace());
-     * }
-     * }
-     * return clonLista;
-     * }
+     * public Lista clon(){//repetitiva, no recursiva Lista clonLista = new Lista();
+     * clonLista.longitud = this.longitud; if (this.cabecera != null){ Nodo auxClon = new
+     * Nodo(cabecera.getElem(), null); clonLista.cabecera = auxClon; Nodo auxOriginal =
+     * cabecera.getEnlace(); while (auxOriginal.getEnlace()!= null){ Nodo aux = new Nodo
+     * (auxOriginal.getEnlace(), null); auxClon.setEnlace(aux); auxClon = aux;
+     * auxOriginal.setEnlace(auxOriginal.getEnlace()); } } return clonLista; }
      */
     public Lista clone() {
         Lista clonLista = new Lista();
@@ -136,7 +126,7 @@ public class Lista {
     }
 
     private Nodo clonRec(Nodo aux1Nodo) {
-        Nodo nuevoNodo= new Nodo(aux1Nodo.getElem());
+        Nodo nuevoNodo = new Nodo(aux1Nodo.getElem());
         if (aux1Nodo.getEnlace() != null) {
             aux1Nodo = aux1Nodo.getEnlace();
             nuevoNodo.setEnlace(clonRec(aux1Nodo));
@@ -278,23 +268,23 @@ public class Lista {
     public Lista obtenerMultiplos(int num) {
         Lista lis = new Lista();
         int pos = 1;
-        Nodo aux1 = this.cabecera; 
+        Nodo aux1 = this.cabecera;
         Nodo aux3 = new Nodo();
-        while (aux1!=null) {
-            if(pos%num==0){
+        while (aux1 != null) {
+            if (pos % num == 0) {
                 Nodo aux2 = new Nodo(aux1.getElem());
-                if (lis.cabecera==null) {
+                if (lis.cabecera == null) {
                     lis.cabecera = aux2;
                     aux3 = aux2;
-                } else{
+                } else {
                     aux3.setEnlace(aux2);
                     aux3 = aux2;
                 }
                 lis.longitud++;
             }
-            
+
             pos++;
-            aux1=aux1.getEnlace();
+            aux1 = aux1.getEnlace();
 
         }
         return lis;
