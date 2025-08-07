@@ -16,7 +16,8 @@ public class General {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         DigrafoEtiquetado grafo = new DigrafoEtiquetado();
-        //si no toma los archivos se le debe agregar antes del src "RedDeDistribucion/src"
+        // si no toma los archivos se le debe agregar antes del src
+        // "RedDeDistribucion/src"
         TablaAVL ciudades = Archivo.cargarCiudades("src/Datos/Ciudades.txt", grafo);
         HashMap<ClaveTuberia, Tuberia> Tuberias = Archivo.cargarTuberias("src/Datos/Tuberias.txt",
                 grafo);
@@ -312,8 +313,8 @@ public class General {
             } else {
                 System.out.println("No se pudo dar de alta la tuberia");
             }
-        }else{
-                System.out.println("La ciudad de origen o destino no es valida");
+        } else {
+            System.out.println("La ciudad de origen o destino no es valida");
         }
 
     }
@@ -411,16 +412,12 @@ public class General {
         Ciudad aux = (Ciudad) ciudad.obtenerInformacion(nombre);
         if (aux != null) { // Si la ciudad existe
             if (!aux.anioRegistrado(anio)) { // Si el año no está registrado, lo crea.
-                for (mes = 1; mes <= 12; mes++) {// modifica tODO el año, aunque está hecho para alta, no
-                                                 // modificaciones, así que está bien *****************
+                for (mes = 1; mes <= 12; mes++) {
                     System.out.println("Ingrese la cantidad de habitantes para el mes " + mes);
                     cant = sc.nextInt();
 
-                    if (aux.setHabitantesMes(anio, mes, cant)) { // Si se pudo registrar el mes
+                    if (aux.setHabitantesMes(anio, mes, cant)) {
                         System.out.println("El mes se registró con éxito");
-                    } else {
-                        System.out.println("El mes no se pudo registrar");// siempre va a poder registrarse, hay que
-                                                                          // quitarlo***************************
                     }
                 }
                 Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt",
@@ -490,10 +487,14 @@ public class General {
         maxVol = sc.nextInt();
         System.out.println("ingrese el año");
         anio = sc.nextInt();
-        System.out.println("ingrese el mes");// falta validar mes
+        System.out.println("ingrese el mes");
         mes = sc.nextInt();
-        System.out.println(consumoDeAguaMesYAño(ciudades.listarRango(minNomb, maxNomb), minVol,
+        if (!(mes > 0 && mes < 13)) {
+            System.out.println("Mes inválido");
+        } else {    
+                System.out.println(consumoDeAguaMesYAño(ciudades.listarRango(minNomb, maxNomb), minVol,
                 maxVol, anio, mes));
+        }
     }
 
     /**
@@ -516,33 +517,28 @@ public class General {
         if (lis != null && lis.longitud() > 0) {
             // Verifica que los volumenes ingresados sean correctos.
             if (minVol < maxVol) {
-                // Verifica los meses dentro del estandar.
-                if (mes > 0 && mes < 13) {// después quitamos ****************
-                    int longLis = lis.longitud();
-                    Ciudad aux;
-                    double consumoAux;
-                    for (int i = 1; i <= longLis; i++) {
-                        try {
-                            aux = (Ciudad) lis.recuperar(i);
-                            if (aux != null) {
-                                // Solo procesar si la ciudad tiene datos para ese año.
+                int longLis = lis.longitud();
+                Ciudad aux;
+                double consumoAux;
+                for (int i = 1; i <= longLis; i++) {
+                    try {
+                        aux = (Ciudad) lis.recuperar(i);
+                        if (aux != null) {
+                            // Solo procesar si la ciudad tiene datos para ese año.
 
-                                if (aux.anioRegistrado(anio)) {
+                            if (aux.anioRegistrado(anio)) {
 
-                                    consumoAux = aux.consumoMensual(anio, mes);
+                                consumoAux = aux.consumoMensual(anio, mes);
 
-                                    if (consumoAux > 0 && consumoAux > minVol
-                                            && consumoAux < maxVol) {
-                                        cumplen.insertar(aux, cumplen.longitud() + 1);
-                                    }
+                                if (consumoAux > 0 && consumoAux > minVol
+                                        && consumoAux < maxVol) {
+                                    cumplen.insertar(aux, cumplen.longitud() + 1);
                                 }
                             }
-                        } catch (Exception e) {
-                            System.out.println("Error al acceder al elemento " + i);
                         }
+                    } catch (Exception e) {
+                        System.out.println("Error al acceder al elemento " + i);
                     }
-                } else {
-                    System.out.println("Mes inválido");// se puede verificar afuera************
                 }
             } else {
                 System.out.println("Rango de volúmenes inválido: minVol debe ser menor que maxVol");
@@ -579,7 +575,7 @@ public class General {
         if (ciudades.obtenerInformacion(origen) != null
                 && ciudades.obtenerInformacion(destino) != null && !origen.equals(destino)) {
             // Busca el camino con menor caudal pleno entre dos ciudades.
-            camino = grafo.caminoMenorCaudalPleno(// *********************** chequear
+            camino = grafo.caminoMenorCaudalPleno(
                     ((Ciudad) ciudades.obtenerInformacion(origen)).getNomenclatura(),
                     ((Ciudad) ciudades.obtenerInformacion(destino)).getNomenclatura());
 
@@ -694,7 +690,7 @@ public class General {
 
             if (tuberia != null) {
                 String nuevoEstado = tuberia.getEstado();
-                if (prioridad(estado) < prioridad(nuevoEstado)) {
+                if (prioridad(estado) < prioridad(nuevoEstado)) {//se queda con el estado de mayor prioridad entre los 2
                     estado = nuevoEstado;
                 }
             } else {
@@ -714,8 +710,7 @@ public class General {
     private static int prioridad(String estado) {
         int peso = 0; // declaro 0 solo para poder retornar, se supone que siempre va a entrar un
                       // etado valido
-        switch (estado) { // IMPORTANTE ASEGURARSE QUE ESTOS SEAN LOS STRINGS QUE SE GUARDAN EN LAS
-                          // TUBERIAS
+        switch (estado) { // IMPORTANTE ASEGURARSE QUE ESTOS SEAN LOS STRINGS QUE SE GUARDAN EN LAS TUBERIAS
             case "ACTIVO":
                 peso = 1;
                 break;
