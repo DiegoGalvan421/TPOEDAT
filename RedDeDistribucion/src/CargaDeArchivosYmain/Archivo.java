@@ -54,8 +54,7 @@ public class Archivo {
                     );
                     grafo.insertarVertice(info[j + 1]);
 
-                    log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt",
-                            i + ": " + "Ciudad Cargada");
+                    log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt", i + ": " + "Ciudad Cargada");
                     i++; // Incrementa la posición para el siguiente elemento.
                 }
             } else {

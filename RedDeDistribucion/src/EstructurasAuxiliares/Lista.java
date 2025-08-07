@@ -288,6 +288,19 @@ public class Lista {
 
         }
         return lis;
-
     }
+
+    /**
+     * Copia los elementos de otra lista en la lista actual.
+     * 
+     * @param otraLista
+     */
+    public void copiarDesde(Lista otraLista) {
+        this.vaciar();
+        for (int i = 1; i <= otraLista.longitud(); i++) {
+            this.insertar(otraLista.recuperar(i), i);
+        }
+    }
+
+
 }

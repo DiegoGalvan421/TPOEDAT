@@ -555,13 +555,13 @@ public class DigrafoEtiquetado {
     private void caminoMenorCaudalPlenoAux(NodoVert vertOrigen, Object destino, Lista visitados,
             Lista caminoActual, double caudalActual, double[] caudalMin) {
         if (vertOrigen != null) { // Si el vertice NO es nulo.
-            visitados.insertar(vertOrigen.getElem(), visitados.longitud());
+            visitados.insertar(vertOrigen.getElem(), visitados.longitud() + 1);
             if (vertOrigen.getElem().equals(destino)) { // Si llegamos al destino.
                 if (caudalMin[0] == -1 || caudalActual < caudalMin[0]) {
                     // Preguntamos si el caudal actual es menor que el mínimo encontrado.
                     caudalMin[0] = caudalActual; // Actualizamos el mínimo.
-                    caminoActual.vaciar(); // Vaciamos el camino actual.
-                    caminoActual = visitados; // Guardamos la copia del camino actual como el menor.
+                    System.out.println(visitados.toString());
+                    caminoActual.copiarDesde(visitados);
                 }
             } else { // En caso de no ser el destino.
                 NodoAdy adyacente = vertOrigen.getPrimerAdy();
