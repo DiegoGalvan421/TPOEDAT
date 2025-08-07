@@ -149,7 +149,7 @@ public class DigrafoEtiquetado {
      */
     public boolean existeVertice(Object vertice) {
         boolean exito = false;
-        if (this.inicio != null) {
+        if (this.inicio != null) { // Si el grafo no está vacío.
             NodoVert aux = this.ubicarVertice(vertice);
             if (aux != null) {
                 exito = true;
@@ -158,12 +158,20 @@ public class DigrafoEtiquetado {
         return exito;
     }
 
+    /**
+     * Inserta un arco en el grafo.
+     * 
+     * @param origen
+     * @param destino
+     * @param etiqueta
+     * @return true si se insertó el arco, false si ya existía.
+     */
     public boolean insertarArco(Object origen, Object destino, Object etiqueta) {
         boolean exito = false;
         NodoVert vertOrigen = this.ubicarVertice(origen);
         NodoVert vertDestino = this.ubicarVertice(destino);
         if (vertOrigen != null && vertDestino != null) {
-            // Verificar si ya existe el arco
+            // Verificar si ya existe el arco.
             NodoAdy ady = vertOrigen.getPrimerAdy();
             boolean existe = false;
             while (ady != null && !existe) {
@@ -172,14 +180,14 @@ public class DigrafoEtiquetado {
                 }
                 ady = ady.getSigAdyacente();
             }
-            // si no existe el arco lo inserta
+            // Si no existe el arco lo inserta
             if (!existe) {
                 NodoAdy nuevoAdy = new NodoAdy(vertDestino, null, etiqueta);
                 if (vertOrigen.getPrimerAdy() == null) {
-                    // si la lista está vacía, se inserta como primer adyacente
+                    // Si la lista está vacía, se inserta como primer adyacente.
                     vertOrigen.setPrimerAdy(nuevoAdy);
                 } else {
-                    // insertar al final de la lista de adyacentes
+                    // Insertar al final de la lista de adyacentes.
                     NodoAdy actual = vertOrigen.getPrimerAdy();
                     while (actual.getSigAdyacente() != null) {
                         actual = actual.getSigAdyacente();
@@ -472,12 +480,24 @@ public class DigrafoEtiquetado {
     }
 
     // para el ejercicio de menor caudal pleno
+
+    /**
+     * Busca el camino de menor caudal pleno entre origen y destino. Utiliza un método auxiliar
+     * recursivo que explora todos los caminos posibles y guarda el de menor caudal pleno.
+     * <p>
+     * El caudal pleno se define como el mínimo caudal de las tuberías en el camino.
+     * 
+     * @param origen
+     * @param destino
+     * @return Lista con el camino de menor caudal pleno desde origen a destino.
+     */
     public Lista caminoMenorCaudalPleno(Object origen, Object destino) {
         Lista camino = new Lista();
         NodoVert vertOrigen = this.ubicarVertice(origen);
         NodoVert vertDestino = this.ubicarVertice(destino);
 
         if (vertOrigen != null && vertDestino != null) {
+            // Verificar si existe un camino desde origen a destino.
             double[] caudalMin = {-1};
             caminoMenorCaudalPlenoAux(vertOrigen, destino, new Lista(), camino, -1, caudalMin);
         }
@@ -485,12 +505,26 @@ public class DigrafoEtiquetado {
         return camino;
     }
 
-    private void caminoMenorCaudalPlenoAux(NodoVert n, Object destino, Lista vis,
+    /**
+     * Metodo PRIVADO recursivo para encontrar el camino de menor caudal pleno entre origen y
+     * destino.
+     * <p>
+     * Utiliza backtracking para explorar todos los caminos posibles y guarda el de menor caudal
+     * pleno.
+     * 
+     * @param vertOrigen
+     * @param destino
+     * @param vistados
+     * @param caminoActual
+     * @param caudalActual
+     * @param caudalMin
+     */
+    private void caminoMenorCaudalPlenoAux(NodoVert vertOrigen, Object destino, Lista vistados,
             Lista caminoActual, double caudalActual, double[] caudalMin) {
-        if (n != null) {
+        if (vertOrigen != null) {
 
-            vis.insertar(n.getElem(), vis.longitud() + 1);
-            if (n.getElem().equals(destino)) {
+            vistados.insertar(vertOrigen.getElem(), vistados.longitud() + 1);
+            if (vertOrigen.getElem().equals(destino)) {
                 // Si llegamos al destino, actualizamos el camino si el caudal pleno es menor
 
                 if (caudalMin[0] == -1 || caudalActual < caudalMin[0]) {// llegamos al destino y
@@ -502,15 +536,15 @@ public class DigrafoEtiquetado {
                     caudalMin[0] = caudalActual;
 
                     caminoActual.vaciar();
-                    for (int i = 1; i <= vis.longitud(); i++) {
-                        caminoActual.insertar(vis.recuperar(i), i);// copiamos el mejor camino
+                    for (int i = 1; i <= vistados.longitud(); i++) {
+                        caminoActual.insertar(vistados.recuperar(i), i);// copiamos el mejor camino
                     }
                 }
 
             } else {
-                NodoAdy ady = n.getPrimerAdy();
+                NodoAdy ady = vertOrigen.getPrimerAdy();
                 while (ady != null) {
-                    if (vis.localizar(ady.getVertice().getElem()) < 0) {
+                    if (vistados.localizar(ady.getVertice().getElem()) < 0) {
 
                         double caudalTuberia = (double) ady.getEtiqueta();
 
@@ -524,14 +558,14 @@ public class DigrafoEtiquetado {
                                                                                  // entre lo que ya
                                                                                  // venía y el nuevo
                         }
-                        caminoMenorCaudalPlenoAux(ady.getVertice(), destino, vis, caminoActual,
+                        caminoMenorCaudalPlenoAux(ady.getVertice(), destino, vistados, caminoActual,
                                 nuevoCaudal, caudalMin);
                     }
                     ady = ady.getSigAdyacente();
                 }
 
             }
-            vis.eliminar(vis.longitud());// backtraking
+            vistados.eliminar(vistados.longitud());// backtraking
         }
     }
 
