@@ -64,7 +64,7 @@ public class DigrafoEtiquetado {
         boolean exito = false;
         if (this.inicio != null) {
             if (this.inicio.getElem().equals(vertice)) {
-                // si el vertice a eliminar es el primero
+                // Si el vertice a eliminar es el primero
                 this.inicio = this.inicio.getSigVertice();
                 eliminarAdy(this.inicio, vertice);
                 exito = true;
@@ -85,49 +85,68 @@ public class DigrafoEtiquetado {
         return exito;
     }
 
+    /**
+     * Metodo PRIVADO para eliminar un vertice de la lista de vertices.
+     * 
+     * @param actual
+     * @param vertice
+     * @return true si se eliminó el vertice, false si no se encontró.
+     */
     private boolean eliminarVerticeAux(NodoVert actual, Object vertice) {
         boolean exito = false;
         if (actual != null && actual.getSigVertice() != null) {
             if (actual.getSigVertice().getElem().equals(vertice)) {
-                // si el que sigue es el buscado, enlaza el actual con el que esta despues del
+                // Si el que sigue es el buscado, enlaza el actual con el que esta despues del
                 // siguiente
                 actual.setSigVertice(actual.getSigVertice().getSigVertice());
                 exito = true;
             } else {
-                // si no es el buscado avanza
+                // Si no es el buscado avanza.
                 exito = eliminarVerticeAux(actual.getSigVertice(), vertice);
             }
         }
         return exito;
     }
 
+    /**
+     * Metodo PRIVADO para eliminar los adyacentes de un vertice.
+     * 
+     * @param actual
+     * @param vertice
+     */
     private void eliminarAdy(NodoVert actual, Object vertice) {
         if (actual != null) {
-            // si el primer adyacente es el que se debe eliminar, lo elimina
+            // Si el primer adyacente es el que se debe eliminar, lo elimina.
             if (actual.getPrimerAdy() != null
                     && actual.getPrimerAdy().getVertice().getElem().equals(vertice)) {
                 actual.setPrimerAdy(actual.getPrimerAdy().getSigAdyacente());
             } else {
-                // si no es el primero, recorre la lista de adyacentes
+                // Si no es el primero, recorre la lista de adyacentes.
                 NodoAdy ady = actual.getPrimerAdy();
                 NodoAdy anterior = null;
-                // supongo que hay 1 solo arco por conexion
+                // Supongo que hay 1 solo arco por conexion.
                 boolean exito = false;
                 while (ady != null && !exito) {
                     anterior = ady;
                     ady = ady.getSigAdyacente();
-                    // recorre la lista de adyacentes hasta eliminar el correcto o llegar al final
+                    // Recorre la lista de adyacentes hasta eliminar el correcto o llegar al final.
                     if (ady != null && ady.getVertice().getElem().equals(vertice)) {
                         anterior.setSigAdyacente(ady.getSigAdyacente());
                         exito = true;
                     }
                 }
             }
-            // y esto se repite con todos los vertices
+            // Repite con todos los vertices.
             eliminarAdy(actual.getSigVertice(), vertice);
         }
     }
 
+    /**
+     * Verifica si un vértice existe en el grafo.
+     * 
+     * @param vertice
+     * @return true si existe, false si no.
+     */
     public boolean existeVertice(Object vertice) {
         boolean exito = false;
         if (this.inicio != null) {
