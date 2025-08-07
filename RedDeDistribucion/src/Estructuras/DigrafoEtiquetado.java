@@ -409,25 +409,17 @@ public class DigrafoEtiquetado {
     private void caminoMasCortoAux(NodoVert origen, Object destino, Lista visitados,
             Lista caminoActual) {
         boolean continuar = true;
-        boolean exito = false;
         if (origen != null) { // Si el vértice origen NO es nulo.
             if (!caminoActual.esVacia() && visitados.longitud() >= caminoActual.longitud()) {
                 // Si caminoActual NO es vacia y visitados es mayor o igual a caminoActual.
                 continuar = false;
             }
             if (continuar) {
-                visitados.insertar(origen.getElem(), 1);
+                visitados.insertar(origen.getElem(), visitados.longitud() + 1);
                 if (origen.getElem().equals(destino)) { // Si llegamos al destino.
                     if (caminoActual.esVacia() || visitados.longitud() < caminoActual.longitud()) {
                         // Si caminoActual ESTA vacia O visitados es menor que caminoActual.
-                        caminoActual.vaciar();
-                        while (!exito) {
-                            caminoActual.insertar(visitados.recuperar(1), 1);
-                            visitados.eliminar(1);
-                            if (visitados.esVacia()) { // Si ya no quedan nodos, corta el bucle.
-                                exito = true;
-                            }
-                        }
+                        caminoActual.copiarDesde(visitados);
                     }
                 } else { // Si no llegamos al destino.
                     NodoAdy adyacente = origen.getPrimerAdy();
@@ -441,7 +433,8 @@ public class DigrafoEtiquetado {
                         // Avanzamos al siguiente adyacente.
                     }
                 }
-                visitados.eliminar(1); // Backtracking: elimina el último vértice visitado.
+                visitados.eliminar(visitados.longitud()); // Backtracking: elimina el último vértice
+                                                          // visitado.
             }
         }
     }
