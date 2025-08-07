@@ -371,8 +371,16 @@ public class DigrafoEtiquetado {
         return exito;
     }
 
-    // este es para el punto de camino con con la menor cantidad de ciudades, de A a
-    // B
+
+    /**
+     * Busca el camino más corto (en cantidad de vértices) entre origen y destino.
+     * <p>
+     * Este es para el punto de camino con con la menor cantidad de ciudades, de A a B.
+     * 
+     * @param origen
+     * @param destino
+     * @return Lista con el camino más corto desde origen a destino.
+     */
     public Lista caminoMasCorto(Object origen, Object destino) {
         Lista camino = new Lista();
         NodoVert vertOrigen = this.ubicarVertice(origen);
@@ -384,45 +392,71 @@ public class DigrafoEtiquetado {
         return camino;
     }
 
+
+
     /**
      * Método auxiliar recursivo para encontrar el camino más corto (en cantidad de vértices) entre
-     * n y destino. Utiliza backtracking para explorar todos los caminos posibles y guarda el más
-     * corto en caminoActual.
+     * origen y destino.
+     * <p>
+     * Utiliza backtracking para explorar todos los caminos posibles y guarda el más corto en
+     * caminoActual.
+     * 
+     * @param origen
+     * @param destino
+     * @param visitados
+     * @param caminoActual
      */
-    private void caminoMasCortoAux(NodoVert n, Object destino, Lista vis, Lista caminoActual) {
+    private void caminoMasCortoAux(NodoVert origen, Object destino, Lista visitados,
+            Lista caminoActual) {
         boolean continuar = true;
-        if (n != null) {
-            if (!caminoActual.esVacia() && vis.longitud() >= caminoActual.longitud()) {
+        boolean exito = false;
+        if (origen != null) { // Si el vértice origen NO es nulo.
+            if (!caminoActual.esVacia() && visitados.longitud() >= caminoActual.longitud()) {
+                // Si caminoActual NO es vacia y visitados es mayor o igual a caminoActual.
                 continuar = false;
             }
             if (continuar) {
-                vis.insertar(n.getElem(), vis.longitud() + 1);
-                if (n.getElem().equals(destino)) {
-                    if (caminoActual.esVacia() || vis.longitud() < caminoActual.longitud()) {
+                visitados.insertar(origen.getElem(), 1);
+                if (origen.getElem().equals(destino)) { // Si llegamos al destino.
+                    if (caminoActual.esVacia() || visitados.longitud() < caminoActual.longitud()) {
+                        // Si caminoActual ESTA vacia O visitados es menor que caminoActual.
                         caminoActual.vaciar();
-                        for (int i = 1; i <= vis.longitud(); i++) {
-                            caminoActual.insertar(vis.recuperar(i), i);
+                        while (!exito) {
+                            caminoActual.insertar(visitados.recuperar(1),
+                                    caminoActual.longitud() + 1);
+                            visitados.eliminar(1);
+                            if (visitados.esVacia()) { // Si ya no quedan nodos, corta el bucle.
+                                exito = true;
+                            }
                         }
                     }
-                } else {
-                    NodoAdy ady = n.getPrimerAdy();
-                    while (ady != null) {
-                        if (vis.localizar(ady.getVertice().getElem()) < 0) {
-                            caminoMasCortoAux(ady.getVertice(), destino, vis, caminoActual);
+                } else { // Si no llegamos al destino.
+                    NodoAdy adyacente = origen.getPrimerAdy();
+                    while (adyacente != null) { // Mientras el adyacente NO sea nulo.
+                        if (visitados.localizar(adyacente.getVertice().getElem()) < 0) {
+                            // Si retorna -1 es porque el adyacente no fue visitado.
+                            caminoMasCortoAux(adyacente.getVertice(), destino, visitados,
+                                    caminoActual);
                         }
-                        ady = ady.getSigAdyacente();
+                        adyacente = adyacente.getSigAdyacente();
+                        // Avanzamos al siguiente adyacente.
                     }
                 }
-                vis.eliminar(vis.longitud());
+                visitados.eliminar(1); // Backtracking: elimina el último vértice visitado.
             }
         }
     }
 
     /**
-     * Busca el camino de menor peso (suma de etiquetas) entre origen y destino. Utiliza un método
-     * auxiliar recursivo que explora todos los caminos posibles y guarda el de menor peso.
+     * Busca el camino de menor peso (suma de etiquetas) entre origen y destino.
+     * <p>
+     * Utiliza un método auxiliar recursivo que explora todos los caminos posibles y guarda el de
+     * menor peso.
+     * 
+     * @param origen
+     * @param destino
+     * @return Lista con el camino de menor peso desde origen a destino.
      */
-
     public Lista caminoMasChico(Object origen, Object destino) {// esta vez busca el camino de menor
                                                                 // peso de etiquetas
         Lista camino = new Lista();
@@ -475,17 +509,17 @@ public class DigrafoEtiquetado {
                 }
             }
 
-            vis.eliminar(vis.longitud()); // backtrack
+            vis.eliminar(vis.longitud()); // Backtracking: elimina el último vértice visitado.
         }
     }
-
-    // para el ejercicio de menor caudal pleno
 
     /**
      * Busca el camino de menor caudal pleno entre origen y destino. Utiliza un método auxiliar
      * recursivo que explora todos los caminos posibles y guarda el de menor caudal pleno.
      * <p>
      * El caudal pleno se define como el mínimo caudal de las tuberías en el camino.
+     * <p>
+     * Para el ejercicio de menor caudal pleno
      * 
      * @param origen
      * @param destino
@@ -493,14 +527,13 @@ public class DigrafoEtiquetado {
      */
     public Lista caminoMenorCaudalPleno(Object origen, Object destino) {
         Lista camino = new Lista();
-        Lista nodosVisitados = new Lista();
         NodoVert vertOrigen = this.ubicarVertice(origen);
         NodoVert vertDestino = this.ubicarVertice(destino);
 
         if (vertOrigen != null && vertDestino != null) {
             // Verificar si existe un camino desde origen a destino.
             double[] caudalMin = {-1};
-            caminoMenorCaudalPlenoAux(vertOrigen, destino, nodosVisitados, camino, -1, caudalMin);
+            caminoMenorCaudalPlenoAux(vertOrigen, destino, new Lista(), camino, -1, caudalMin);
         }
 
         return camino;
@@ -531,7 +564,7 @@ public class DigrafoEtiquetado {
                     caudalMin[0] = caudalActual; // Actualizamos el mínimo.
                     caminoActual.vaciar(); // Vaciamos el camino actual.
                     while (!exito) {
-                        caminoActual.insertar(visitados.recuperar(1), caminoActual.longitud());
+                        caminoActual.insertar(visitados.recuperar(1), caminoActual.longitud() + 1);
                         visitados.eliminar(1);
                         if (visitados.esVacia()) { // Si ya no quedan nodos, corta el bucle.
                             exito = true;
@@ -558,7 +591,7 @@ public class DigrafoEtiquetado {
                     adyacente = adyacente.getSigAdyacente(); // Avanzamos al siguiente adyacente.
                 }
             }
-            visitados.eliminar(1);// backtraking
+            visitados.eliminar(1); // Backtracking: elimina el último vértice visitado.
         }
     }
 

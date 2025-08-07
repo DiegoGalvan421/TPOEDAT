@@ -1,7 +1,6 @@
 package Estructuras;
 
 import EstructurasAuxiliares.*;
-import Objetos.Ciudad;
 
 public class TablaAVL {
 
@@ -59,7 +58,7 @@ public class TablaAVL {
     }
 
     public boolean insertar(Comparable clave, Object dato) {
-        boolean[] exito = new boolean[] { false };
+        boolean[] exito = new boolean[] {false};
         this.raiz = insertarAux(this.raiz, clave, dato, exito);
         return exito[0];
     }
@@ -78,16 +77,16 @@ public class TablaAVL {
             r.setDerecho(insertarAux(r.getDerecho(), clave, dato, exito));
         }
         // balancea y recalcula altura despues de que finaliza cada llamado recursivo
-        if(exito[0]){
+        if (exito[0]) {
             r.recalcularAltura();
-            r=balancear(r);
+            r = balancear(r);
         }
         return r;
-        
+
     }
 
     public boolean eliminar(Comparable elem) {
-        boolean[] exito = new boolean[] { false };
+        boolean[] exito = new boolean[] {false};
         if (this.raiz != null) {
             this.raiz = eliminarAux(this.raiz, elem, exito);
         }
