@@ -16,13 +16,14 @@ public class General {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         DigrafoEtiquetado grafo = new DigrafoEtiquetado();
-        TablaAVL ciudades = Archivo.cargarCiudades("RedDeDistribucion/src/Datos/Ciudades.txt", grafo);
-        HashMap<ClaveTuberia, Tuberia> Tuberias = Archivo.cargarTuberias("RedDeDistribucion/src/Datos/Tuberias.txt",
+        //si no toma los archivos se le debe agregar antes del src "RedDeDistribucion/src"
+        TablaAVL ciudades = Archivo.cargarCiudades("src/Datos/Ciudades.txt", grafo);
+        HashMap<ClaveTuberia, Tuberia> Tuberias = Archivo.cargarTuberias("src/Datos/Tuberias.txt",
                 grafo);
         System.out.println(ciudades.toString());
         System.out.println(Tuberias.toString());
         System.out.println(grafo.toString());
-        cargarHabCiudad("RedDeDistribucion/src/Datos/Habitantes historicos.txt", ciudades);
+        cargarHabCiudad("src/Datos/Habitantes historicos.txt", ciudades);
         Ciudad aux = (Ciudad) ciudades.obtenerInformacion("Buenos Aires");
 
         System.out.println(aux.verHab(2021));
@@ -76,10 +77,10 @@ public class General {
                     sc.nextLine(); // limpia el escaner
                     switch (opcion) {
                         case 1:
-                            altaDeTuberia(grafo, Tuberias);
+                            altaDeTuberia(grafo, Tuberias, ciudades);
                             break;
                         case 2:
-                            bajaDeTuberias(grafo, Tuberias);
+                            bajaDeTuberias(grafo, Tuberias, ciudades);
                             break;
                         case 3:
                             modificarTuberias(grafo, Tuberias);
@@ -273,7 +274,7 @@ public class General {
      * @param tuberias
      * @param ciudades
      */
-    public static void altaDeTuberia(DigrafoEtiquetado grafo, HashMap tuberias) {
+    public static void altaDeTuberia(DigrafoEtiquetado grafo, HashMap tuberias, TablaAVL ciudades) {
 
         Scanner sc = new Scanner(System.in);
         String origen, destino, estado;
@@ -290,20 +291,29 @@ public class General {
         caudalMaximo = sc.nextDouble();
         System.out.println("Ingrese el diámetro");
         diametro = sc.nextDouble();
+        sc.nextLine();
         System.out.println("Ingrese el estado");
         estado = sc.nextLine().trim();
         // Debe verificar que ya no exista una tubería entre estas ciudades
-        ClaveTuberia clave = new ClaveTuberia(origen, destino);
-        Tuberia tuberiaNueva = new Tuberia((origen + "-" + destino).trim(), caudalMinimo,
-                caudalMaximo, diametro, estado.trim());
-        if (tuberias.containsKey(clave)) {
-            tuberias.put(clave, tuberiaNueva);
-            grafo.insertarArco(origen, destino, caudalMaximo);
-            System.out.println("Tubería agregada correctamente.");
-            System.out.println(tuberiaNueva.toString());
-            Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt", "Se insertó la tubería " + clave);
-        } else {
-            System.out.println("No se pudo dar de alta la tuberia");
+        Ciudad aux1 = (Ciudad) ciudades.obtenerInformacion(origen);
+        Ciudad aux2 = (Ciudad) ciudades.obtenerInformacion(destino);
+        if (aux1 != null && aux2 != null) {
+            origen = aux1.getNomenclatura();
+            destino = aux2.getNomenclatura();
+            ClaveTuberia clave = new ClaveTuberia(origen, destino);
+            Tuberia tuberiaNueva = new Tuberia((origen + "-" + destino).trim(), caudalMinimo,
+                    caudalMaximo, diametro, estado.trim());
+            if (!tuberias.containsKey(clave)) {
+                tuberias.put(clave, tuberiaNueva);
+                grafo.insertarArco(origen, destino, caudalMaximo);
+                System.out.println("Tubería agregada correctamente.");
+                System.out.println(tuberiaNueva.toString());
+                Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt", "Se insertó la tubería " + clave);
+            } else {
+                System.out.println("No se pudo dar de alta la tuberia");
+            }
+        }else{
+                System.out.println("La ciudad de origen o destino no es valida");
         }
 
     }
@@ -314,7 +324,7 @@ public class General {
      * @param grafo
      * @param tuberias
      */
-    public static void bajaDeTuberias(DigrafoEtiquetado grafo, HashMap tuberias) {
+    public static void bajaDeTuberias(DigrafoEtiquetado grafo, HashMap tuberias, TablaAVL ciudades) {
         Scanner sc = new Scanner(System.in);
         String origen, destino;
         // Solicita al usuario los datos de la tubería a eliminar.
@@ -323,16 +333,25 @@ public class General {
         origen = sc.nextLine().trim();
         System.out.println("Ingrese el nombre de la ciudad destino");
         destino = sc.nextLine().trim();
-        ClaveTuberia clave = new ClaveTuberia(origen, destino);
+        Ciudad aux1 = (Ciudad) ciudades.obtenerInformacion(origen);
+        Ciudad aux2 = (Ciudad) ciudades.obtenerInformacion(destino);
+        if (aux1 != null && aux2 != null) {
+            origen = aux1.getNomenclatura();
+            destino = aux2.getNomenclatura();
+            ClaveTuberia clave = new ClaveTuberia(origen, destino);
 
-        if (tuberias.containsKey(clave)) { // Verifica si la tubería existe en el HashMap.
-            tuberias.remove(clave);
-            grafo.eliminarArco(origen, destino);
-            System.out.println("Tubería eliminada correctamente.");
-            Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt", "Se eliminó la tubería " + clave);
+            if (tuberias.containsKey(clave)) { // Verifica si la tubería existe en el HashMap.
+                tuberias.remove(clave);
+                grafo.eliminarArco(origen, destino);
+                System.out.println("Tubería eliminada correctamente.");
+                Archivo.log("C:\\Users\\JG\\Desktop\\txtTp\\log.txt", "Se eliminó la tubería " + clave);
+            } else {
+                System.out.println("No se encontró la tubería con la clave especificada.");
+            }
         } else {
-            System.out.println("No se encontró la tubería con la clave especificada.");
+            System.out.println("La ciudad de origen o destino no es valida");
         }
+
     }
 
     /**
@@ -748,11 +767,11 @@ public class General {
               // 0
         }
         StringBuilder sb = new StringBuilder("[");// String builder trabaja más eficiente que las
-                                                      // concatenaciones "+" que deben crear un nuevo
-                                                      // objeto y copiar el anterior String caracter a
-                                                      // caracter
+                                                  // concatenaciones "+" que deben crear un nuevo
+                                                  // objeto y copiar el anterior String caracter a
+                                                  // caracter
         while (!heap.esVacio()) {
-            sb.append(heap.eliminarCima().toString()).append(" -> ");//va pasando el string de la cima y la elimina
+            sb.append(heap.eliminarCima().toString()).append(" -> ");// va pasando el string de la cima y la elimina
         }
         if (sb.length() >= 4) {
             sb.setLength(sb.length() - 4); // elimina el último " -> ", si la lista está vacía se imprime "[]"
