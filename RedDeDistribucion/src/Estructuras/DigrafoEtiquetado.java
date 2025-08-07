@@ -583,12 +583,10 @@ public class DigrafoEtiquetado {
                     adyacente = adyacente.getSigAdyacente(); // Avanzamos al siguiente adyacente.
                 }
             }
-            visitados.eliminar(visitados.longitud()); // Backtracking: elimina el último vértice
-                                                      // visitado.
+            visitados.eliminar(visitados.longitud());
+            // Backtracking: elimina el último vértice visitado.
         }
     }
-
-
 
     public Lista caminoMasLargo(Object origen, Object destino) {
         Lista camino = new Lista();
