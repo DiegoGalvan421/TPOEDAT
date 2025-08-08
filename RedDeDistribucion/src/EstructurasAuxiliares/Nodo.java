@@ -2,7 +2,7 @@ package EstructurasAuxiliares;
 
 public class Nodo {
 
-    // Atributos
+    /* Atributos */
     private Object elem;
     private Nodo enlace;
 

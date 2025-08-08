@@ -2,89 +2,144 @@ package Estructuras;
 
 import EstructurasAuxiliares.*;
 
+@SuppressWarnings("rawtypes")
 public class TablaAVL {
 
+    /* Atributos */
     private NodoAVLDicc raiz;
 
+    /**
+     * Constructor de la tabla AVL.
+     */
     public TablaAVL() {
         this.raiz = null;
     }
 
+    /**
+     * Verifica si una clave existe en la tabla.
+     * 
+     * @param clave
+     * @return true si la clave existe, false en caso contrario.
+     */
     public boolean existeClave(Comparable clave) {
         return existeClaveAux(this.raiz, clave);
     }
 
-    // estructura auxiliar para ver si una clave pertenece a la tabla
-    private boolean existeClaveAux(NodoAVLDicc n, Comparable clave) {
+    /**
+     * Estructura auxiliar para ver si una clave pertenece a la tabla
+     * 
+     * @param nodoActual
+     * @param clave
+     * @return true si la clave existe, false si no existe.
+     */
+    @SuppressWarnings("unchecked")
+    private boolean existeClaveAux(NodoAVLDicc nodoActual, Comparable clave) {
         boolean exito = false;
-        if (n != null) {
-            if ((clave.compareTo(n.getClave()) == 0)) {
-                // clave encontrado
+        if (nodoActual != null) {
+            if ((clave.compareTo(nodoActual.getClave()) == 0)) {
+                // Clave encontrada.
                 exito = true;
-            } else if (clave.compareTo(n.getClave()) < 0) {
-                // clave es menor que n.getClve
-                // busca a la izquierda de n
-                exito = existeClaveAux(n.getIzquierdo(), clave);
+            } else if (clave.compareTo(nodoActual.getClave()) < 0) {
+                // Clave es menor que nodoActual.getClave().
+                // Busca a la izquierda de nodoActual.
+                exito = existeClaveAux(nodoActual.getIzquierdo(), clave);
             } else {
-                // clave es mayo que n.getClave
-                // busca a la derecha de n
-                exito = existeClaveAux(n.getDerecho(), clave);
+                // Clave es mayor que nodoActual.getClave().
+                // Busca a la derecha de nodoActual.
+                exito = existeClaveAux(nodoActual.getDerecho(), clave);
             }
         }
         return exito;
     }
 
+    /**
+     * Obtiene la información asociada a una clave en la tabla.
+     * 
+     * @param clave
+     * @return La información asociada a la clave, o null si no existe.
+     */
     public Object obtenerInformacion(Comparable clave) {
         return obtenerInformacionAux(this.raiz, clave);
     }
 
-    private Object obtenerInformacionAux(NodoAVLDicc n, Comparable clave) {
+    /**
+     * Metodo auxiliar que recorre el arbol en busca de la informacion asociada a una clave.
+     * 
+     * @param nodoActual
+     * @param clave
+     * @return Objeto contenedor de la informacion, si no existe retorna null.
+     */
+    @SuppressWarnings("unchecked")
+    private Object obtenerInformacionAux(NodoAVLDicc nodoActual, Comparable clave) {
         Object dato = null;
-        if (n != null) {
-            if (clave.compareTo(n.getClave()) == 0) {
-                // clave encontrado
-                dato = n.getDato();
-            } else if (clave.compareTo(n.getClave()) < 0) {
-                // clave es menor que n.getClave
-                // busca a la izquierda de n
-                dato = obtenerInformacionAux(n.getIzquierdo(), clave);
+        if (nodoActual != null) {
+            if (clave.compareTo(nodoActual.getClave()) == 0) {
+                // Clave encontrada.
+                dato = nodoActual.getDato();
+            } else if (clave.compareTo(nodoActual.getClave()) < 0) {
+                // Clave es menor que nodoActual.getClave()
+                // Busca a la izquierda de nodoActual.
+                dato = obtenerInformacionAux(nodoActual.getIzquierdo(), clave);
             } else {
-                // clave es mayor que n.getClave
-                // busca a la derecha de n
-                dato = obtenerInformacionAux(n.getDerecho(), clave);
+                // Clave es mayor que nodoActual.getClave()
+                // Busca a la derecha de nodoActual.
+                dato = obtenerInformacionAux(nodoActual.getDerecho(), clave);
             }
         }
         return dato;
     }
 
+    /**
+     * Inserta un nuevo nodo en la tabla AVL.
+     * 
+     * @param clave
+     * @param dato
+     * @return true si se inserta correctamente, false si ya existe.
+     */
     public boolean insertar(Comparable clave, Object dato) {
         boolean[] exito = new boolean[] {false};
         this.raiz = insertarAux(this.raiz, clave, dato, exito);
         return exito[0];
     }
 
-    private NodoAVLDicc insertarAux(NodoAVLDicc r, Comparable clave, Object dato, boolean[] exito) {
-        // inserta solo si no esta en la tabla
-        if (r == null) {
-            r = new NodoAVLDicc(clave, dato, null, null);
+    /**
+     * Metodo auxiliar que inserta un nuevo nodo en la tabla AVL.
+     * 
+     * @param nodoActual
+     * @param clave
+     * @param dato
+     * @param exito
+     * @return NodoAVLDicc
+     */
+    @SuppressWarnings("unchecked")
+    private NodoAVLDicc insertarAux(NodoAVLDicc nodoActual, Comparable clave, Object dato,
+            boolean[] exito) {
+        // Inserta solo si no esta en la tabla.
+        if (nodoActual == null) {
+            nodoActual = new NodoAVLDicc(clave, dato, null, null);
             exito[0] = true;
-            // si llego al final y no se encontro, se inserta
-        } else if (clave.compareTo(r.getClave()) < 0) {
-            // se mueve a izquierda
-            r.setIzquierdo(insertarAux(r.getIzquierdo(), clave, dato, exito));
-        } else if (clave.compareTo(r.getClave()) > 0) {
-            // se mueve a derecha
-            r.setDerecho(insertarAux(r.getDerecho(), clave, dato, exito));
+            // Si llego al final y no se encontro, se inserta.
+        } else if (clave.compareTo(nodoActual.getClave()) < 0) {
+            // Se mueve a izquierda.
+            nodoActual.setIzquierdo(insertarAux(nodoActual.getIzquierdo(), clave, dato, exito));
+        } else if (clave.compareTo(nodoActual.getClave()) > 0) {
+            // Se mueve a derecha.
+            nodoActual.setDerecho(insertarAux(nodoActual.getDerecho(), clave, dato, exito));
         }
-        // balancea y recalcula altura despues de que finaliza cada llamado recursivo
+        // Balancea y recalcula altura despues de que finaliza cada llamado recursivo.
         if (exito[0]) {
-            r.recalcularAltura();
-            r = balancear(r);
+            nodoActual.recalcularAltura();
+            nodoActual = balancear(nodoActual);
         }
-        return r;
-
+        return nodoActual;
     }
 
+    /**
+     * Elimina un elemento de la tabla AVL.
+     * 
+     * @param elem
+     * @return true si se elimina correctamente, false si no existe.
+     */
     public boolean eliminar(Comparable elem) {
         boolean[] exito = new boolean[] {false};
         if (this.raiz != null) {
@@ -93,7 +148,17 @@ public class TablaAVL {
         return exito[0];
     }
 
-    // Elimina recursivamente y balancea el árbol
+    /**
+     * Metodo auxiliar que elimina un nodo de la tabla AVL.
+     * <p>
+     * Elimina recursivamente y balancea el árbol.
+     * 
+     * @param nodo
+     * @param elem
+     * @param exito
+     * @return NodoAVLDicc
+     */
+    @SuppressWarnings("unchecked")
     private NodoAVLDicc eliminarAux(NodoAVLDicc nodo, Comparable elem, boolean[] exito) {
         if (nodo != null) {
             if (elem.compareTo(nodo.getClave()) < 0) {
@@ -102,15 +167,15 @@ public class TablaAVL {
                 nodo.setDerecho(eliminarAux(nodo.getDerecho(), elem, exito));
             } else {
                 exito[0] = true;
-                // Nodo encontrado
+                // Nodo encontrado.
                 if (nodo.getDerecho() == null && nodo.getIzquierdo() == null) {
-                    nodo = null; // Caso hoja
+                    nodo = null; // Caso hoja.
                 } else if (nodo.getIzquierdo() == null) {
-                    nodo = nodo.getDerecho(); // Solo hijo derecho
+                    nodo = nodo.getDerecho(); // Solo hijo derecho.
                 } else if (nodo.getDerecho() == null) {
-                    nodo = nodo.getIzquierdo(); // Solo hijo izquierdo
+                    nodo = nodo.getIzquierdo(); // Solo hijo izquierdo.
                 } else {
-                    // Nodo con dos hijos, busca el sucesor y lo elimina
+                    // Nodo con dos hijos, busca el sucesor y lo elimina.
                     NodoAVLDicc sucesor = obtenerMenor(nodo.getDerecho());
                     nodo.setClave(sucesor.getClave());
                     nodo.setDato(sucesor.getDato());
@@ -118,7 +183,7 @@ public class TablaAVL {
 
                 }
             }
-            // Recalcula altura y balancea si el nodo no es null
+            // Recalcula altura y balancea si el nodo no es null.
             if (nodo != null) {
                 nodo.recalcularAltura();
                 nodo = balancear(nodo);
@@ -127,6 +192,12 @@ public class TablaAVL {
         return nodo;
     }
 
+    /**
+     * Obtiene el nodo con la clave menor en el subárbol.
+     * 
+     * @param nodo
+     * @return Nodo con la menor clave.
+     */
     private NodoAVLDicc obtenerMenor(NodoAVLDicc nodo) {
         while (nodo.getIzquierdo() != null) {
             nodo = nodo.getIzquierdo();
@@ -134,6 +205,12 @@ public class TablaAVL {
         return nodo;
     }
 
+    /**
+     * Metodo auxiliar que elimina el nodo con la menor clave en el subárbol.
+     * 
+     * @param nodo
+     * @return Nodo con la menor clave.
+     */
     private NodoAVLDicc eliminarMenorDirecto(NodoAVLDicc nodo) {
         NodoAVLDicc resultado;
         if (nodo.getIzquierdo() == null) {
@@ -146,6 +223,11 @@ public class TablaAVL {
         return resultado;
     }
 
+    /**
+     * Metodo que lista las claves de la tabla AVL.
+     * 
+     * @return Lista con las claves.
+     */
     public Lista listarClaves() {
         Lista lis = new Lista();
         if (this.raiz != null) {
@@ -154,19 +236,29 @@ public class TablaAVL {
         return lis;
     }
 
-    private void listarClaveAux(NodoAVLDicc n, Lista lis) {
-        // supongo que ordenada de mayor a menor
-        if (n != null) {
-            if (n.getDerecho() != null) {
-                listarClaveAux(n.getDerecho(), lis);
+    /**
+     * Metodo auxiliar que lista las claves de un nodo y sus hijos.
+     * 
+     * @param nodoActual
+     * @param listaClaves
+     */
+    private void listarClaveAux(NodoAVLDicc nodoActual, Lista listaClaves) {
+        if (nodoActual != null) {
+            if (nodoActual.getDerecho() != null) {
+                listarClaveAux(nodoActual.getDerecho(), listaClaves);
             }
-            lis.insertar(n.getClave(), lis.longitud() + 1);
-            if (n.getIzquierdo() != null) {
-                listarClaveAux(n.getIzquierdo(), lis);
+            listaClaves.insertar(nodoActual.getClave(), listaClaves.longitud() + 1);
+            if (nodoActual.getIzquierdo() != null) {
+                listarClaveAux(nodoActual.getIzquierdo(), listaClaves);
             }
         }
     }
 
+    /**
+     * Lista los datos guardados en la tabla AVL.
+     * 
+     * @return Lista con los datos.
+     */
     public Lista listarDatos() {
         Lista lis = new Lista();
         if (this.raiz != null) {
@@ -175,87 +267,126 @@ public class TablaAVL {
         return lis;
     }
 
-    private void listarDatosAux(NodoAVLDicc n, Lista lis) {
-        // supongo que ordenada de menor a mayor
-        if (n != null) {
-            if (n.getDerecho() != null) {
-                listarDatosAux(n.getDerecho(), lis);
+    /**
+     * Metodo auxiliar que lista los datos de un nodo y sus hijos.
+     * 
+     * @param nodoActual
+     * @param listaDatos
+     */
+    private void listarDatosAux(NodoAVLDicc nodoActual, Lista listaDatos) {
+        if (nodoActual != null) {
+            if (nodoActual.getDerecho() != null) {
+                listarDatosAux(nodoActual.getDerecho(), listaDatos);
             }
-            lis.insertar(n.getDato(), lis.longitud() + 1);
-            if (n.getIzquierdo() != null) {
-                listarDatosAux(n.getIzquierdo(), lis);
+            listaDatos.insertar(nodoActual.getDato(), listaDatos.longitud() + 1);
+            if (nodoActual.getIzquierdo() != null) {
+                listarDatosAux(nodoActual.getIzquierdo(), listaDatos);
             }
         }
     }
 
+    /**
+     * Clona la tabla AVL.
+     * 
+     * @return TablaAVL clonada.
+     */
     public TablaAVL clone() {
         TablaAVL arbClon = new TablaAVL();
         if (this.raiz != null) {
             arbClon.raiz = this.clonarRec(this.raiz);
         }
-
         return arbClon;
     }
 
-    private NodoAVLDicc clonarRec(NodoAVLDicc n) {
+    /**
+     * Metodo auxiliar que clona recursivamente los nodos de la tabla.
+     * 
+     * @param nodoActual
+     * @return NodoAVLDicc
+     */
+    private NodoAVLDicc clonarRec(NodoAVLDicc nodoActual) {
         NodoAVLDicc nuevo = null;
-        if (n != null) {
-            nuevo = new NodoAVLDicc(n.getClave(), n.getDato(), null, null);
-            if (n.getIzquierdo() != null) {
-                nuevo.setIzquierdo(this.clonarRec(n.getIzquierdo()));
+        if (nodoActual != null) {
+            nuevo = new NodoAVLDicc(nodoActual.getClave(), nodoActual.getDato(), null, null);
+            if (nodoActual.getIzquierdo() != null) {
+                nuevo.setIzquierdo(this.clonarRec(nodoActual.getIzquierdo()));
             }
 
-            if (n.getDerecho() != null) {
-                nuevo.setDerecho(this.clonarRec(n.getDerecho()));
+            if (nodoActual.getDerecho() != null) {
+                nuevo.setDerecho(this.clonarRec(nodoActual.getDerecho()));
             }
         }
-
         return nuevo;
     }
 
+    /**
+     * Metodo que devuelve una representacion en cadena de la tabla AVL.
+     * 
+     * @return String.
+     */
     public String toString() {
-        String res;
+        String cadena;
         if (this.raiz == null) {
-            res = "Tabla vacia";
+            cadena = "Tabla vacia";
         } else {
-            res = this.toStringRec(this.raiz);
+            cadena = this.toStringRec(this.raiz);
         }
-
-        return res;
+        return cadena;
     }
 
-    private String toStringRec(NodoAVLDicc n) {
-        String s = "";
-        if (n != null) {
-            s += "Clave: " + n.getClave().toString();
-            s += ", Altura: " + n.getAltura();
-            s += "\n HI: ";
-            if (n.getIzquierdo() != null) {
-                s += n.getIzquierdo().getClave().toString();
+    /**
+     * Metodo auxiliar que genera recursivamente la representacion en cadena de la tabla.
+     * 
+     * @param nodoActual
+     * @return String.
+     */
+    private String toStringRec(NodoAVLDicc nodoActual) {
+        String cadena = "";
+        if (nodoActual != null) {
+            cadena += "Clave: " + nodoActual.getClave().toString();
+            cadena += ", Altura: " + nodoActual.getAltura();
+            cadena += "\n HI: ";
+            if (nodoActual.getIzquierdo() != null) {
+                cadena += nodoActual.getIzquierdo().getClave().toString();
             } else {
-                s += "null";
+                cadena += "null";
             }
-            s += "\n HD: ";
-            if (n.getDerecho() != null) {
-                s += n.getDerecho().getClave().toString();
+            cadena += "\n HD: ";
+            if (nodoActual.getDerecho() != null) {
+                cadena += nodoActual.getDerecho().getClave().toString();
             } else {
-                s += "null";
+                cadena += "null";
             }
-            s += "\n";
-            s += toStringRec(n.getIzquierdo());
-            s += toStringRec(n.getDerecho());
+            cadena += "\n";
+            cadena += toStringRec(nodoActual.getIzquierdo());
+            cadena += toStringRec(nodoActual.getDerecho());
         }
-        return s;
+        return cadena;
     }
 
+    /**
+     * Verifica si la tabla AVL esta vacia.
+     * 
+     * @return true si la tabla esta vacia, false en caso contrario.
+     */
     public boolean esVacia() {
         return this.raiz == null;
     }
 
+    /**
+     * Vacía la tabla AVL.
+     */
     public void vaciar() {
         this.raiz = null;
     }
 
+    /**
+     * Lista los elementos en un rango dado.
+     * 
+     * @param min
+     * @param max
+     * @return Lista con los elementos en el rango [min, max].
+     */
     public Lista listarRango(Comparable min, Comparable max) {
         Lista lis = new Lista();
         if (this.raiz != null) {
@@ -264,23 +395,35 @@ public class TablaAVL {
         return lis;
     }
 
-    public void listarRangoAux(NodoAVLDicc n, Comparable min, Comparable max, Lista lis) {
-        if (n != null) {
-            if (n.getClave().compareTo(min) > 0) {
+    /**
+     * Metodo auxiliar que recorre el arbol listando los elementos en el rango especificado.
+     * 
+     * @param nodoActual
+     * @param min
+     * @param max
+     * @param lista
+     */
+    @SuppressWarnings("unchecked")
+    public void listarRangoAux(NodoAVLDicc nodoActual, Comparable min, Comparable max,
+            Lista lista) {
+        if (nodoActual != null) {
+            if (nodoActual.getClave().compareTo(min) > 0) {
                 // recorro el sub arbol izquierdo
-                listarRangoAux(n.getIzquierdo(), min, max, lis);
+                listarRangoAux(nodoActual.getIzquierdo(), min, max, lista);
             }
-            if (n.getClave().compareTo(min) >= 0 && n.getClave().compareTo(max) <= 0) {
-                lis.insertar(n.getDato(), lis.longitud() + 1);
+            if (nodoActual.getClave().compareTo(min) >= 0
+                    && nodoActual.getClave().compareTo(max) <= 0) {
+                lista.insertar(nodoActual.getDato(), lista.longitud() + 1);
             }
             // recorro el sub arbol derecho
-            if (n.getClave().compareTo(max) < 0) {
-                listarRangoAux(n.getDerecho(), min, max, lis);
+            if (nodoActual.getClave().compareTo(max) < 0) {
+                listarRangoAux(nodoActual.getDerecho(), min, max, lista);
             }
         }
     }
 
-    // estructuras auxiliares para balancear el avl
+    /* Estructuras auxiliares para balancear el avl */
+
     private NodoAVLDicc balancear(NodoAVLDicc nodo) {
         int balance = obtenerBalance(nodo);
         NodoAVLDicc aux = nodo;

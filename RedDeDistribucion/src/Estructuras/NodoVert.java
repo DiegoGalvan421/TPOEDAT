@@ -2,7 +2,7 @@ package Estructuras;
 
 public class NodoVert {
 
-    // Atributos.
+    /* ATRIBUTOS */
     private Object elem;
     private NodoVert sigVertice;
     private NodoAdy primerAdy;
@@ -45,6 +45,8 @@ public class NodoVert {
     public void setPrimerAdy(NodoAdy primerAdy) {
         this.primerAdy = primerAdy;
     }
+
+    /* PROPIAS DEL TIPO */
 
     /**
      * Compara este nodo con otro nodo dado.

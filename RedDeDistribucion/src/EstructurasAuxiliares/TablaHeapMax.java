@@ -3,7 +3,7 @@ package EstructurasAuxiliares;
 
 public class TablaHeapMax {
 
-    // Atributos.
+    /* Atributos */
     private NodoHeap[] heap;
     private int tamanio;
     private static final int CAPACIDAD = 50;
