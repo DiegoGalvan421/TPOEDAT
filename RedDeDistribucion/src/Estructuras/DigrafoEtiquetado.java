@@ -4,7 +4,7 @@ import EstructurasAuxiliares.*;
 
 public class DigrafoEtiquetado {
 
-    // Atributos.
+    /* Atributos. */
     private NodoVert inicio;
 
     /**
@@ -200,36 +200,50 @@ public class DigrafoEtiquetado {
         return exito;
     }
 
-    // suponiendo que no es un multiDigrafo.
+    /**
+     * Elimina un arco del grafo.
+     * <p>
+     * NOTA: Se asume que el grafo no es un multigrafo.
+     * 
+     * @param origen
+     * @param destino
+     * @return true si se eliminó el arco, false si no existía.
+     */
     public boolean eliminarArco(Object origen, Object destino) {
         boolean exito = false;
-        // verifica que existan los dos vertices antes de buscar el arco a eliminar
+        // verifica que existan los dos vertices antes de buscar el arco a eliminar.
         NodoVert vertOrigen = this.ubicarVertice(origen);
         NodoVert vertDestino = this.ubicarVertice(destino);
-        // si existen procede con la eliminacion
+        // Si existen procede con la eliminacion.
         if (vertOrigen != null && vertDestino != null) {
             exito = eliminarArcoAux(vertOrigen, destino);
         }
         return exito;
     }
 
-    // es parecido al eliminar vertice ady, pero con algunos cambios
+    /**
+     * Metodo PRIVADO para eliminar un arco entre dos vertices.
+     * 
+     * @param actual
+     * @param destino
+     * @return true si se eliminó el arco, false si no existía.
+     */
     private boolean eliminarArcoAux(NodoVert actual, Object destino) {
         boolean exito = false;
         if (actual.getPrimerAdy() != null) {
             if (actual.getPrimerAdy().getVertice().equals(destino)) {
-                // si es el primero
+                // Si es el primero.
                 actual.setPrimerAdy(actual.getPrimerAdy().getSigAdyacente());
                 exito = true;
             } else {
-                // si no es el primero, recorre la lista de adyacentes
+                // Si no es el primero, recorre la lista de adyacentes.
                 NodoAdy ady = actual.getPrimerAdy();
                 NodoAdy anterior = null;
-                // supongo que hay 1 solo arco por conexion
+                // Supongo que hay 1 solo arco por conexion.
                 while (ady != null && !exito) {
                     anterior = ady;
                     ady = ady.getSigAdyacente();
-                    // usamos anterior y ady(como actual) para movernos en la lista
+                    // Usamos anterior y ady(como actual) para movernos en la lista.
                     if (ady != null && ady.getVertice().getElem().equals(destino)) {
                         anterior.setSigAdyacente(ady.getSigAdyacente());
                         exito = true;
@@ -240,16 +254,23 @@ public class DigrafoEtiquetado {
         return exito;
     }
 
+    /**
+     * Verifica si existe un arco entre dos vértices.
+     * 
+     * @param origen
+     * @param destino
+     * @return true si existe, false si no.
+     */
     public boolean existeArco(Object origen, Object destino) {
         boolean exito = false;
         NodoVert vertOrigen = this.ubicarVertice(origen);
         NodoVert vertDestino = this.ubicarVertice(destino);
-        // verifica que existan los vertices
+        // Verifica que existan los vertices.
         if (vertOrigen != null && vertDestino != null) {
             NodoAdy ady = vertOrigen.getPrimerAdy();
-            // luego recorre la lista de adyacentes del origen
+            // Luego recorre la lista de adyacentes del origen.
             while (ady != null && !exito) {
-                // si lo encuentra corta, sino sigue hasta terminar
+                // Si lo encuentra corta, sino sigue hasta terminar.
                 if (ady.getVertice().getElem().equals(destino)) {
                     exito = true;
                 }
@@ -259,22 +280,36 @@ public class DigrafoEtiquetado {
         return exito;
     }
 
+    /**
+     * Verifica si el grafo está vacío.
+     * 
+     * @return true si está vacío, false si tiene vértices.
+     */
     public boolean esVacio() {
         return this.inicio == null;
     }
 
+    /**
+     * Vacía el grafo, eliminando todos los vértices y arcos.
+     */
     public void vaciar() {
         this.inicio = null;
     }
 
-    // visita cada rama hasta que termine y luego retrocede
+    /**
+     * Lista todos los vértices del grafo en profundidad.
+     * <p>
+     * Visita cada rama hasta que termine y luego retrocede.
+     * 
+     * @return Lista con los elementos de los vértices visitados en orden de profundidad.
+     */
     public Lista listarEnProfundidad() {
         Lista visitados = new Lista();
-        // define un vertice donde comenzar a recorrer
+        // Define un vertice donde comenzar a recorrer.
         NodoVert aux = this.inicio;
         while (aux != null) {
             if (visitados.localizar(aux.getElem()) < 0) {
-                // si no fue visitado, lo visita
+                // Si no fue visitado, lo visita.
                 listarEnProfundidaAux(aux, visitados);
             }
             aux = aux.getSigVertice();
@@ -282,29 +317,44 @@ public class DigrafoEtiquetado {
         return visitados;
     }
 
-    public void listarEnProfundidaAux(NodoVert n, Lista vis) {
-        if (n != null) {
-            // marca al vertice n como visitado
-            vis.insertar(n.getElem(), vis.longitud() + 1);
-            // recorre los adyacentes de n
-            NodoAdy ady = n.getPrimerAdy();
+    /**
+     * Método auxiliar recursivo para listar los vértices en profundidad.
+     * <p>
+     * Marca el vértice como visitado y recorre sus adyacentes, visitando aquellos que no hayan sido
+     * visitados aún.
+     * 
+     * @param nodoActual
+     * @param visitados
+     */
+    public void listarEnProfundidaAux(NodoVert nodoActual, Lista visitados) {
+        if (nodoActual != null) {
+            // Marca al vertice nodoActual como visitado.
+            visitados.insertar(nodoActual.getElem(), visitados.longitud() + 1);
+            // Recorre los adyacentes de nodoActual.
+            NodoAdy ady = nodoActual.getPrimerAdy();
             while (ady != null) {
-                // si el adyacente no fue visitado, lo visita
-                if (vis.localizar(ady.getVertice().getElem()) < 0) {
-                    listarEnProfundidaAux(ady.getVertice(), vis);
+                // Si el adyacente no fue visitado, lo visita.
+                if (visitados.localizar(ady.getVertice().getElem()) < 0) {
+                    listarEnProfundidaAux(ady.getVertice(), visitados);
                 }
                 ady = ady.getSigAdyacente();
             }
         }
     }
 
-    // en anchura va por niveles, primero visita todos los vecinos y asi.
+    /**
+     * Lista todos los vértices del grafo en anchura.
+     * <p>
+     * En anchura va por niveles, primero visita todos los vecinos y así.
+     * 
+     * @return Lista con los elementos de los vértices visitados en orden de anchura.
+     */
     public Lista listarEnAnchura() {
         Lista visitados = new Lista();
         NodoVert aux = this.inicio;
         while (aux != null) {
             if (visitados.localizar(aux.getElem()) < 0) {
-                // si no fue visitado, lo visita
+                // Si no fue visitado, lo visita.
                 listarEnAnchuraAux(aux, visitados);
             }
             aux = aux.getSigVertice();
@@ -312,24 +362,30 @@ public class DigrafoEtiquetado {
         return visitados;
     }
 
-    private void listarEnAnchuraAux(NodoVert n, Lista vis) {
+    /**
+     * Método auxiliar recursivo para listar los vértices en anchura.
+     * 
+     * @param nodoActual
+     * @param visitados
+     */
+    private void listarEnAnchuraAux(NodoVert nodoActual, Lista visitados) {
         Cola cola = new Cola();
-        cola.poner(n);
-        vis.insertar(n.getElem(), vis.longitud() + 1);
-        // inserta el primer nodo
+        cola.poner(nodoActual);
+        visitados.insertar(nodoActual.getElem(), visitados.longitud() + 1);
+        // Inserta el primer nodo.
         while (!cola.esVacia()) {
             NodoVert actual = (NodoVert) cola.obtenerFrente();
-            // saca de la cola el que esta usando para ver los vecinos
+            // Saca de la cola el que esta usando para ver los vecinos.
             cola.sacar();
-            // luego visita todos los vecinos.
+            // Luego visita todos los vecinos.
             NodoAdy ady = actual.getPrimerAdy();
             while (ady != null) {
                 NodoVert vecino = ady.getVertice();
-                // hay que ver si se puede hacer con otra cosa en vez de localizar
-                if (vis.localizar(vecino.getElem()) < 0) {
-                    vis.insertar(vecino.getElem(), vis.longitud() + 1);
-                    // agrega en visitados los vecinos ya vistos y los agrega a la cola
-                    // para poder ver sus vecinos
+                // Hay que ver si se puede hacer con otra cosa en vez de localizar.
+                if (visitados.localizar(vecino.getElem()) < 0) {
+                    visitados.insertar(vecino.getElem(), visitados.longitud() + 1);
+                    // Agrega en visitados los vecinos ya vistos y los agrega a la cola.
+                    // Para poder ver sus vecinos.
                     cola.poner(vecino);
                 }
                 ady = ady.getSigAdyacente();
@@ -337,40 +393,55 @@ public class DigrafoEtiquetado {
         }
     }
 
+    /**
+     * Verifica si existe un camino entre dos vértices.
+     * 
+     * @param origen
+     * @param destino
+     * @return true si existe un camino, false si no.
+     */
     public boolean existeCamino(Object origen, Object destino) {
         boolean exito = false;
-        // en la teoria hacen distinto esta parte, pero es lo mismo que poner el modulo
+        // En la teoria hacen distinto esta parte, pero es lo mismo que poner el modulo.
         NodoVert vertOrigen = this.ubicarVertice(origen);
         NodoVert vertDestino = this.ubicarVertice(destino);
         if (vertOrigen != null && vertDestino != null) {
-            // Verificar si existe un camino desde origen a destino
+            // Verificar si existe un camino desde origen a destino.
             exito = existeCaminoAux(vertOrigen, vertDestino, new Lista());
         }
         return exito;
     }
 
-    private boolean existeCaminoAux(NodoVert n, NodoVert destino, Lista vis) {
+    /**
+     * Método auxiliar recursivo para verificar si existe un camino entre dos vértices.
+     * 
+     * @param nodoActual
+     * @param destino
+     * @param visitados
+     * @return
+     */
+    private boolean existeCaminoAux(NodoVert nodoActual, NodoVert destino, Lista visitados) {
         boolean exito = false;
-        if (n != null) {
-            // si vertice n es el destino: no hay camino
-            if (n.equals(destino)) {
+        if (nodoActual != null) {
+            // Si vertice nodoActual es el destino: no hay camino.
+            if (nodoActual.equals(destino)) {
                 exito = true;
             } else {
-                // si no es el destino verifica si hay un camino entre n y destino
-                vis.insertar(n.getElem(), vis.longitud() + 1);
-                NodoAdy ady = n.getPrimerAdy();
+                // Si no es el destino verifica si hay un camino entre nodoActual y destino.
+                visitados.insertar(nodoActual.getElem(), visitados.longitud() + 1);
+                NodoAdy ady = nodoActual.getPrimerAdy();
                 while (ady != null && !exito) {
-                    // si el adyacente no fue visitado, lo visita
-                    if (vis.localizar(ady.getVertice().getElem()) < 0) {
-                        exito = existeCaminoAux(ady.getVertice(), destino, vis);
+                    // Si el adyacente no fue visitado, lo visita.
+                    if (visitados.localizar(ady.getVertice().getElem()) < 0) {
+                        exito = existeCaminoAux(ady.getVertice(), destino, visitados);
                     }
+                    // Avanzamos al siguiente adyacente.
                     ady = ady.getSigAdyacente();
                 }
             }
         }
         return exito;
     }
-
 
     /**
      * Busca el camino más corto (en cantidad de vértices) entre origen y destino.
@@ -391,8 +462,6 @@ public class DigrafoEtiquetado {
         }
         return camino;
     }
-
-
 
     /**
      * Método auxiliar recursivo para encontrar el camino más corto (en cantidad de vértices) entre
@@ -429,12 +498,12 @@ public class DigrafoEtiquetado {
                             caminoMasCortoAux(adyacente.getVertice(), destino, visitados,
                                     caminoActual);
                         }
-                        adyacente = adyacente.getSigAdyacente();
                         // Avanzamos al siguiente adyacente.
+                        adyacente = adyacente.getSigAdyacente();
                     }
                 }
-                visitados.eliminar(visitados.longitud()); // Backtracking: elimina el último vértice
-                                                          // visitado.
+                // Backtracking: elimina el último vértice visitado.
+                visitados.eliminar(visitados.longitud());
             }
         }
     }
@@ -462,46 +531,42 @@ public class DigrafoEtiquetado {
     }
 
     /**
-     * Método auxiliar recursivo para encontrar el camino de menor peso entre n y destino. Acumula
-     * el peso de las etiquetas y actualiza el camino si encuentra uno con menor peso.
+     * Método auxiliar recursivo para encontrar el camino de menor peso entre origen y destino.
+     * <p>
+     * Acumula el peso de las etiquetas y actualiza el camino si encuentra uno con menor peso.
+     * 
+     * @param origen
+     * @param destino
+     * @param visitados
+     * @param caminoActual
+     * @param pesoActual
+     * @param pesoMin
      */
-
-    private void caminoMasChicoAux(NodoVert n, Object destino, Lista vis, Lista caminoActual,
-            Double pesoActual, Double[] pesoMin) {
-        if (n != null) {
-
-            vis.insertar(n.getElem(), vis.longitud() + 1);
-            if (n.getElem().equals(destino)) {// si estamos en destino
-                if (pesoMin[0] == -1 || pesoActual < pesoMin[0]) {// Si es el primer camino
-                                                                  // encontrado o el peso total
-                                                                  // es menor
-
+    private void caminoMasChicoAux(NodoVert origen, Object destino, Lista visitados,
+            Lista caminoActual, Double pesoActual, Double[] pesoMin) {
+        if (origen != null) { // Si el vértice origen NO es nulo.
+            visitados.insertar(origen.getElem(), visitados.longitud() + 1);
+            if (origen.getElem().equals(destino)) { // Si llegamos al destino.
+                if (pesoMin[0] == -1 || pesoActual < pesoMin[0]) {
+                    // Si es el primer camino encontrado o el peso total es menor.
                     pesoMin[0] = pesoActual;
-                    caminoActual.vaciar();
-                    for (int i = 1; i <= vis.longitud(); i++) {
-                        caminoActual.insertar(vis.recuperar(i), i); // Guardamos la copia del camino
-                                                                    // actual como el
-                                                                    // menor
-                    }
+                    caminoActual.copiarDesde(visitados);
                 }
-
-            } else {// Si no llegamos recorremos los adyacentes
-                NodoAdy ady = n.getPrimerAdy();
+            } else { // Si no llegamos recorremos los adyacentes.
+                NodoAdy ady = origen.getPrimerAdy();
                 while (ady != null) {
-                    if (vis.localizar(ady.getVertice().getElem()) < 0) { // seguimos si el vértice
-                                                                         // adyacente no fue
-                                                                         // visitado
+                    if (visitados.localizar(ady.getVertice().getElem()) < 0) {
+                        // Si retorna -1 es porque el adyacente no fue visitado.
                         Double pesoEtiqueta = (Double) ady.getEtiqueta();
-                        caminoMasChicoAux(ady.getVertice(), destino, vis, caminoActual,
-                                pesoActual + pesoEtiqueta, pesoMin); // recursivo y acumulamos el
-                                                                     // peso total
+                        caminoMasChicoAux(ady.getVertice(), destino, visitados, caminoActual,
+                                pesoActual + pesoEtiqueta, pesoMin);
                     }
                     // Avanzamos al siguiente adyacente
                     ady = ady.getSigAdyacente();
                 }
             }
-
-            vis.eliminar(vis.longitud()); // Backtracking: elimina el último vértice visitado.
+            // Backtracking: elimina el último vértice visitado.
+            visitados.eliminar(visitados.longitud());
         }
     }
 
@@ -572,14 +637,22 @@ public class DigrafoEtiquetado {
                         caminoMenorCaudalPlenoAux(adyacente.getVertice(), destino, visitados,
                                 caminoActual, nuevoCaudal, caudalMin);
                     }
-                    adyacente = adyacente.getSigAdyacente(); // Avanzamos al siguiente adyacente.
+                    // Avanzamos al siguiente adyacente.
+                    adyacente = adyacente.getSigAdyacente();
                 }
             }
-            visitados.eliminar(visitados.longitud());
             // Backtracking: elimina el último vértice visitado.
+            visitados.eliminar(visitados.longitud());
         }
     }
 
+    /**
+     * Método para encontrar el camino más largo entre dos vértices en el grafo.
+     * 
+     * @param origen
+     * @param destino
+     * @return Lista con el camino más largo entre los vértices de origen y destino.
+     */
     public Lista caminoMasLargo(Object origen, Object destino) {
         Lista camino = new Lista();
         NodoVert vertOrigen = this.ubicarVertice(origen);
@@ -591,31 +664,47 @@ public class DigrafoEtiquetado {
         return camino;
     }
 
-    // funciona igual que el camino mas corto, pero tomando en cuenta el camino mas
-    // largo encontrado
-    private void caminoMasLargoAux(NodoVert n, Object destino, Lista vis, Lista caminoActual) {
-        if (n != null) {
-            vis.insertar(n.getElem(), vis.longitud() + 1);
-            if (n.getElem().equals(destino)) {
-                if (caminoActual.esVacia() || vis.longitud() > caminoActual.longitud()) {
-                    caminoActual.vaciar();
-                    for (int i = 1; i <= vis.longitud(); i++) {
-                        caminoActual.insertar(vis.recuperar(i), i);
-                    }
+    /**
+     * Método auxiliar para encontrar el camino más largo en el grafo.
+     * <p>
+     * NOTA: Funciona igual que el camino mas corto, pero tomando en cuenta el camino mas largo
+     * encontrado.
+     * 
+     * @param origen
+     * @param destino
+     * @param visitados
+     * @param caminoActual
+     */
+    private void caminoMasLargoAux(NodoVert origen, Object destino, Lista visitados,
+            Lista caminoActual) {
+        if (origen != null) { // Si el vertice NO es nulo.
+            visitados.insertar(origen.getElem(), visitados.longitud() + 1);
+            if (origen.getElem().equals(destino)) { // Si llegamos al destino.
+                if (caminoActual.esVacia() || visitados.longitud() > caminoActual.longitud()) {
+                    // Si caminoActual ESTA vacia O visitados es MAYOR que caminoActual.
+                    caminoActual.copiarDesde(visitados);
                 }
-            } else {
-                NodoAdy ady = n.getPrimerAdy();
+            } else { // Si no llegamos al destino.
+                NodoAdy ady = origen.getPrimerAdy();
                 while (ady != null) {
-                    if (vis.localizar(ady.getVertice().getElem()) < 0) {
-                        caminoMasLargoAux(ady.getVertice(), destino, vis, caminoActual);
+                    if (visitados.localizar(ady.getVertice().getElem()) < 0) {
+                        caminoMasLargoAux(ady.getVertice(), destino, visitados, caminoActual);
                     }
+                    // Avanzamos al siguiente adyacente.
                     ady = ady.getSigAdyacente();
                 }
             }
-            vis.eliminar(vis.longitud()); // backtrack
+            // Backtracking: elimina el último vértice visitado.
+            visitados.eliminar(visitados.longitud());
         }
     }
 
+    /**
+     * Genera y devuelve un grafo que es equivalente (igual estructura y contenido de los nodos) al
+     * original.
+     * 
+     * @return Grafo.
+     */
     public DigrafoEtiquetado clonar() {
         DigrafoEtiquetado clon = new DigrafoEtiquetado();
         clon.inicio = clonarVertices(this.inicio); // Paso 1
@@ -623,6 +712,12 @@ public class DigrafoEtiquetado {
         return clon;
     }
 
+    /**
+     * Metodo PRIVADO que clona los vértices de un grafo.
+     * 
+     * @param original
+     * @return NodoVert
+     */
     private NodoVert clonarVertices(NodoVert original) {
         NodoVert copia = null;
         if (original != null) {
@@ -633,20 +728,35 @@ public class DigrafoEtiquetado {
         return copia;
     }
 
-    private NodoVert ubicarVerticeEnCopia(NodoVert inicioCopia, Object elem) {
+    /**
+     * Método PRIVADO que ubica un vértice en la copia del grafo..
+     * 
+     * @param inicioCopia
+     * @param elemento
+     * @return NodoVert
+     */
+    private NodoVert ubicarVerticeEnCopia(NodoVert inicioCopia, Object elemento) {
         NodoVert aux = inicioCopia;
-        while (aux != null && !aux.getElem().equals(elem)) {
+        while (aux != null && !aux.getElem().equals(elemento)) {
+            // Avanzamos al siguiente adyacente.
             aux = aux.getSigVertice();
         }
         return aux;
     }
 
+    /**
+     * Método PRIVADO que clona las adyacencias de un vértice en el grafo.
+     * 
+     * @param original
+     * @param copia
+     * @param copiaRaiz
+     */
     private void clonarAdyacencias(NodoVert original, NodoVert copia, NodoVert copiaRaiz) {
         if (original != null && copia != null) {
             NodoAdy adyOriginal = original.getPrimerAdy();
             NodoAdy ultimoAdy = null;
             while (adyOriginal != null) {
-                // Buscar vértice destino en la copia (por elemento)
+                // Buscar vértice destino en la copia (por elemento).
                 NodoVert destinoCopia =
                         ubicarVerticeEnCopia(copiaRaiz, adyOriginal.getVertice().getElem());
                 NodoAdy nuevoAdy = new NodoAdy(destinoCopia, null, adyOriginal.getEtiqueta());
@@ -662,6 +772,11 @@ public class DigrafoEtiquetado {
         }
     }
 
+    /**
+     * Método que devuelve una representación en cadena del grafo.
+     * 
+     * @return String
+     */
     public String toString() {
         String resultado = "";
         NodoVert actual = this.inicio;
