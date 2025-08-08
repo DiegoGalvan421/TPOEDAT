@@ -553,7 +553,6 @@ public class DigrafoEtiquetado {
                 if (caudalMin[0] == -1 || caudalActual < caudalMin[0]) {
                     // Preguntamos si el caudal actual es menor que el mínimo encontrado.
                     caudalMin[0] = caudalActual; // Actualizamos el mínimo.
-                    System.out.println(visitados.toString());
                     caminoActual.copiarDesde(visitados);
                 }
             } else { // En caso de no ser el destino.
